@@ -2,8 +2,8 @@
   <div class="home">
     <div class="box">
       <h1 class="title is-3">Offering CRE</h1>
-      <h1 class="subtitle">Dashboard Login</h1>
-      <form @submit.prevent="onLogin">
+      <h1 class="subtitle">Dashboard SignUp</h1>
+      <form @submit.prevent="onSignup">
         <b-field
           :type="errors.has('email') ? 'is-danger' : ''"
           :message="errors.has('email') ? errors.first('email') : ''"
@@ -34,9 +34,9 @@
         <button
           type="submit"
           class="button is-dark is-fullwidth"
-          @click.prevent="onLogin"
-        >Log In</button>
-        <div class="m-t-3">No account? <router-link to="/signup">Sign up</router-link></div>
+          @click.prevent="onSignup"
+        >Sign Up</button>
+        <div class="m-t-3">Already a user? <router-link to="/login">Log in</router-link></div>
       </form>
     </div>
   </div>
@@ -61,19 +61,24 @@ export default {
   },
   methods: {
     ...mapActions('user', ['login']),
-    async onLogin () {
+    async onSignup () {
       try {
         let valid = await this.$validator.validateAll()
         let vm = this
         if (valid) {
-          // let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-          // this.login(user)
-          router.push('/')
+        //   await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+          this.$toast.open({
+            duration: 3500,
+            message: 'Sign up successful. Please check your email for activation link.',
+            position: 'is-bottom',
+            type: 'is-success'
+          })
+          router.push('/login')
         }
       } catch (e) {
         this.$toast.open({
           duration: 3500,
-          message: 'Login failed. Please check your email and password.',
+          message: 'Account sign up failed. Please contact customer support.',
           position: 'is-bottom',
           type: 'is-danger'
         })
@@ -105,5 +110,19 @@ form button{
 .box {
   max-width: 40em;
   padding: 4em;
+}
+</style>
+    }
+  }
+}
+</script>
+<style scoped>
+#signup-wrapper {
+    width: 45%;
+    background-color: white;
+    padding: 5em 10em;
+    width: 45%;
+    margin: auto;
+    margin-top: 5em;
 }
 </style>

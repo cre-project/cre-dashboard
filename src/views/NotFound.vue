@@ -7,9 +7,6 @@
 .w-image {
   height: 100vh;
   background: linear-gradient(rgba(255,255,255,.5), rgba(255,255,255,.5)), url("../assets/login.jpg") no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-
+  background-size: cover;
 }
 </style>
