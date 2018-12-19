@@ -19,11 +19,17 @@
               <div>
                 <label class="half-size">
                   <div class="half-size">City</div>
-                  <input class="half-size" v-model="property.city">
+                  <input
+                    class="half-size"
+                    v-model="property.city"
+                  >
                 </label>
                 <label class="half-size">
                   <div class="half-size">ZIP</div>
-                  <input class="half-size" v-model="property.zip">
+                  <input
+                    class="half-size"
+                    v-model="property.zip"
+                  >
                 </label>
               </div>
             </form>
@@ -45,7 +51,11 @@
               <div>
                 <label>
                   <div>Lot Size Acres</div>
-                  <vue-numeric input separator="," v-model="property.lotSize"></vue-numeric>
+                  <vue-numeric
+                    input
+                    separator=","
+                    v-model="property.lotSize"
+                  ></vue-numeric>
                 </label>
                 <label>
                   <div>APN</div>
@@ -68,29 +78,30 @@
 </template>
 <script>
 // import { mapActions } from 'vuex'
+import { router } from './../router'
 
 export default {
   data () {
     return {
       property: {}
     };
+  },
+  methods: {
+    //     ...mapActions('valuations', ['setProperty', 'persist']),
+    save () {
+      //       this.setProperty(this.property)
+      //       this.persist()
+      router.push(`/package/${this.$route.params.id}/operating-statement`)
+      //       router.push('./unit-mix')
+    }
+    //   },
+    //   created () {
+    //     // fill up the local property object
+    //     this.property = this.$store.state.valuations.selectedValuation.property
+    //     eb.$on('newValuation', () => {
+    //       this.property = Object.assign({}, emptyProperty)
+    //     })
   }
-  //   methods: {
-  //     ...mapActions('valuations', ['setProperty', 'persist']),
-  //     save () {
-  //       this.setProperty(this.property)
-  //       this.persist()
-  //   router.push(`/package/${this.$route.params.id}/operating-statement`)
-  //       router.push('./unit-mix')
-  //     }
-  //   },
-  //   created () {
-  //     // fill up the local property object
-  //     this.property = this.$store.state.valuations.selectedValuation.property
-  //     eb.$on('newValuation', () => {
-  //       this.property = Object.assign({}, emptyProperty)
-  //     })
-  //   }
 };
 </script>
 <style>

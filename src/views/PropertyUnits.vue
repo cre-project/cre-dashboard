@@ -3,8 +3,14 @@
     <navigation-header selected="unit-mix"></navigation-header>
     <div class="cre-content">
       <h1 class="subtitle is-size-4 has-text-weight-semibold auto-margin">Unit Mix</h1>
-      <div class="float-right" style="margin-right: 2em; margin-bottom: 0;">
-        <b-field class="half-size" label="Total SqFt">
+      <div
+        class="float-right"
+        style="margin-right: 2em; margin-bottom: 0;"
+      >
+        <b-field
+          class="half-size"
+          label="Total SqFt"
+        >
           <b-input v-model.number="totalSqFt"></b-input>
         </b-field>
       </div>
@@ -19,7 +25,11 @@
           </tr>
         </thead>
         <tbody>
-          <unit v-for="unit in units" :key="unit.id" :unit="unit"></unit>
+          <unit
+            v-for="unit in units"
+            :key="unit.id"
+            :unit="unit"
+          ></unit>
           <tr class="centered is-grey">
             <td>Total: {{ numUnits }} units</td>
             <td>{{ totalSqFt }} SF</td>
@@ -29,8 +39,15 @@
         </tbody>
       </table>
       <div class="spaced">
-        <button class="save green" @click.prevent="addUnit">Add Another Unit</button>
-        <button class="save" type="submit" @click="save">Save & Next</button>
+        <button
+          class="save green"
+          @click.prevent="addUnit"
+        >Add Another Unit</button>
+        <button
+          class="save"
+          type="submit"
+          @click="save"
+        >Save & Next</button>
       </div>
     </div>
   </div>
@@ -38,7 +55,6 @@
 <script>
 import Unit from '@/components/Unit';
 import { router } from './../router';
-import { mapActions } from 'vuex';
 // import { uuidv4 } from '../utils'
 
 export default {
@@ -67,11 +83,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('valuations', ['addUnits', 'addTotalSqFt', 'persist']),
     save () {
-      this.addUnits(this.units);
-      this.addTotalSqFt(this.totalSqFt);
-      this.persist();
+      // this.addUnits(this.units);
+      // this.addTotalSqFt(this.totalSqFt);
+      // this.persist();
       router.push(`/package/${this.$route.params.id}/operating-statement`);
     },
     addUnit () {

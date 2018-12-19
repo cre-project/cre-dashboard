@@ -1,5 +1,7 @@
+import Vue from 'vue'
+
 const state = {
-  packages: [],
+  packages: {},
 
   isFetching: false,
   fetchSuccess: false,
@@ -20,6 +22,9 @@ const mutations = {
   },
 
   fetchSuccessful ({ state }, data) {
+    data.forEach(pkg => {
+      Vue.set(state.packages[pkg.id], pkg)
+    })
     state.isFetching = false
     state.fetchSuccess = true
     state.fetchError = null
@@ -29,6 +34,7 @@ const mutations = {
     state.isFetching = false
     state.fetchSuccess = false
     state.fetchError = err
+    Vue.set(state.packages, {})
   },
 
   createStart ({ state }) {
@@ -99,9 +105,16 @@ const actions = {
   }
 }
 
+const getters = {
+  byID: state => id => {
+    return state.packages[id] || { taxes: {}, mgmtFee: {} }
+  }
+}
+
 export default {
   namespaced: true,
   state,
   mutations,
+  getters,
   actions
 }

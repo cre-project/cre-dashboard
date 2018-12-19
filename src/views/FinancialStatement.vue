@@ -4,19 +4,28 @@
     <div class="cre-content">
       <div class="columns">
         <div class="column is-two-thirds">
-          <h1 class="subtitle is-size-4 has-text-weight-semibold" id="tc-header">Operating Statement</h1>
+          <h1
+            class="subtitle is-size-4 has-text-weight-semibold"
+            id="tc-header"
+          >Operating Statement</h1>
           <main>
             <table id="os">
               <thead>
                 <tr>
-                  <th class="sub-section l-align bolder" colspan="2">Income</th>
+                  <th
+                    class="sub-section l-align bolder"
+                    colspan="2"
+                  >Income</th>
                   <th class="sub-section">Current</th>
                   <th class="sub-section">Pro Forma</th>
                   <th></th>
                 </tr>
               </thead>
               <tr class="is-grey">
-                <td class="l-align bold" colspan="2">GROSS POTENTIAL RENT</td>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >GROSS POTENTIAL RENT</td>
                 <td>
                   <span id="gpr-current">{{ grossRentCurrent | money }}</span>
                 </td>
@@ -28,9 +37,15 @@
               <tr>
                 <td>Less: Vacancy/Deduction</td>
                 <td class="setting">
-                  <button class="percent" @click="decrease('vacancy')">-</button>
+                  <button
+                    class="percent"
+                    @click="decrease('vacancy')"
+                  >-</button>
                   <span id="vacancy">{{ selectedValuation.vacancy || 0 }}%</span>
-                  <button class="percent" @click="increase('vacancy')">+</button>
+                  <button
+                    class="percent"
+                    @click="increase('vacancy')"
+                  >+</button>
                 </td>
                 <td>
                   -
@@ -43,14 +58,20 @@
                 <td></td>
               </tr>
               <tr class="is-grey">
-                <td class="l-align bold" colspan="2">EFFECTIVE RENTAL INCOME</td>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >EFFECTIVE RENTAL INCOME</td>
                 <td>{{ currentEffectiveRent | money }}</td>
                 <td>{{ potentiaEffectiveRent | money }}</td>
                 <td></td>
               </tr>
               <tr>
                 <td colspan="2">
-                  <input class="input is-small" :value="current.otherIncome.label">
+                  <input
+                    class="input is-small"
+                    :value="current.otherIncome.label"
+                  >
                 </td>
                 <td>
                   <vue-numeric
@@ -73,17 +94,26 @@
                 </td>
               </tr>
               <tr class="is-grey">
-                <td class="l-align bold" colspan="2">EFFECTIVE GROSS INCOME</td>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >EFFECTIVE GROSS INCOME</td>
                 <td>{{ effectiveGrossIncome | money }}</td>
                 <td>{{ potentialGrossIncome | money }}</td>
                 <td></td>
               </tr>
               <tr>
-                <td class="sub-section l-align bolder" colspan="5">Expenses</td>
+                <td
+                  class="sub-section l-align bolder"
+                  colspan="5"
+                >Expenses</td>
               </tr>
               <tr>
                 <td class="l-align">
-                  <input class="input is-small" :value="selectedValuation.taxes.label">
+                  <input
+                    class="input is-small"
+                    :value="selectedValuation.taxes.label"
+                  >
                 </td>
                 <td>
                   <vue-numeric
@@ -103,12 +133,21 @@
               <tr>
                 <!-- PERCENTAGE OF EFFECTIVE GROSS INCOME -->
                 <td class="l-align">
-                  <input class="input is-small" :value="selectedValuation.mgmtFee.label">
+                  <input
+                    class="input is-small"
+                    :value="selectedValuation.mgmtFee.label"
+                  >
                 </td>
                 <td class="setting">
-                  <button class="percent" @click="decrease('mgmtFee')">-</button>
+                  <button
+                    class="percent"
+                    @click="decrease('mgmtFee')"
+                  >-</button>
                   <span id="mgmtFee">{{ selectedValuation.mgmtFee.value || 0 }}%</span>
-                  <button class="percent" @click="increase('mgmtFee')">+</button>
+                  <button
+                    class="percent"
+                    @click="increase('mgmtFee')"
+                  >+</button>
                 </td>
                 <td id="mgmt-fee-current">{{ currentMgmtFee | money }}</td>
                 <td id="mgmt-fee-future">{{ potentialMgmtFee | money }}</td>
@@ -116,69 +155,109 @@
                   <i class="icon is-small material-icons">delete_forever</i>
                 </td>
               </tr>
-              <tr v-for="(e, index) in selectedValuation.expenses" :key="index">
-                <td class="l-align" colspan="2">
-                  <input class="input is-small" :value="e.label">
+              <tr
+                v-for="(e, index) in selectedValuation.expenses"
+                :key="index"
+              >
+                <td
+                  class="l-align"
+                  colspan="2"
+                >
+                  <input
+                    class="input is-small"
+                    :value="e.label"
+                  >
                 </td>
                 <td>
-                  <vue-numeric input class="inline-edit" separator="," v-model.number="e.current"></vue-numeric>
+                  <vue-numeric
+                    input
+                    class="inline-edit"
+                    separator=","
+                    v-model.number="e.current"
+                  ></vue-numeric>
                 </td>
                 <td>
-                  <vue-numeric input class="inline-edit" separator="," v-model.number="e.potential"></vue-numeric>
+                  <vue-numeric
+                    input
+                    class="inline-edit"
+                    separator=","
+                    v-model.number="e.potential"
+                  ></vue-numeric>
                 </td>
                 <td>
-                  <i class="icon is-small material-icons" @click="removeItem(index)">delete_forever</i>
+                  <i
+                    class="icon is-small material-icons"
+                    @click="removeItem(index)"
+                  >delete_forever</i>
                 </td>
               </tr>
               <tr>
-                <td colspan="3"/>
+                <td colspan="3" />
                 <td>Add Expense Item</td>
                 <td>
-                  <i class="material-icons icon is-small" @click="addItem()">add_circle</i>
+                  <i
+                    class="material-icons icon is-small"
+                    @click="addItem()"
+                  >add_circle</i>
                 </td>
               </tr>
               <tr class="is-grey">
-                <td class="l-align bold" colspan="2">TOTAL EXPENSES</td>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >TOTAL EXPENSES</td>
                 <td>{{ totalExpensesCurrent | money }}</td>
                 <td>{{ totalExpensesPotential | money }}</td>
                 <td></td>
               </tr>
               <tr>
                 <!-- effective gross income minus total expenses -->
-                <td class="l-align bold" colspan="2">Net Operating Income</td>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >Net Operating Income</td>
                 <td class="bold">{{ currentNetOperatingIncome | money }}</td>
                 <td class="bold">{{ potentialNetOperatingIncome | money }}</td>
                 <td></td>
               </tr>
             </table>
-            <button class="save" id="operating-statement" type="submit" @click="save">Save & Next</button>
+            <button
+              class="save"
+              id="operating-statement"
+              type="submit"
+              @click="save"
+            >Save & Next</button>
           </main>
         </div>
-        <side-form class="column" :stats="stats"></side-form>
+        <side-form
+          class="column"
+          :stats="stats"
+        ></side-form>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 import { router } from './../router';
 import SideForm from '@/components/SideForm';
 
 export default {
   data () {
     return {
-      current: {},
-      potential: {},
+      current: { otherIncome: {} },
+      potential: { otherIncome: {} },
       expenses: [],
-      incomes: []
+      incomes: [],
+      grossRentCurrent: 0,
+      grossRentPotential: 0
     };
   },
   computed: {
-    ...mapState({
-      selectedValuation: state => state.packages.selectedValuation,
-      selectedValuationId: state => state.packages.selectedValuationId
-    }),
-    ...mapGetters('packages', ['grossRentCurrent', 'grossRentPotential']),
+    ...mapGetters('packages', ['byID']),
+    selectedValuation () {
+      return this.byID(this.$route.params.id)
+    },
     currentVacancy () {
       return (
         (this.grossRentCurrent / 100) *
@@ -244,7 +323,7 @@ export default {
       return this.effectiveGrossIncome - this.totalExpensesCurrent;
     },
     potentialNetOperatingIncome () {
-      return this.potentialGrossIncome - this.totalExpensesPotential;
+      return this.potentialGrossIncome - this.totalExpensesPotential
     },
     currentCapRate () {
       return (
@@ -284,13 +363,6 @@ export default {
     SideForm: SideForm
   },
   methods: {
-    ...mapActions('valuations', [
-      'setWip',
-      'setWipOS',
-      'persist',
-      'addExpense',
-      'removeExpense'
-    ]),
     save () {
       this.current.vacancy = this.currentVacancy;
       this.current.effectiveRent = this.currentEffectiveRent || 0;
@@ -313,13 +385,13 @@ export default {
       this.potential.grossRent = this.grossRentPotential;
 
       // TODO set percentage values (vacancy, mgmtFee, taxes) in Wip (selectedVacancy)
-      this.setWip({
-        valuation: this.selectedValuation,
-        id: this.selectedValuationId
-      });
-      this.setWipOS({ current: this.current, potential: this.potential });
-      this.persist();
-      router.push('./sales-comparables');
+      // this.setWip({
+      //   valuation: this.selectedValuation,
+      //   id: this.selectedValuationId
+      // });
+      // this.setWipOS({ current: this.current, potential: this.potential });
+      // this.persist();
+      router.push(`./packages/${this.$route.params.id}/sales-comparables`);
     },
     removeItem (name) {
       this.$dialog.confirm({
@@ -366,18 +438,14 @@ export default {
       return val.toString().replace(/\B(?=(\d{1})+(?!\d))/g, ',');
     },
     sum (expenses) {
-      return (
-        Object.keys(expenses).reduce((acc, key) => acc + expenses[key], 0) +
-        Number(this.taxes)
-      );
+      return 10
+      // return (
+      //   Object.keys(expenses).reduce((acc, key) => acc + expenses[key], 0) +
+      //   Number(this.taxes)
+      // );
     }
-  },
-  created () {
-    // fill up the local user object
-    this.current = this.$store.state.valuations.selectedValuation.statementCurrent;
-    this.potential = this.$store.state.valuations.selectedValuation.statementPotential;
   }
-};
+}
 </script>
 
 <style scoped>
