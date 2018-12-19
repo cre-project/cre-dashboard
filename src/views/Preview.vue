@@ -1,10 +1,16 @@
 <template>
   <div>
-    <iframe id="pdf" width="100%" height="900" frameborder="0" :src="pdfURL"></iframe>
+    <iframe
+      id="pdf"
+      width="100%"
+      height="900"
+      frameborder="0"
+      :src="pdfURL"
+    ></iframe>
   </div>
 </template>
 <script>
-import { mapState } from 'vuex';
+// import { mapState } from 'vuex';
 
 export default {
   computed: {

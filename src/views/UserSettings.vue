@@ -1,17 +1,23 @@
 <template>
   <div>
-    <user-nav/>
+    <user-nav />
     <div class="cre-content">
       <h1 class="subtitle is-size-4 has-text-weight-semibold">User Settings</h1>
       <div class="columns block">
         <div class="column m-t-1">
           <label class="half-sze">
             <div class="half-size">First Name</div>
-            <input class="half-size" v-model="user.firstName">
+            <input
+              class="half-size"
+              v-model="user.firstName"
+            >
           </label>
           <label class="half-size">
             <div class="half-size">Last Name</div>
-            <input class="half-size" v-model="user.lastName">
+            <input
+              class="half-size"
+              v-model="user.lastName"
+            >
           </label>
           <label>
             <div>Email</div>
@@ -25,9 +31,19 @@
         <div class="column m-t-2 m-l-2">
           <label style="height: 12em;">
             <div class="m-b-1">Profile Picture</div>
-            <img class="hidden" id="profile-preview">
-            <input type="file" class="save hidden" @input="loadProfilePic">
-            <i class="large material-icons clickable" id="profile-icon">add_a_photo</i>
+            <img
+              class="hidden"
+              id="profile-preview"
+            >
+            <input
+              type="file"
+              class="save hidden"
+              @input="loadProfilePic"
+            >
+            <i
+              class="large material-icons clickable"
+              id="profile-icon"
+            >add_a_photo</i>
           </label>
           <button
             class="save"
@@ -41,7 +57,7 @@
   </div>
 </template>
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions } from 'vuex';
 import { router } from './../router';
 // import { upload, getUrl } from '../store/tools/images'
 

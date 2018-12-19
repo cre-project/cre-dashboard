@@ -36,7 +36,8 @@
           class="button is-dark is-fullwidth"
           @click.prevent="onLogin"
         >Log In</button>
-        <div class="m-t-3">No account? <router-link to="/signup">Sign up</router-link></div>
+        <div class="m-t-3">No account? <router-link to="/signup">Sign up</router-link>
+        </div>
       </form>
     </div>
   </div>
@@ -47,8 +48,8 @@
 // import Card from '@/components/Card.vue'
 import { router } from './../router'
 import { mapActions } from 'vuex'
-import firebase from 'firebase/app'
-import 'firebase/auth'
+// import firebase from 'firebase/app'
+// import 'firebase/auth'
 
 export default {
   data () {
@@ -64,7 +65,6 @@ export default {
     async onLogin () {
       try {
         let valid = await this.$validator.validateAll()
-        let vm = this
         if (valid) {
           // let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password)
           // this.login(user)
@@ -84,7 +84,7 @@ export default {
 </script>
 
 <style scoped>
-form button{
+form button {
   margin-top: 1.5em;
 }
 

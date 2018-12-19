@@ -36,7 +36,8 @@
           class="button is-dark is-fullwidth"
           @click.prevent="onSignup"
         >Sign Up</button>
-        <div class="m-t-3">Already a user? <router-link to="/login">Log in</router-link></div>
+        <div class="m-t-3">Already a user? <router-link to="/login">Log in</router-link>
+        </div>
       </form>
     </div>
   </div>
@@ -47,8 +48,6 @@
 // import Card from '@/components/Card.vue'
 import { router } from './../router'
 import { mapActions } from 'vuex'
-import firebase from 'firebase/app'
-import 'firebase/auth'
 
 export default {
   data () {
@@ -57,16 +56,13 @@ export default {
       password: ''
     }
   },
-  computed: {
-  },
   methods: {
     ...mapActions('user', ['login']),
     async onSignup () {
       try {
         let valid = await this.$validator.validateAll()
-        let vm = this
         if (valid) {
-        //   await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+          //   await firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
           this.$toast.open({
             duration: 3500,
             message: 'Sign up successful. Please check your email for activation link.',
@@ -89,7 +85,7 @@ export default {
 </script>
 
 <style scoped>
-form button{
+form button {
   margin-top: 1.5em;
 }
 
@@ -110,19 +106,5 @@ form button{
 .box {
   max-width: 40em;
   padding: 4em;
-}
-</style>
-    }
-  }
-}
-</script>
-<style scoped>
-#signup-wrapper {
-    width: 45%;
-    background-color: white;
-    padding: 5em 10em;
-    width: 45%;
-    margin: auto;
-    margin-top: 5em;
 }
 </style>
