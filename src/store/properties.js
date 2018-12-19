@@ -15,49 +15,49 @@ const state = {
 }
 
 const mutations = {
-  fetchStart ({ state }) {
+  fetchStart (state) {
     state.isFetching = true
   },
 
-  fetchSuccessful ({ state }, data) {
+  fetchSuccessful (state, data) {
     state.isFetching = false
     state.fetchSuccess = true
     state.fetchError = null
   },
 
-  fetchFailed ({ state }, err) {
+  fetchFailed (state, err) {
     state.isFetching = false
     state.fetchSuccess = false
     state.fetchError = err
   },
 
-  createStart ({ state }) {
+  createStart (state) {
     state.isCreating = true
   },
 
-  createSuccessful ({ state }, data) {
+  createSuccessful (state, data) {
     state.isCreating = false
     state.createSuccess = true
     state.createError = null
   },
 
-  createFailed ({ state }, err) {
+  createFailed (state, err) {
     state.isCreating = false
     state.createSuccess = false
     state.createError = err
   },
 
-  updateStart ({ state }) {
+  updateStart (state) {
     state.isUpdating = true
   },
 
-  updateSuccessful ({ state }, data) {
+  updateSuccessful (state, data) {
     state.isUpdating = false
     state.updateSuccess = true
     state.updateError = null
   },
 
-  updateFailed ({ state }, err) {
+  updateFailed (state, err) {
     state.isUpdating = false
     state.updateSuccess = false
     state.updateError = err

@@ -84,7 +84,7 @@ export default {
   data () {
     return {
       property: {}
-    };
+    }
   },
   methods: {
     //     ...mapActions('valuations', ['setProperty', 'persist']),
@@ -102,7 +102,7 @@ export default {
     //       this.property = Object.assign({}, emptyProperty)
     //     })
   }
-};
+}
 </script>
 <style>
 h1 {

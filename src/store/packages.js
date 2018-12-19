@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import api from './../api'
 
 const state = {
   packages: {},
@@ -17,11 +18,11 @@ const state = {
 }
 
 const mutations = {
-  fetchStart ({ state }) {
+  fetchStart (state) {
     state.isFetching = true
   },
 
-  fetchSuccessful ({ state }, data) {
+  fetchSuccessful (state, data) {
     data.forEach(pkg => {
       Vue.set(state.packages[pkg.id], pkg)
     })
@@ -30,40 +31,40 @@ const mutations = {
     state.fetchError = null
   },
 
-  fetchFailed ({ state }, err) {
+  fetchFailed (state, err) {
     state.isFetching = false
     state.fetchSuccess = false
     state.fetchError = err
     Vue.set(state.packages, {})
   },
 
-  createStart ({ state }) {
+  createStart (state) {
     state.isCreating = true
   },
 
-  createSuccessful ({ state }, data) {
+  createSuccessful (state, data) {
     state.isCreating = false
     state.createSuccess = true
     state.createError = null
   },
 
-  createFailed ({ state }, err) {
+  createFailed (state, err) {
     state.isCreating = false
     state.createSuccess = false
     state.createError = err
   },
 
-  updateStart ({ state }) {
+  updateStart (state) {
     state.isUpdating = true
   },
 
-  updateSuccessful ({ state }, data) {
+  updateSuccessful (state, data) {
     state.isUpdating = false
     state.updateSuccess = true
     state.updateError = null
   },
 
-  updateFailed ({ state }, err) {
+  updateFailed (state, err) {
     state.isUpdating = false
     state.updateSuccess = false
     state.updateError = err
@@ -71,22 +72,23 @@ const mutations = {
 }
 
 const actions = {
-  fetchList ({ commit }) {
+  async fetchList ({ commit }) {
     try {
-      commit('fetchSuccessful', {})
-      console.log('Fetch successful')
-      return Promise.resolve({})
+      let res = await api.get('/packages')
+      commit('fetchSuccessful', res)
+      return Promise.resolve(res)
     } catch (err) {
-      commit('fetchFailed', err)
-      Promise.reject(err)
+      commit('fetchFailed', err.message || err)
+      return Promise.reject(err)
     }
   },
 
-  create ({ commit }, data) {
+  async create ({ commit }, data) {
     try {
-      commit('createSuccessful', data)
+      let res = await api.post(`/packages`, data)
       console.log('Create successful')
-      return Promise.resolve(data)
+      commit('createSuccessful', res)
+      return Promise.resolve(res)
     } catch (err) {
       commit('createFailed', err)
       Promise.reject(err)
