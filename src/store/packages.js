@@ -74,7 +74,7 @@ const mutations = {
 const actions = {
   async fetchList ({ commit }) {
     try {
-      let res = await api.get('/packages')
+      let res = await api.get('/api/packages')
       commit('fetchSuccessful', res)
       return Promise.resolve(res)
     } catch (err) {
@@ -85,7 +85,7 @@ const actions = {
 
   async create ({ commit }, data) {
     try {
-      let res = await api.post(`/packages`, data)
+      let res = await api.post(`/api/packages`, data)
       console.log('Create successful')
       commit('createSuccessful', res)
       return Promise.resolve(res)
