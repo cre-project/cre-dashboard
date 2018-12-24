@@ -24,7 +24,7 @@ const mutations = {
 
   fetchSuccessful (state, data) {
     data.forEach(pkg => {
-      Vue.set(state.packages[pkg.id], pkg)
+      Vue.set(state.packages, pkg.id, pkg)
     })
     state.isFetching = false
     state.fetchSuccess = true
@@ -32,10 +32,11 @@ const mutations = {
   },
 
   fetchFailed (state, err) {
+    Vue.set(state.packages, {})
+
     state.isFetching = false
     state.fetchSuccess = false
     state.fetchError = err
-    Vue.set(state.packages, {})
   },
 
   createStart (state) {
@@ -43,6 +44,7 @@ const mutations = {
   },
 
   createSuccessful (state, data) {
+    Vue.set(state.packages, data.id, data)
     state.isCreating = false
     state.createSuccess = true
     state.createError = null
@@ -75,8 +77,8 @@ const actions = {
   async fetchList ({ commit }) {
     try {
       let res = await api.get('/packages')
-      commit('fetchSuccessful', res)
-      return Promise.resolve(res)
+      commit('fetchSuccessful', res.data)
+      return Promise.resolve(res.data)
     } catch (err) {
       commit('fetchFailed', err.message || err)
       return Promise.reject(err)
@@ -87,8 +89,8 @@ const actions = {
     try {
       let res = await api.post(`/packages`, data)
       console.log('Create successful')
-      commit('createSuccessful', res)
-      return Promise.resolve(res)
+      commit('createSuccessful', res.data)
+      return Promise.resolve(res.data)
     } catch (err) {
       commit('createFailed', err)
       Promise.reject(err)
@@ -110,6 +112,10 @@ const actions = {
 const getters = {
   byID: state => id => {
     return state.packages[id] || { taxes: {}, mgmtFee: {} }
+  },
+
+  list: state => {
+    return Object.keys(state.packages)
   }
 }
 

@@ -1,16 +1,25 @@
 <template>
   <div>
     <div class="align-left">
-      <package-preview-box :pkg="{property: ''}"></package-preview-box>
+      <package-preview-box :pkg="{property: {}}"/>
+      <package-preview-box
+        v-for="id in list"
+        :key="id"
+        :pkg="packages[id]"/>
     </div>
   </div>
 </template>
 <script>
 import PackagePreviewBox from '@/components/PackagePreviewBox'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   components: {
     PackagePreviewBox
+  },
+  computed: {
+    ...mapState({ packages: state => state.packages.packages }),
+    ...mapGetters({ list: 'packages/list' })
   },
   created () {
     this.$store.dispatch('packages/fetchList')
