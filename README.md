@@ -20,5 +20,12 @@ npm run build
 npm run lint
 ```
 
+### Deployment
+```
+firebase login // opens web browser
+
+firebase deploy
+```
+
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
