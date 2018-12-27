@@ -1,5 +1,12 @@
 # cre-dashboard
 
+Requirements:
+
+* npm & node
+* tested with 
+  * npm 6.4.1
+  * node v11.1.0
+
 ## Project setup
 ```
 npm install
@@ -21,6 +28,12 @@ npm run lint
 ```
 
 ### Deployment
+
+Firebase cli tool is required
+```
+npm install -g firebase-tools
+```
+
 ```
 firebase login // opens web browser
 
