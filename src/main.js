@@ -9,11 +9,13 @@ import store from './store'
 
 // layouts
 import Default from './layouts/default'
+import Empty from './layouts/empty'
 import Dashboard from './layouts/dashboard'
 import FullPage from './layouts/full-page'
 import Settings from './layouts/settings'
 
 Vue.component('default-layout', Default)
+Vue.component('empty-layout', Empty)
 Vue.component('dashboard-layout', Dashboard)
 Vue.component('full-page-layout', FullPage)
 Vue.component('settings-layout', Settings)

@@ -1,16 +1,16 @@
 <template>
-  <div class="w-image">
+  <div class="full-page-centered">
     <slot />
   </div>
 </template>
 
 <style>
-.w-image {
+.full-page-centered {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   height: 100vh;
-  background: url("../assets/login.jpg") no-repeat center center fixed;
-  background-size: cover;
+  width: 100vw;
 }
 </style>

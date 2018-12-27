@@ -19,6 +19,12 @@ export const routes = [
     component: () => import('@/views/SignUp')
   },
   {
+    path: '/checkout/:plan',
+    name: 'Checkout',
+    meta: { layout: 'empty' },
+    component: () => import('@/views/Checkout')
+  },
+  {
     path: '/',
     name: 'Valuations',
     meta: { layout: 'dashboard', requiresAuth: true },
