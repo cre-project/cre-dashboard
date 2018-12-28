@@ -77,7 +77,7 @@ export default {
     save () {
       //       this.setProperty(this.property)
       //       this.persist()
-      router.push(`/package/${this.$route.params.id}/operating-statement`)
+      router.push(`/package/${this.$route.params.id}/unit-mix`)
       //       router.push('./unit-mix')
     }
     //   },

@@ -87,7 +87,7 @@ export default {
       // this.addUnits(this.units);
       // this.addTotalSqFt(this.totalSqFt);
       // this.persist();
-      router.push(`/package/${this.$route.params.id}/operating-statement`);
+      router.push(`/package/${this.$route.params.id}/sales-comparables`);
     },
     addUnit () {
       let id = 4; // uuidv4()
