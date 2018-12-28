@@ -43,6 +43,12 @@ export const routes = [
     component: () => import('@/views/PropertyUnits')
   },
   {
+    path: '/package/:id/operating-statement',
+    name: 'Operating Statement',
+    meta: { layout: 'default', requiresAuth: true, isNav: true },
+    component: () => import('@/views/FinancialStatement')
+  },
+  {
     path: '/package/:id/sales-comparables',
     name: 'Sales Comparables',
     meta: { layout: 'default', requiresAuth: true, isNav: true },
@@ -53,12 +59,6 @@ export const routes = [
     name: 'Rent Comparables',
     meta: { layout: 'default', requiresAuth: true, isNav: true },
     component: () => import('@/views/RentedUnits')
-  },
-  {
-    path: '/package/:id/operating-statement',
-    name: 'Operating Statement',
-    meta: { layout: 'default', requiresAuth: true, isNav: true },
-    component: () => import('@/views/FinancialStatement')
   },
   {
     path: '/package/:id/preview',
