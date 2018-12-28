@@ -3,7 +3,7 @@
     <user-nav />
     <div class="cre-content">
       <h1 class="subtitle is-size-4 has-text-weight-semibold">User Settings</h1>
-      <div class="columns block">
+      <div class="columns cre-inner-content">
         <div class="column m-t-1">
           <label class="half-sze">
             <div class="half-size">First Name</div>

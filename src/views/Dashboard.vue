@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="align-left">
-      <package-preview-box :pkg="{property: {}}"/>
+      <package-preview-box :pkg="{property: {}, preview: 'http://res.cloudinary.com/dxnzksg0a/image/upload/v1531933140/sample.jpg'}"/>
       <package-preview-box
         v-for="id in list"
         :key="id"

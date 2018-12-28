@@ -5,7 +5,7 @@
   >
     <img
       class="preview-image"
-      src="~@/assets/login.jpg"
+      :src="pkg.preview"
     >
     <span
       class="overlay"

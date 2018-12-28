@@ -3,65 +3,51 @@
     <navigation-header selected="property-info"></navigation-header>
     <div class="cre-content">
       <h1 class="subtitle is-size-4 has-text-weight-bold auto-margin">Property Information</h1>
-      <div class="block">
-        <div class="columns">
+      <div class="cre-inner-content">
+        <div class="columns is-variable is-8">
           <div class="column">
             <h2 class="subtitle is-size-5 has-text-weight-bold">Property Address</h2>
             <form>
-              <label>
-                <div>Street</div>
-                <input v-model="property.address">
-              </label>
-              <label>
-                <div>State</div>
-                <input v-model="property.state">
-              </label>
-              <div>
-                <label class="half-size">
-                  <div class="half-size">City</div>
-                  <input
-                    class="half-size"
-                    v-model="property.city"
-                  >
-                </label>
-                <label class="half-size">
-                  <div class="half-size">ZIP</div>
-                  <input
-                    class="half-size"
-                    v-model="property.zip"
-                  >
-                </label>
-              </div>
+              <b-field label="Street">
+                  <b-input v-model="property.address"></b-input>
+              </b-field>
+
+              <b-field label="State">
+                  <b-input v-model="property.state"></b-input>
+              </b-field>
+
+              <b-field grouped>
+                <b-field expanded label="City">
+                    <b-input v-model="property.city"></b-input>
+                </b-field>
+
+                <b-field expanded label="ZIP">
+                  <b-input v-model="property.zip"></b-input>
+                </b-field>
+              </b-field>
             </form>
           </div>
 
           <div class="column">
             <h2 class="subtitle is-size-5 has-text-weight-bold">Property Details</h2>
             <form>
-              <div>
-                <label>
-                  <div>Number of Stories</div>
-                  <input v-model="property.numberOfStories">
-                </label>
-                <label>
-                  <div>Year built</div>
-                  <input v-model="property.yearBuilt">
-                </label>
-              </div>
-              <div>
-                <label>
-                  <div>Lot Size Acres</div>
-                  <vue-numeric
-                    input
-                    separator=","
-                    v-model="property.lotSize"
-                  ></vue-numeric>
-                </label>
-                <label>
-                  <div>APN</div>
-                  <input v-model="property.apn">
-                </label>
-              </div>
+              <b-field label="Number of Stories">
+                  <b-input v-model="property.numberOfStories"></b-input>
+              </b-field>
+
+              <b-field label="Year built">
+                  <b-input v-model="property.yearBuilt"></b-input>
+              </b-field>
+
+              <b-field grouped>
+                <b-field expanded label="Lot Size Acres">
+                  <b-input v-model="property.lotSize"></b-input>
+                </b-field>
+
+                <b-field expanded label="APN">
+                  <b-input v-model="property.apn"></b-input>
+                </b-field>
+              </b-field>
             </form>
             <button
               class="save m-t-2"

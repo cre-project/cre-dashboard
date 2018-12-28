@@ -322,19 +322,6 @@ form {
     float: left;
 }
 
-label {
-  display: block;
-  width: 40em;
-  color: gray;
-  margin: 2em 0;
-}
-
-label div {
-  display: block;
-  font-size: 0.8em;
-  margin-bottom: 0.2em;
-}
-
 label:hover div {
   color: var(--header-blue);
   /* color: #2CC0BE; */
@@ -343,18 +330,6 @@ label:hover div {
 
 label:hover {
   color: gray;
-}
-
-input {
-  width: 20em;
-  border: none;
-  outline: none;
-  font-size: 1em;
-  padding: 0.2em 0;
-  border-bottom: 2px solid gray;
-  color: #5D5D5D;
-  font-family: "Open Sans", sans-serif;
-  font-size: 1rem;
 }
 
 .inline-edit {
@@ -390,9 +365,8 @@ label:hover input {
     font-size:1.5em;
 }
 
-.block {
-  margin-top: 3em;
-  margin-left: 5em;
+.cre-inner-content {
+  margin: 3em;
   width: 90%
 }
 
