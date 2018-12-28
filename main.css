@@ -679,6 +679,9 @@ margin-left: 2em;
 .m-b-1 {
 margin-bottom: 1em;
 }
+.m-2 {
+  margin: 2em;
+}
 
 nav ul {
     position: relative;
