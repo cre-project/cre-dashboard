@@ -14,9 +14,10 @@
           <b-input v-model.number="totalSqFt"></b-input>
         </b-field>
       </div>
+
       <table style="margin-left:5em;margin-top:2em;width:90%;margin-bottom:2em;">
         <thead>
-          <tr class="centered">
+          <tr>
             <!-- <th/> -->
             <th>Bedrooms</th>
             <th>Bathrooms</th>
@@ -30,7 +31,7 @@
             :key="unit.id"
             :unit="unit"
           ></unit>
-          <tr class="centered is-grey">
+          <tr class="is-grey">
             <td>Total: {{ numUnits }} units</td>
             <td>{{ totalSqFt }} SF</td>
             <td>{{ totalRentCurrent | money }}</td>

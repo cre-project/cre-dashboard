@@ -184,6 +184,10 @@ tr {
   border-bottom: 1px solid darkgray;
 }
 
+td:first-child, th:first-child { 
+  padding-left: 2em;
+}
+
 td input, tr input {
   font-size: 0.9em;
   width: 3em;
