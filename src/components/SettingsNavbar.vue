@@ -4,11 +4,11 @@
       <li class="navbar-item is-hoverable">
         <router-link to="/user-settings">ACCOUNT SETTINGS</router-link>
       </li>
-      <!-- <li class="navbar-item m-l-2">
-        <router-link to="/agent-info">AGENT INFORMATION</router-link>
-      </li> -->
       <li class="navbar-item m-l-2">
         <router-link to="/company-settings">COMPANY SETTINGS</router-link>
+      </li>
+      <li class="navbar-item m-l-2">
+        <router-link to="/billing">SUBSCRIPTION AND BILLING</router-link>
       </li>
     </ul>
   </nav>

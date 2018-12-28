@@ -79,6 +79,12 @@ export const routes = [
     component: () => import('@/views/CompanySettings')
   },
   {
+    path: '/billing',
+    name: 'Billing and Subscription',
+    meta: { layout: 'settings', requiresAuth: true },
+    component: () => import('@/views/BillingSettings')
+  },
+  {
     path: '*',
     meta: { layout: 'full-page', requiresAuth: false },
     component: () => import('@/views/NotFound')
