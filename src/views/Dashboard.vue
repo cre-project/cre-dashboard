@@ -1,25 +1,23 @@
 <template>
   <div>
     <div class="align-left">
-      <package-preview-box :pkg="{property: {}, preview: 'http://res.cloudinary.com/dxnzksg0a/image/upload/v1531933140/sample.jpg'}"/>
       <package-preview-box
-        v-for="id in list"
-        :key="id"
-        :pkg="packages[id]"/>
+        v-for="item in packages"
+        :key="item.id"
+        :pkg="item"/>
     </div>
   </div>
 </template>
 <script>
 import PackagePreviewBox from '@/components/PackagePreviewBox'
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
     PackagePreviewBox
   },
   computed: {
-    ...mapState({ packages: state => state.packages.packages }),
-    ...mapGetters({ list: 'packages/list' })
+    ...mapGetters({ packages: 'packages/list' })
   },
   created () {
     this.$store.dispatch('packages/fetchList')

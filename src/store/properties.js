@@ -1,5 +1,5 @@
 const state = {
-  properties: [],
+  properties: {},
 
   isFetching: false,
   fetchSuccess: false,
@@ -26,6 +26,8 @@ const mutations = {
   },
 
   fetchFailed (state, err) {
+    state.properties = {}
+
     state.isFetching = false
     state.fetchSuccess = false
     state.fetchError = err
@@ -99,9 +101,15 @@ const actions = {
   }
 }
 
+const getters = {
+  byID: state => id => {
+    return state.properties[id]
+  }
+}
 export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
+  getters
 }

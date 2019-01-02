@@ -1,6 +1,5 @@
 <template>
   <div>
-    <navigation-header selected="property-info"></navigation-header>
     <div class="cre-content">
       <h1 class="subtitle is-size-4 has-text-weight-bold auto-margin">Property Information</h1>
       <div class="cre-inner-content">
@@ -49,22 +48,23 @@
                 </b-field>
               </b-field>
             </form>
-            <button
-              class="save m-t-2"
-              style="margin-left:18em;"
-              id="property-info"
-              type="submit"
-              @click="save"
-            >Save & Next</button>
           </div>
+        </div>
+
+        <div class="float-right">
+          <button
+            class="save"
+            type="submit"
+            @click.prevent="save"
+          >Save & Next</button>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-// import { mapActions } from 'vuex'
 import { router } from './../router'
+import { mapGetters } from 'vuex';
 
 export default {
   data () {
@@ -72,21 +72,43 @@ export default {
       property: {}
     }
   },
-  methods: {
-    //     ...mapActions('valuations', ['setProperty', 'persist']),
-    save () {
-      //       this.setProperty(this.property)
-      //       this.persist()
-      router.push(`/package/${this.$route.params.id}/unit-mix`)
-      //       router.push('./unit-mix')
+  computed: {
+    ...mapGetters({ propertyByID: 'properties/byID', packageByID: 'packages/byID' }),
+    pkg () {
+      return this.packageByID(this.packageID)
+    },
+    packageID () {
+      return this.$route.params.id
     }
-    //   },
-    //   created () {
-    //     // fill up the local property object
-    //     this.property = this.$store.state.valuations.selectedValuation.property
-    //     eb.$on('newValuation', () => {
-    //       this.property = Object.assign({}, emptyProperty)
-    //     })
+  },
+  methods: {
+    async save () {
+      try {
+        if (!(this.pkg && this.pkg.property_id)) {
+          // create new property if package that's being updated has no property yet
+          await this.$store.dispatch('properties/create', { packageID: this.packageID, property: this.property })
+        } else {
+          // otherwise update the existing one
+          await this.$store.dispatch('properties/update', this.property)
+        }
+        router.push(`/package/${this.packageID}/unit-mix`)
+      } catch (err) {
+        console.log(err.message)
+        this.$toast.open({
+          duration: 3500,
+          message: 'Couldn\'t save property information',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
+    }
+  },
+  async created () {
+    if (!this.pkg) {
+      router.push('/dashboard')
+      return
+    }
+    this.property = this.propertyByID(this.pkg.property_id) || {}
   }
 }
 </script>

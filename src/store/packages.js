@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import api from './../api'
 
+const initialState = { 'abc': { id: 'abc', property: {}, preview: 'http://res.cloudinary.com/dxnzksg0a/image/upload/v1531933140/sample.jpg' } }
+
 const state = {
-  packages: {},
+  packages: Object.assign({}, initialState),
 
   isFetching: false,
   fetchSuccess: false,
@@ -26,13 +28,14 @@ const mutations = {
     data.forEach(pkg => {
       Vue.set(state.packages, pkg.id, pkg)
     })
+
     state.isFetching = false
     state.fetchSuccess = true
     state.fetchError = null
   },
 
   fetchFailed (state, err) {
-    Vue.set(state.packages, {})
+    state.packages = Object.assign({}, initialState)
 
     state.isFetching = false
     state.fetchSuccess = false
@@ -61,6 +64,8 @@ const mutations = {
   },
 
   updateSuccessful (state, data) {
+    Vue.set(state.packages, data.id, data)
+
     state.isUpdating = false
     state.updateSuccess = true
     state.updateError = null
@@ -114,8 +119,12 @@ const getters = {
     return state.packages[id] || { taxes: {}, mgmtFee: {} }
   },
 
-  list: state => {
+  ids: state => {
     return Object.keys(state.packages)
+  },
+
+  list: state => {
+    return Object.values(state.packages)
   }
 }
 
