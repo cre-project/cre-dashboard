@@ -161,21 +161,11 @@ aside td {
     min-width: 2em;
 }
 
-#tc-header {
-    grid-area: top;
-    height: 3em;
-    line-height: 3em;
-    margin-left: 2em;
-}
 
 /* Tables */
 table {
     margin: 0;
-    width: 85%;
-    grid-column-start: 2;
-    grid-column-end: 5;
-    grid-row-start: 2;
-    grid-row-end: 3;
+    width: 100%;
 }
 
 tr {
@@ -186,6 +176,10 @@ tr {
 
 td:first-child, th:first-child { 
   padding-left: 2em;
+}
+
+td:last-child, th:last-child { 
+  padding-right: 2em;
 }
 
 td input, tr input {
@@ -244,7 +238,7 @@ td button {
     font-weight: bold;
 }
 
-#os {
+.os {
     margin: auto;
     font-size: 0.9em;
     text-align: left;
@@ -468,13 +462,6 @@ img {
   background-color: #18D33F;
 }
 
-#operating-statement {
-    margin-left: 25em;
-    margin-top: 2em;
-    width: 15em;
-    font-weight: 500;
-}
-
 #property-info {
   grid-row-start: 3;
   grid-row-end: 4;
@@ -498,18 +485,6 @@ img {
 .auto-margin {
   margin: auto;
 }
-
-/* .preview-box {
-  width: 90%;
-  height: 25em;
-  padding: 0.9em;
-  background-color: rgb(219, 220, 221);
-  align-content: center;
-  display: inline-block;
-  margin: auto;
-  transition: box-shadow .3s;
-  box-shadow: 5px 10px 8px rgba(68, 69, 70, 0.3);
-} */
 
 .preview-box:hover {
   box-shadow: 5px 10px 8px rgba(68, 69, 70, 0.9);

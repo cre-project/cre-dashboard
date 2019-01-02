@@ -26,8 +26,8 @@
       </thead>
       <tr>
         <td>CAP Rate</td>
-        <td>{{ stats.currentCapRate }}%</td>
-        <td>{{ stats.potentialCapRate }}%</td>
+        <td>{{ stats.currentCapRate }}</td>
+        <td>{{ stats.potentialCapRate }}</td>
       </tr>
       <tr>
         <td>GRM</td>
@@ -49,21 +49,25 @@ export default {
   },
   data () {
     return {
-      current: {},
-      potential: {},
-      price: {},
-      pricePerSf: 0
+      price: 0,
+      pricePerSf: 0,
+      pricePerUnit: 0
     }
   },
   computed: {
     ...mapGetters('packages', ['byID']),
     localPrice: {
       get () {
-        return this.price;
+        return this.price
       },
       set (value) {
-        this.setPrice(value);
+        this.setPrice(value)
       }
+    }
+  },
+  methods: {
+    setPrice (value) {
+      this.price = value
     }
   }
 }

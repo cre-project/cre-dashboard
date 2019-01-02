@@ -34,7 +34,7 @@ export const routes = [
     path: '/package/:id/operating-statement',
     name: 'Operating Statement',
     meta: { layout: 'default', requiresAuth: true, isNav: true },
-    component: () => import('@/views/FinancialStatement')
+    component: () => import('@/views/OperatingStatement')
   },
   {
     path: '/package/:id/sales-comparables',

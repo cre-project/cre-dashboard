@@ -6,6 +6,7 @@ import VueNumeric from 'vue-numeric'
 import 'buefy/dist/buefy.css'
 import { router } from './router'
 import store from './store'
+import accounting from 'accounting-js'
 
 // layouts
 import Default from './layouts/default'
@@ -21,6 +22,10 @@ Vue.component('full-page-layout', FullPage)
 Vue.component('settings-layout', Settings)
 
 Vue.config.productionTip = false
+
+Vue.filter('money', function (value) {
+  return accounting.formatMoney(value)
+})
 
 Vue.use(VueNumeric)
 Vue.use(Buefy)

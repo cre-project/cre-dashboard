@@ -106,6 +106,7 @@ const getters = {
     return state.properties[id]
   }
 }
+
 export default {
   namespaced: true,
   state,

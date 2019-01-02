@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <component :is="layout">
+    <component :is="layout" class="light-grey">
       <router-view/>
     </component>
   </div>
@@ -25,5 +25,9 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
+  }
+
+  .light-grey {
+    background-color: var(--light-grey);
   }
 </style>
