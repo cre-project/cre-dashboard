@@ -36,7 +36,7 @@
           class="button is-dark is-fullwidth"
           @click.prevent="onLogin"
         >Log In</button>
-        <div class="m-t-3">No account? <router-link to="/signup">Sign up</router-link>
+        <div class="m-t-3">No account? <a href="https://offeringcre.com/free-trial">Sign up</a>
         </div>
       </form>
     </div>

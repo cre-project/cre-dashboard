@@ -13,12 +13,6 @@ export const routes = [
     component: () => import('@/views/Login')
   },
   {
-    path: '/signup',
-    name: 'Sign Up',
-    meta: { layout: 'full-page' },
-    component: () => import('@/views/SignUp')
-  },
-  {
     path: '/checkout/:plan',
     name: 'Checkout',
     meta: { layout: 'empty' },
