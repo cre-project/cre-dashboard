@@ -74,7 +74,7 @@ const actions = {
       return Promise.resolve({})
     } catch (err) {
       commit('fetchFailed', err)
-      Promise.reject(err)
+      return Promise.reject(err)
     }
   },
 
@@ -85,7 +85,7 @@ const actions = {
       return Promise.resolve(data)
     } catch (err) {
       commit('createFailed', err)
-      Promise.reject(err)
+      return Promise.reject(err)
     }
   },
 
@@ -96,7 +96,7 @@ const actions = {
       return Promise.resolve(data)
     } catch (err) {
       commit('updateFailed', err)
-      Promise.reject(err)
+      return Promise.reject(err)
     }
   }
 }

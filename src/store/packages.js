@@ -90,15 +90,15 @@ const actions = {
     }
   },
 
-  async create ({ commit }, data) {
+  async create ({ commit }) {
     try {
-      let res = await api.post(`/packages`, data)
+      let res = await api.post(`/packages`, {})
       console.log('Create successful')
       commit('createSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
       commit('createFailed', err)
-      Promise.reject(err)
+      return Promise.reject(err)
     }
   },
 
@@ -109,7 +109,7 @@ const actions = {
       return Promise.resolve(data)
     } catch (err) {
       commit('updateFailed', err)
-      Promise.reject(err)
+      return Promise.reject(err)
     }
   }
 }

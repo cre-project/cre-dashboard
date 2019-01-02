@@ -21,9 +21,19 @@ export default {
     MainHeader
   },
   methods: {
-    newPkg () {
-      // TODO generate ID & create new package
-      router.push('/package/id/property-info')
+    async newPkg () {
+      try {
+        let pkg = await this.$store.dispatch('packages/create')
+        router.push(`/package/${pkg.id}/property-info`)
+      } catch (err) {
+        console.log(err.message)
+        this.$toast.open({
+          duration: 3500,
+          message: 'Couldn\'t create a new package',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
     }
   }
 }
