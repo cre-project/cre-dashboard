@@ -101,8 +101,8 @@
               <td>Add Expense</td>
               <td>
                 <i
-                  class="material-icons icon is-small"
-                  @click="addItem()"
+                  class="material-icons icon is-small clickable"
+                  @click="addItem(false)"
                 >add_circle</i>
               </td>
             </tr>
@@ -290,17 +290,6 @@ export default {
       //     // this.persist();
       router.push(`./packages/${this.$route.params.id}/sales-comparables`);
     },
-    removeItem (name) {
-      this.$dialog.confirm({
-        title: 'Deleting Expense Item',
-        message: 'Are you sure you want to delete this item?',
-        type: 'is-danger',
-        hasIcon: true,
-        confirmText: 'Delete Expense',
-        // TODO add actual functionality
-        onConfirm: () => console.log('deleted expense:', name)// this.removeExpense(name)
-      });
-    },
     addItem () {
       this.$dialog.prompt({
         title: 'New Expense Line Item',
@@ -308,8 +297,18 @@ export default {
         inputAttrs: {
           placeholder: 'e.g. Property Tax'
         },
-        // TODO add actual functionality
-        onConfirm: value => console.log('added expense:', value)// this.addExpense({ name: value })
+        onConfirm: async (value) => {
+          try {
+            await this.$store.dispatch('os/addField', { name: value, operating_statement_id: this.$route.params.id, is_income: false })
+          } catch (err) {
+            this.$toast.open({
+              duration: 3500,
+              message: `Item could not be added: ${err.message}`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
+          }
+        }
       })
     },
     //   formatPercentage (value) {

@@ -640,7 +640,7 @@ br {
 margin-right: 2em;
 }
 .clickable {
-cursor: pointer;
+cursor: pointer !important;
 }
 .m-t-2 {
 margin-top: 2em;

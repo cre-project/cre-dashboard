@@ -1,5 +1,5 @@
 <template>
-  <tr :class="visible ? '' : 'deleted'">
+  <tr>
     <td
       class="l-align"
       colspan="2"
@@ -59,7 +59,7 @@
 
     <td>
       <i
-        class="icon is-small material-icons"
+        class="icon is-small material-icons clickable"
         @click="removeItem()"
       >delete_forever</i>
     </td>
@@ -82,9 +82,26 @@ export default {
     }
   },
   methods: {
-    removeItem () {
-      // TODO delete item
-      this.visible = false
+    async removeItem () {
+      this.$dialog.confirm({
+        title: 'Deleting Operating Statement Item',
+        message: 'This action is permanent and irreversible. Are you sure you want to proceed?',
+        type: 'is-danger',
+        hasIcon: true,
+        confirmText: 'Delete',
+        onConfirm: async () => {
+          try {
+            await this.$store.dispatch('os/deleteField', this.item.id)
+          } catch (err) {
+            this.$toast.open({
+              duration: 3500,
+              message: `Item could not be deleted: ${err.message}`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
+          }
+        }
+      })
     }
   },
   created () {
