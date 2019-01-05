@@ -12,24 +12,24 @@
     "axios": "^0.18.0",
     "buefy": "^0.7.1",
     "bulma": "^0.7.2",
-    "firebase": "^5.7.0",
-    "vee-validate": "^2.1.4",
-    "vue": "^2.5.17",
+    "firebase": "^5.7.2",
+    "vee-validate": "^2.1.5",
+    "vue": "^2.5.21",
     "vue-numeric": "^2.3.0",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.2.0",
-    "@vue/cli-plugin-eslint": "^3.2.0",
-    "@vue/cli-service": "^3.2.2",
+    "@vue/cli-plugin-babel": "^3.2.2",
+    "@vue/cli-plugin-eslint": "^3.2.2",
+    "@vue/cli-service": "^3.2.3",
     "@vue/eslint-config-standard": "^4.0.0",
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0-0",
-    "node-sass": "^4.10.0",
+    "eslint": "^5.12.0",
+    "eslint-plugin-vue": "^5.1.0",
+    "node-sass": "^4.11.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
-    "vue-template-compiler": "^2.5.17"
+    "vue-template-compiler": "^2.5.21"
   }
 }
