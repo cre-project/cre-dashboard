@@ -2,7 +2,7 @@ import Vue from 'vue'
 import api from './../api'
 
 const state = {
-  properties: {},
+  property_units: {},
 
   isFetching: false,
   fetchSuccess: false,
@@ -23,8 +23,8 @@ const mutations = {
   },
 
   fetchSuccessful (state, data) {
-    data.forEach(prop => {
-      Vue.set(state.properties, prop.id, prop)
+    data.forEach(unit => {
+      Vue.set(state.property_units, unit.id, unit)
     })
 
     state.isFetching = false
@@ -33,7 +33,7 @@ const mutations = {
   },
 
   fetchFailed (state, err) {
-    state.properties = {}
+    state.property_units = {}
 
     state.isFetching = false
     state.fetchSuccess = false
@@ -45,7 +45,7 @@ const mutations = {
   },
 
   createSuccessful (state, data) {
-    Vue.set(state.properties, data.id, data)
+    Vue.set(state.property_units, data.id, data)
     state.isCreating = false
     state.createSuccess = true
     state.createError = null
@@ -62,6 +62,7 @@ const mutations = {
   },
 
   updateSuccessful (state, data) {
+    state.property_units[data.id] = data
     state.isUpdating = false
     state.updateSuccess = true
     state.updateError = null
@@ -78,42 +79,43 @@ const actions = {
   async fetchList ({ commit }) {
     try {
       commit('fetchStart')
-      let res = await api.get('/properties')
+      let res = await api.get('/property_units')
       commit('fetchSuccessful', res.data)
-      console.log('Fetch successful')
       return Promise.resolve(res.data)
     } catch (err) {
       commit('fetchFailed', err.message)
-      return Promise.reject(err)
+      return Promise.reject(err.message || err)
     }
   },
 
-  create ({ commit }, data) {
+  async create ({ commit }) {
     try {
-      commit('createSuccessful', data)
-      console.log('Create successful')
-      return Promise.resolve(data)
+      commit('createStart')
+      let res = await api.post('/property_units')
+      commit('createSuccessful', res.data)
+      return Promise.resolve(res.data)
     } catch (err) {
       commit('createFailed', err)
-      return Promise.reject(err)
+      return Promise.reject(err.message || err)
     }
   },
 
-  update ({ commit }, data) {
+  async update ({ commit }, data) {
     try {
-      commit('updateSuccessful', data)
-      console.log('Update successful: ', data)
-      return Promise.resolve(data)
+      commit('updateStart')
+      let res = await api.put('/property_units', data)
+      commit('updateSuccessful', res.data)
+      return Promise.resolve(res.data)
     } catch (err) {
       commit('updateFailed', err)
-      return Promise.reject(err)
+      return Promise.reject(err.message || err)
     }
   }
 }
 
 const getters = {
-  byID: state => id => {
-    return state.properties[id] || {}
+  listByPropertyID: state => propertyID => {
+    return Object.values(state.property_units).filter(unit => unit.property_id === propertyID)
   }
 }
 

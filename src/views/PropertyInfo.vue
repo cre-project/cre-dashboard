@@ -64,7 +64,7 @@
 </template>
 <script>
 import { router } from './../router'
-import { mapGetters } from 'vuex';
+import { mapGetters } from 'vuex'
 
 export default {
   data () {
