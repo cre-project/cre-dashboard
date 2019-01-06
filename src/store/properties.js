@@ -1,3 +1,6 @@
+import Vue from 'vue'
+import api from './../api'
+
 const state = {
   properties: {},
 
@@ -20,6 +23,10 @@ const mutations = {
   },
 
   fetchSuccessful (state, data) {
+    data.forEach(prop => {
+      Vue.set(state.properties, prop.id, prop)
+    })
+
     state.isFetching = false
     state.fetchSuccess = true
     state.fetchError = null
@@ -67,13 +74,15 @@ const mutations = {
 }
 
 const actions = {
-  fetchList ({ commit }) {
+  async fetchList ({ commit }) {
     try {
-      commit('fetchSuccessful', {})
+      commit('fetchStart')
+      let res = await api.get('/properties')
+      commit('fetchSuccessful', res.data)
       console.log('Fetch successful')
-      return Promise.resolve({})
+      return Promise.resolve(res.data)
     } catch (err) {
-      commit('fetchFailed', err)
+      commit('fetchFailed', err.message)
       return Promise.reject(err)
     }
   },
@@ -103,7 +112,7 @@ const actions = {
 
 const getters = {
   byID: state => id => {
-    return state.properties[id]
+    return state.properties[id] || {}
   }
 }
 

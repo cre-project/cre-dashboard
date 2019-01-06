@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div v-if="packages.length === 0" class="cre-content">
+        <p class="subtitle">There are no valuations to show.</p>
+    </div>
+
     <div class="align-left">
       <package-preview-box
         v-for="item in packages"

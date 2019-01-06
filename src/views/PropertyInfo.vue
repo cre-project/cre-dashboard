@@ -69,7 +69,16 @@ import { mapGetters } from 'vuex';
 export default {
   data () {
     return {
-      property: {}
+      property: {
+        address: null,
+        state: null,
+        city: null,
+        zip: null,
+        numberOfStories: null,
+        yearBuilt: null,
+        lotSize: null,
+        apn: null
+      }
     }
   },
   computed: {

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import api from './../api'
 
-const initialState = { 'abc': { id: 'abc', property: {}, preview: 'http://res.cloudinary.com/dxnzksg0a/image/upload/v1531933140/sample.jpg' } }
+const initialState = { 'abc': { id: 'abc' } }
 
 const state = {
   packages: Object.assign({}, initialState),
@@ -92,23 +92,24 @@ const actions = {
 
   async create ({ commit }) {
     try {
-      let res = await api.post(`/packages`, {})
-      console.log('Create successful')
+      commit('createStart')
+      let res = await api.post(`/packages`, { template: 'default' })
       commit('createSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
-      commit('createFailed', err)
+      commit('createFailed', err.message || err)
       return Promise.reject(err)
     }
   },
 
-  update ({ commit }, data) {
+  async update ({ commit }, data) {
     try {
-      commit('updateSuccessful', data)
-      console.log('Update successful: ', data)
-      return Promise.resolve(data)
+      commit('updateStart', data)
+      let res = await api.put(`/packages`, data)
+      commit('updateSuccessful', res.data)
+      return Promise.resolve(res.data)
     } catch (err) {
-      commit('updateFailed', err)
+      commit('updateFailed', err.message || err)
       return Promise.reject(err)
     }
   }

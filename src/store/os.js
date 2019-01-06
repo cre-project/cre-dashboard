@@ -234,15 +234,14 @@ const actions = {
     }
   },
 
-  fetchFields ({ commit }, packageID) {
+  async fetchFields ({ commit }, packageID) {
     try {
       commit('fetchFieldsStart')
-      // TODO API CALL
-      commit('fetchFieldsSuccessful', {})
-      console.log('Fetch fields successful')
-      return Promise.resolve({})
+      let res = await api.get('/operating_statement_fields', { package_id: packageID })
+      commit('fetchFieldsSuccessful', res.data)
+      return Promise.resolve(res.data)
     } catch (err) {
-      commit('fetchFieldsFailed', err)
+      commit('fetchFieldsFailed', err.message)
       return Promise.reject(err)
     }
   },

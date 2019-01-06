@@ -85,7 +85,7 @@ export default {
     async removeItem () {
       this.$dialog.confirm({
         title: 'Deleting Operating Statement Item',
-        message: 'This action is permanent and irreversible. Are you sure you want to proceed?',
+        message: 'You can\'t undo this action. Are you sure you want to proceed?',
         type: 'is-danger',
         hasIcon: true,
         confirmText: 'Delete',

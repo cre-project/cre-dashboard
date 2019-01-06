@@ -7,7 +7,8 @@
         id="os-right"
         currency="$"
         separator=","
-        v-model.number="localPrice"
+        :value="price"
+        @change.native="setPrice($event.target.value)"
       ></vue-numeric>
       <!-- price per unit/ sf - units & sf from unit mix -->
       <p class="bold l-align">
@@ -16,7 +17,7 @@
         Price/SF: {{ pricePerSf | money }}
       </p>
     </div>
-    <table>
+    <table style="width:85%;">
       <thead>
         <tr>
           <th></th>
@@ -38,7 +39,7 @@
   </aside>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 
 export default {
   props: {
@@ -49,26 +50,49 @@ export default {
   },
   data () {
     return {
-      price: 0,
-      pricePerSf: 0,
-      pricePerUnit: 0
     }
   },
   computed: {
-    ...mapGetters('packages', ['byID']),
-    localPrice: {
-      get () {
-        return this.price
-      },
-      set (value) {
-        this.setPrice(value)
-      }
+    ...mapState({ os: state => state.os.operatingStatement }),
+    ...mapGetters({ packageByID: 'packages/byID', propertyByID: 'properties/byID' }),
+    property () {
+      let pkg = this.packageByID(this.$route.params.id)
+      return this.propertyByID(pkg.property_id)
+    },
+
+    price () {
+      return this.property.price || 0
+    },
+
+    pricePerSf () {
+      let sqft = this.property.total_square_feet
+
+      return sqft ? (this.property.price / sqft) : 0
+    },
+
+    pricePerUnit () {
+      return this.property.pricePerUnit || 0
     }
   },
   methods: {
-    setPrice (value) {
-      this.price = value
+    async setPrice (value) {
+      let data = this.property
+      data.price = value
+
+      try {
+        await this.$store.dispatch('properties/update', data)
+      } catch (err) {
+        this.$toast.open({
+          duration: 3500,
+          message: `Price could not be updated: ${err.message}`,
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
     }
+  },
+  created () {
+    this.$store.dispatch('properties/fetchList')
   }
 }
 </script>

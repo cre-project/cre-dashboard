@@ -5,19 +5,19 @@
   >
     <img
       class="preview-image"
-      :src="pkg.preview"
+      :src="pkg.preview || defaultImage"
     >
     <span
       class="overlay"
       v-show="pkg.price"
-    >Price ${{ formatPrice (pkg.price) }}</span>
-    <div class="preview-title">{{ pkg.property.address || "New Valuation" }}, {{ pkg.property.city }}</div>
-    <div class="preview-content">APN {{ pkg.property.apn }}</div>
+    >Price ${{ formatPrice (property.price) }}</span>
+    <div class="preview-title">{{ property.address || "New Valuation" }}, {{ property.city }}</div>
+    <div class="preview-content">APN {{ property.apn }}</div>
   </div>
 </template>
 <script>
-// import { mapActions } from 'vuex'
-import { router } from './../router';
+import { mapGetters } from 'vuex'
+import { router } from './../router'
 
 export default {
   props: {
@@ -26,19 +26,28 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      defaultImage: 'http://res.cloudinary.com/dxnzksg0a/image/upload/v1531933140/sample.jpg'
+    }
+  },
   methods: {
-    // ...mapActions('valuations', ['setWip', 'toggleEditing']),
+    ...mapGetters({ propertyByID: 'properties/byID' }),
+
+    property () {
+      this.propertyByID(this.pkg.property_id)
+    },
+
     editPackage () {
       this.$toast.open({
         duration: 3500,
         message: 'Edit Package',
         position: 'is-bottom',
         type: 'is-info'
-      });
-      //   this.setWip({valuation: this.valuation, id: this.id})
-      //   this.toggleEditing()
+      })
       router.push(`/package/${this.pkg.id}/property-info`)
     },
+
     formatPrice (value) {
       let val = (value / 1).toFixed().replace(',', '.');
       return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
@@ -53,6 +62,10 @@ export default {
         return createdOn.toDate().toUTCString();
       }
     }
+  },
+
+  created () {
+    this.$store.dispatch('properties/fetchList')
   }
-};
+}
 </script>
