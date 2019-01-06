@@ -1,6 +1,5 @@
 <template>
   <div>
-    <user-nav />
     <div class="cre-content">
       <h1 class="subtitle is-size-4 has-text-weight-semibold">User Settings</h1>
       <div class="cre-inner-content">
@@ -61,22 +60,38 @@
   </div>
 </template>
 <script>
-import { mapActions } from 'vuex';
-import { router } from './../router';
+import { mapState } from 'vuex'
+import { router } from './../router'
 // import { upload, getUrl } from '../store/tools/images'
 
 export default {
   data () {
     return {
       user: {}
-    };
-  },
-  methods: {
-    ...mapActions('users', ['set']),
-    save () {
-      //   this.set(this.user)
-      router.push('./');
     }
+  },
+
+  computed: {
+    ...mapState({ authUser: state => state.users.authUser })
+  },
+
+  methods: {
+    async save () {
+      try {
+        if (this.user !== this.authUser) {
+          await this.$store.dispatch('users/update', this.user)
+        }
+        router.push('./')
+      } catch (err) {
+        console.log(err)
+        this.$toast.open({
+          duration: 3500,
+          message: 'Could not save user settings',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
+    },
     //     loadNewImage (previewEl, button, imgName, evt) {
     //       let file = evt.target.files[0]
     //       let reader = new FileReader()
@@ -99,33 +114,17 @@ export default {
     //       button.classList.remove('clickable')
     //       button.classList.add('hidden')
     //     },
-    //     loadProfilePic (evt) {
+    loadProfilePic (evt) {
     //       const profilePreview = document.querySelector('#profile-preview')
     //       const profileIcon = document.querySelector('#profile-icon')
     //       let fileName = `${this.userId}/profile.png`
     //       this.loadNewImage(profilePreview, profileIcon, fileName, evt)
-    //     }
-    //   },
-    //   computed: {
-    //     ...mapState({
-    //       userId: state => state.users.currentId
-    //     })
-    //   },
-    //   created () {
-    //     // fill up the local user object
-    //     this.user = this.$store.state.users.currentUser
-    //     let vm = this
-    //     // load logo and preview if they exist
-    //     getUrl(`images/${this.$store.state.users.currentId}/profile.png`).then(downloadUrl => {
-    //       if (downloadUrl) {
-    //         vm.loadExistingImage(document.querySelector('#profile-preview'), document.querySelector('#profile-icon'), downloadUrl)
-    //       }
-    //     })
-    //     getUrl(`images/${this.$store.state.users.currentId}/logo.png`).then(downloadUrl => {
-    //       if (downloadUrl) {
-    //         vm.loadExistingImage(document.querySelector('#logo-preview'), document.querySelector('#logo-icon'), downloadUrl)
-    //       }
-    //     })
+    },
+
+    created () {
+      // fill up the local user object
+      this.user = this.authUser
+    }
   }
-};
+}
 </script>
