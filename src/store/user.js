@@ -66,8 +66,8 @@ const mutations = {
   },
 
   updateSuccessful (state, data) {
-    state.authUser = data.user
-    window.localStorage.setItem('creUser', JSON.stringify(data.user))
+    state.authUser = data
+    window.localStorage.setItem('creUser', JSON.stringify(data))
 
     state.isUpdating = false
     state.updateSuccess = true
@@ -126,7 +126,7 @@ const actions = {
   async update ({ commit }, data) {
     try {
       commit('updateStart')
-      let res = await api.put('/users', data)
+      let res = await api.put(`/users/${data.id}`, data)
       commit('updateSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {

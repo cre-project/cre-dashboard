@@ -7,11 +7,11 @@
           <div class="column">
             <form>
               <b-field expanded label="First Name">
-                  <b-input v-model="user.firstName"></b-input>
+                  <b-input v-model="user.first_name"></b-input>
               </b-field>
 
               <b-field expanded label="Last Name">
-                <b-input v-model="user.lastName"></b-input>
+                <b-input v-model="user.last_name"></b-input>
               </b-field>
 
               <b-field label="Email">
@@ -19,7 +19,7 @@
               </b-field>
 
               <b-field expanded label="Phone Number">
-                <b-input v-model="user.phoneNumber"></b-input>
+                <b-input v-model="user.phone"></b-input>
               </b-field>
             </form>
           </div>
@@ -61,7 +61,6 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import { router } from './../router'
 // import { upload, getUrl } from '../store/tools/images'
 
 export default {
@@ -72,16 +71,22 @@ export default {
   },
 
   computed: {
-    ...mapState({ authUser: state => state.users.authUser })
+    ...mapState({ authUser: state => state.user.authUser })
+
   },
 
   methods: {
     async save () {
       try {
-        if (this.user !== this.authUser) {
-          await this.$store.dispatch('users/update', this.user)
+        if (this.hasUpdated) {
+          await this.$store.dispatch('user/update', this.user)
         }
-        router.push('./')
+        this.$toast.open({
+          duration: 3500,
+          message: 'Changes were saved.',
+          position: 'is-bottom',
+          type: 'is-success'
+        })
       } catch (err) {
         console.log(err)
         this.$toast.open({
@@ -91,6 +96,15 @@ export default {
           type: 'is-danger'
         })
       }
+    },
+
+    hasUpdated () {
+      for (let k in Object.keys(this.user)) {
+        if (this.authUser[k] && this.authUser[k] !== this.user[k]) {
+          return true
+        }
+      }
+      return false
     },
     //     loadNewImage (previewEl, button, imgName, evt) {
     //       let file = evt.target.files[0]
@@ -119,12 +133,13 @@ export default {
     //       const profileIcon = document.querySelector('#profile-icon')
     //       let fileName = `${this.userId}/profile.png`
     //       this.loadNewImage(profilePreview, profileIcon, fileName, evt)
-    },
-
-    created () {
-      // fill up the local user object
-      this.user = this.authUser
     }
+  },
+
+  created () {
+    // fill up the local user object
+    this.user = this.authUser
   }
+
 }
 </script>
