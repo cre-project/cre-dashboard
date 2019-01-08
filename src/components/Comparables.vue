@@ -486,10 +486,6 @@ export default {
   margin-left: 0;
 }
 
-.m-b-2 {
-  margin-bottom: 2em;
-}
-
 .m-t-1 {
   margin-top: 1em;
 }

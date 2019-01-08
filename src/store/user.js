@@ -9,8 +9,11 @@ const state = {
 
   isUpdating: false,
   updateSuccess: false,
-  updateError: null
+  updateError: null,
 
+  isActivating: false,
+  activateSuccess: false,
+  activateError: null
 }
 
 const mutations = {
@@ -28,13 +31,29 @@ const mutations = {
 
   loginFailed (state, err) {
     state.authUser = {}
-    state.isupdating = false
-    state.updatesuccess = false
-    state.updateerror = err
+    state.isUpdating = false
+    state.updateSuccess = false
+    state.updateError = err
+  },
+
+  activateStart (state) {
+    state.isActivating = true
+  },
+
+  activateSuccessful (state) {
+    state.isActivating = false
+    state.activateSuccess = true
+    state.activateError = false
+  },
+
+  activateFailed (state, err) {
+    state.isActivating = false
+    state.activateSuccess = false
+    state.activateError = err
   },
 
   updateStart (state) {
-    state.isupdating = true
+    state.isUpdating = true
   },
 
   updateSuccessful (state, data) {
@@ -45,14 +64,26 @@ const mutations = {
   },
 
   updateFailed (state, err) {
-    state.isupdating = false
-    state.updatesuccess = false
-    state.updateerror = err
+    state.isUpdating = false
+    state.updateSuccess = false
+    state.updateError = err
   }
 
 }
 
 const actions = {
+  async activate ({ commit }, data) {
+    try {
+      commit('activateStart')
+      // let res = await api.post('/user/activate', data)
+      commit('activateSuccessful')
+      return Promise.resolve(data)
+    } catch (err) {
+      commit('activateFailed', err.message || err)
+      return Promise.reject(err.message || err)
+    }
+  },
+
   async login ({ commit }, data) {
     try {
       commit('loginStart')

@@ -13,6 +13,12 @@ export const routes = [
     component: () => import('@/views/Login')
   },
   {
+    path: '/activate/:customer_id',
+    name: 'Account Setup',
+    meta: { layout: 'full-page' },
+    component: () => import('@/views/AccountActivation')
+  },
+  {
     path: '/',
     name: 'Valuations',
     meta: { layout: 'dashboard', requiresAuth: true },
