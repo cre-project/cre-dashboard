@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from './store'
 
 /** Routing */
 
@@ -92,13 +93,18 @@ export const routes = [
 export const router = new Router({ routes })
 
 router.beforeEach((to, from, next) => {
-  // const publicPages = ['/login']
-  // const authRequired = !publicPages.includes(to.path)
-  // const loggedIn = localStorage.getItem('cre-user')
+  // TODO deal with other public pages here
+  const publicPages = ['/login']
+  const authRequired = !publicPages.includes(to.path)
+  const loggedIn = localStorage.creAuthToken
 
-  // if (authRequired && !loggedIn) {
-  //   return next('/login')
-  // }
+  if (authRequired && !loggedIn) {
+    return next('/login')
+  } else if (loggedIn && !authRequired) {
+    return next('/')
+  }
+
+  store.dispatch('user/init')
 
   next()
 })

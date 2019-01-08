@@ -16,27 +16,22 @@
   </nav>
 </template>
 <script>
-// import firebase from 'firebase/app'
-// import 'firebase/auth'
 import { mapState } from 'vuex'
 
 export default {
   computed: {
     ...mapState({
-      currentId: state => state.user.currentId
+      currentUser: state => state.user.authUser
     }),
+
     isAuthenticated () {
-      // return this.currentId && this.currentId.length !== 0
-      return true
+      return this.authUser !== {}
     }
   },
   methods: {
-    // ...mapActions('users', ['clear']),
     logOut () {
-    //   firebase.auth().signOut().then(() => {
-    //     this.clear()
+      this.$store.dispatch('user/logout')
       this.$router.replace('login')
-    //   })
     }
   }
 }

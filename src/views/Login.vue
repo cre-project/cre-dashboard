@@ -44,12 +44,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-// import Card from '@/components/Card.vue'
 import { router } from './../router'
-import { mapActions } from 'vuex'
-// import firebase from 'firebase/app'
-// import 'firebase/auth'
 
 export default {
   data () {
@@ -58,16 +53,12 @@ export default {
       password: ''
     }
   },
-  computed: {
-  },
   methods: {
-    ...mapActions('user', ['login']),
     async onLogin () {
       try {
         let valid = await this.$validator.validateAll()
         if (valid) {
-          // let user = await firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-          // this.login(user)
+          await this.$store.dispatch('user/login', { email: this.email, password: this.password })
           router.push('/')
         }
       } catch (e) {

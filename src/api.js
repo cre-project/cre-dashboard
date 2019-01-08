@@ -1,8 +1,14 @@
 import axios from 'axios'
 
-const instance = axios.create({
+let config = {
   baseURL: 'https://cre-backend-testing.herokuapp.com/api',
-  timeout: 1000
-})
+  timeout: 2500
+}
+const savedToken = window.localStorage.getItem('creAuthToken')
+if (savedToken) {
+  config.headers = { 'Authorization': `bearer ${savedToken}` }
+}
+
+const instance = axios.create(config)
 
 export default instance

@@ -23,10 +23,14 @@ const mutations = {
   },
 
   loginSuccessful (state, data) {
-    state.authUser = data
-    state.isUpdating = false
-    state.updateSuccess = true
-    state.updateError = null
+    state.authUser = data.user
+
+    window.localStorage.setItem('creAuthToken', data.auth_token)
+    window.localStorage.setItem('creUser', JSON.stringify(data.user))
+
+    state.isLoggingIn = false
+    state.loginSuccess = true
+    state.loginError = null
   },
 
   loginFailed (state, err) {
@@ -34,6 +38,11 @@ const mutations = {
     state.isUpdating = false
     state.updateSuccess = false
     state.updateError = err
+  },
+
+  logout (state) {
+    state.authUser = {}
+    window.localStorage.clear()
   },
 
   activateStart (state) {
@@ -57,7 +66,9 @@ const mutations = {
   },
 
   updateSuccessful (state, data) {
-    state.authUser = data
+    state.authUser = data.user
+    window.localStorage.setItem('creUser', JSON.stringify(data.user))
+
     state.isUpdating = false
     state.updateSuccess = true
     state.updateError = null
@@ -67,11 +78,23 @@ const mutations = {
     state.isUpdating = false
     state.updateSuccess = false
     state.updateError = err
+  },
+
+  init (state) {
+    const localUser = window.localStorage.getItem('creUser')
+
+    if (!state.authUser.id && localUser) {
+      state.authUser = JSON.parse(localUser)
+    }
   }
 
 }
 
 const actions = {
+  init ({ commit }) {
+    commit('init')
+  },
+
   async activate ({ commit }, data) {
     try {
       commit('activateStart')
@@ -87,13 +110,17 @@ const actions = {
   async login ({ commit }, data) {
     try {
       commit('loginStart')
-      let res = await api.post('/auth', data)
+      let res = await api.post('/authenticate', data)
       commit('loginSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
       commit('loginFailed', err.message || err)
       return Promise.reject(err.message || err)
     }
+  },
+
+  logout ({ commit }) {
+    commit('logout')
   },
 
   async update ({ commit }, data) {
