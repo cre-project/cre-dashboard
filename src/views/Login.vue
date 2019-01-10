@@ -1,7 +1,9 @@
 <template>
   <div class="home">
     <div class="box">
-      <h1 class="title is-3">Offering CRE</h1>
+      <header class="m-b-2">
+        <h1 class="title is-3">Offering CRE</h1>
+      </header>
       <h1 class="subtitle">Dashboard Login</h1>
       <form @submit.prevent="onLogin">
         <b-field
@@ -62,6 +64,7 @@ export default {
           router.push('/')
         }
       } catch (e) {
+        console.log(e)
         this.$toast.open({
           duration: 3500,
           message: 'Login failed. Please check your email and password.',

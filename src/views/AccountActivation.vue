@@ -60,7 +60,8 @@ export default {
   data () {
     return {
       password: '',
-      confirm: ''
+      confirm: '',
+      isRequestingReset: this.$route.params.token
     }
   },
   methods: {

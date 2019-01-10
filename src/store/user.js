@@ -7,13 +7,22 @@ const state = {
   loginSuccess: false,
   loginError: null,
 
-  isUpdating: false,
-  updateSuccess: false,
-  updateError: null,
+  isRequestingReset: false,
+  requestResetSuccess: false,
+  requestResetError: null,
+
+  isResettingPassword: false,
+  resetPasswordSuccess: false,
+  resetPasswordError: null,
 
   isActivating: false,
   activateSuccess: false,
-  activateError: null
+  activateError: null,
+
+  isUpdating: false,
+  updateSuccess: false,
+  updateError: null
+
 }
 
 const mutations = {
@@ -43,6 +52,38 @@ const mutations = {
   logout (state) {
     state.authUser = {}
     window.localStorage.clear()
+  },
+
+  requestResetStart (state) {
+    state.isRequestingReset = true
+  },
+
+  requestResetSuccessful (state) {
+    state.isRequestingReset = false
+    state.requestResetSuccess = true
+    state.requestResetError = false
+  },
+
+  requestResetFailed (state, err) {
+    state.isRequestingReset = false
+    state.requestResetSuccess = false
+    state.requestResetError = err
+  },
+
+  resetPasswordStart (state) {
+    state.isResettingPassword = true
+  },
+
+  resetPasswordSuccessful (state) {
+    state.isResettingPassword = false
+    state.resetPasswordSuccess = true
+    state.resetPasswordError = false
+  },
+
+  resetPasswordFailed (state, err) {
+    state.isResettingPassword = false
+    state.resetPasswordSuccess = false
+    state.resetPasswordError = err
   },
 
   activateStart (state) {
@@ -103,6 +144,30 @@ const actions = {
       return Promise.resolve(data)
     } catch (err) {
       commit('activateFailed', err.message || err)
+      return Promise.reject(err.message || err)
+    }
+  },
+
+  async requestPasswordReset ({ commit }, data) {
+    try {
+      commit('requestResetStart')
+      let res = await api.post('/passwords/request_reset', data)
+      commit('requestResetSuccessful')
+      return Promise.resolve(res)
+    } catch (err) {
+      commit('requestResetFailed', err.message || err)
+      return Promise.reject(err.message || err)
+    }
+  },
+
+  async resetPassword ({ commit }, data) {
+    try {
+      commit('resetPasswordStart')
+      let res = await api.post('/passwords/reset', data)
+      commit('resetPasswordSuccessful')
+      return Promise.resolve(res)
+    } catch (err) {
+      commit('resetPasswordFailed', err.message || err)
       return Promise.reject(err.message || err)
     }
   },

@@ -14,6 +14,18 @@ export const routes = [
     component: () => import('@/views/Login')
   },
   {
+    path: '/password-reset/:token',
+    name: 'Password Reset',
+    meta: { layout: 'full-page' },
+    component: () => import('@/views/PasswordReset')
+  },
+  {
+    path: '/password-reset',
+    name: 'Request Password Reset',
+    meta: { layout: 'full-page' },
+    component: () => import('@/views/PasswordReset')
+  },
+  {
     path: '/activate/:customer_id',
     name: 'Account Setup',
     meta: { layout: 'full-page' },
@@ -90,21 +102,33 @@ export const routes = [
   // component: () => import(/* webpackChunkName: "about" */ './views/Dashboard.vue')
 ]
 
+const publicPages = routes.filter(route => !route.meta || !route.meta.requiresAuth).map(r => r.path)
+
+function authRequired (path) {
+  let res = true
+  publicPages.forEach(p => {
+    if (path.startsWith(p)) {
+      res = false
+    }
+  })
+  return res
+}
+
 export const router = new Router({ routes })
 
 router.beforeEach((to, from, next) => {
-  // TODO deal with other public pages here
-  const publicPages = ['/login']
-  const authRequired = !publicPages.includes(to.path)
+  const isPublicPage = publicPages.includes(to.path) || !authRequired(to.path)
   const loggedIn = localStorage.creAuthToken
 
-  if (authRequired && !loggedIn) {
-    return next('/login')
-  } else if (loggedIn && !authRequired) {
-    return next('/')
+  if (loggedIn) {
+    store.dispatch('user/init')
   }
 
-  store.dispatch('user/init')
+  if (!isPublicPage && !loggedIn) {
+    return next('/login')
+  } else if (loggedIn && to.path === '/login') {
+    return next('/')
+  }
 
   next()
 })
