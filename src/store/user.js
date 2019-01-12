@@ -21,8 +21,11 @@ const state = {
 
   isUpdating: false,
   updateSuccess: false,
-  updateError: null
+  updateError: null,
 
+  isGettingPabblyUrl: false,
+  getPabblyUrlSuccess: false,
+  getPabblyUrlError: null
 }
 
 const mutations = {
@@ -121,6 +124,22 @@ const mutations = {
     state.updateError = err
   },
 
+  getPabblyUrlStart (state) {
+    state.isGettingPabblyUrl = true
+  },
+
+  getPabblyUrlSuccessful (state) {
+    state.isGettingPabblyUrl = false
+    state.getPabblyUrlSuccess = true
+    state.getPabblyUrlError = null
+  },
+
+  getPabblyUrlFailed (state, err) {
+    state.isGettingPabblyUrl = false
+    state.getPabblyUrlSuccess = false
+    state.getPabblyUrlError = err
+  },
+
   init (state) {
     const localUser = window.localStorage.getItem('creUser')
 
@@ -196,6 +215,18 @@ const actions = {
       return Promise.resolve(res.data)
     } catch (err) {
       commit('updateFailed', err.message || err)
+      return Promise.reject(err.message || err)
+    }
+  },
+
+  async getPabblyUrl ({ commit, state }) {
+    try {
+      commit('getPabblyUrlStart')
+      let res = await api.post('/user/customer_portal_url', { 'customer_id': state.authUser.pabbly_customer_id })
+      commit('getPabblyUrlSuccessful', res.data)
+      return Promise.resolve(res.data.customer_portal_url)
+    } catch (err) {
+      commit('getPabblyUrlFailed', err.message || err)
       return Promise.reject(err.message || err)
     }
   }
