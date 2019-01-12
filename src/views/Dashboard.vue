@@ -23,25 +23,26 @@ export default {
   computed: {
     ...mapGetters({ packages: 'packages/list' })
   },
-  created () {
-    this.$store.dispatch('packages/fetchList')
-      .catch((err) => {
-        if (err.response) {
-          // non-200 server response
-          console.log(err.response)
-          console.log(JSON.stringify(err))
-        } else if (err.request) {
-          // no response came from the server
-          console.log('request:', err.request)
-          console.log(err.message)
-        }
-        this.$toast.open({
-          duration: 3500,
-          message: `Couldn't load packages: ${err.message}`,
-          position: 'is-bottom',
-          type: 'is-danger'
-        })
+  async created () {
+    try {
+      await this.$store.dispatch('packages/fetchList')
+    } catch (err) {
+      if (err.response) {
+        // non-200 server response
+        console.log(err.response)
+        console.log(JSON.stringify(err))
+      } else if (err.request) {
+        // no response came from the server
+        console.log('request:', err.request)
+        console.log(err.message)
+      }
+      this.$toast.open({
+        duration: 3500,
+        message: `Couldn't load packages: ${err.message}`,
+        position: 'is-bottom',
+        type: 'is-danger'
       })
+    }
   }
 }
 </script>
