@@ -642,6 +642,9 @@ margin-right: 2em;
 .clickable {
 cursor: pointer !important;
 }
+.m-t-1 {
+margin-top: 1em;
+}
 .m-t-2 {
 margin-top: 2em;
 }
