@@ -9,8 +9,14 @@
         <b-field
           class="half-size"
           label="Total SqFt"
+          :type="errors.has('totalSqFt') ? 'is-danger' : ''"
+          :message="errors.has('totalSqFt') ? errors.first('totalSqFt') : ''"
         >
-          <b-input v-model.number="totalSqFt"></b-input>
+          <b-input
+            input v-validate="'required|decimal:3'"
+            v-model.number="totalSqFt"
+            name="totalSqFt"
+          />
         </b-field>
       </div>
 

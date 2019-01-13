@@ -5,12 +5,28 @@
       <div class="columns">
         <div class="column">
           <form>
-            <b-field expanded label="Company Name">
-                <b-input v-model="company.name"></b-input>
+            <b-field
+              :type="errors.has('company name') ? 'is-danger' : ''"
+              :message="errors.has('company name') ? errors.first('company name') : ''"
+              expanded label="Company Name"
+            >
+              <b-input
+                v-model="company.name"
+                v-validate="'required'"
+                name="company name"
+              ></b-input>
             </b-field>
 
-            <b-field expanded label="Website URL">
-              <b-input v-model="company.website_url"></b-input>
+            <b-field
+              :type="errors.has('website URL') ? 'is-danger' : ''"
+              :message="errors.has('website URL') ? errors.first('website URL') : ''"
+              expanded label="Website URL"
+            >
+              <b-input
+                v-validate="'url:require_protocol'"
+                v-model="company.website_url"
+                name="website URL"
+              />
             </b-field>
           </form>
         </div>

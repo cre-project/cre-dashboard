@@ -7,21 +7,53 @@
           <div class="column is-two-fifths">
             <h2 class="subtitle is-size-5 has-text-weight-bold">Property Address</h2>
             <form>
-              <b-field label="Street">
-                  <b-input v-model="property.address.street"></b-input>
+              <b-field
+                  :type="errors.has('street') ? 'is-danger' : ''"
+                  :message="errors.has('street') ? errors.first('street') : ''"
+                  label="Street"
+                >
+                    <b-input
+                      v-validate="'required'"
+                      v-model="property.address.street"
+                      name="street"
+                    />
               </b-field>
 
-              <b-field label="State">
-                  <b-input v-model="property.address.state"></b-input>
+                <b-field
+                  :type="errors.has('state') ? 'is-danger' : ''"
+                  :message="errors.has('state') ? errors.first('state') : ''"
+                  label="State"
+                >
+                    <b-input
+                      v-validate="'required|alpha_spaces'"
+                      v-model="property.address.state"
+                      name="state"
+                    />
               </b-field>
 
               <b-field grouped>
-                <b-field expanded label="City">
-                    <b-input v-model="property.address.city"></b-input>
+                <b-field
+                  :type="errors.has('city') ? 'is-danger' : ''"
+                  :message="errors.has('city') ? errors.first('city') : ''"
+                  label="City"
+                >
+                    <b-input
+                      v-validate="'required|alpha_spaces'"
+                      v-model="property.address.city"
+                      name="city"
+                    />
                 </b-field>
 
-                <b-field expanded label="ZIP">
-                  <b-input v-model="property.address.zip"></b-input>
+                <b-field
+                  :type="errors.has('ZIP') ? 'is-danger' : ''"
+                  :message="errors.has('ZIP') ? errors.first('ZIP') : ''"
+                  expanded label="ZIP"
+                >
+                  <b-input
+                    v-validate="'required|numeric'"
+                    v-model="property.zip"
+                    name="ZIP"
+                  />
                 </b-field>
               </b-field>
             </form>
@@ -32,16 +64,40 @@
             <form>
               <div class="columns">
                 <div class="column">
-                  <b-field label="Number of Stories">
-                      <b-input v-model="property.number_of_stories"></b-input>
+                  <b-field
+                    :type="errors.has('number of stories') ? 'is-danger' : ''"
+                    :message="errors.has('number of stories') ? errors.first('number of stories') : ''"
+                    label="Number of Stories"
+                  >
+                    <b-input
+                      v-validate="'between:0,100'"
+                      v-model="property.numberOfStories"
+                      name="number of stories"
+                    />
                   </b-field>
 
-                  <b-field label="Year built">
-                      <b-input v-model="property.year_built"></b-input>
+                  <b-field
+                    :type="errors.has('year built') ? 'is-danger' : ''"
+                    :message="errors.has('year built') ? errors.first('year built') : ''"
+                    label="Year built"
+                  >
+                    <b-input
+                      input v-validate="'date_format:YYYY'"
+                      v-model="property.year_built"
+                      name="year built"
+                    />
                   </b-field>
 
-                  <b-field expanded label="Lot Size Acres">
-                    <b-input v-model="property.lot_size"></b-input>
+                  <b-field
+                    :type="errors.has('lot size') ? 'is-danger' : ''"
+                    :message="errors.has('lot size') ? errors.first('lot size') : ''"
+                    label="Lot Size Acres"
+                  >
+                    <b-input
+                      input v-validate="'decimal:3'"
+                      v-model="property.lot_size"
+                      name="lot size"
+                    />
                   </b-field>
                 </div>
 
@@ -55,8 +111,16 @@
                     ></vue-numeric>
                   </b-field>
 
-                  <b-field expanded label="APN">
-                    <b-input v-model="property.apn"></b-input>
+                  <b-field
+                    :type="errors.has('APN') ? 'is-danger' : ''"
+                    :message="errors.has('APN') ? errors.first('APN') : ''"
+                    expanded label="APN"
+                  >
+                    <b-input
+                      v-validate="'numeric'"
+                      v-model="property.apn"
+                      name="APN"
+                    />
                   </b-field>
                 </div>
               </div>

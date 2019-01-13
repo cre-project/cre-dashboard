@@ -6,20 +6,53 @@
         <div class="columns">
           <div class="column">
             <form>
-              <b-field expanded label="First Name">
-                  <b-input v-model="user.first_name"></b-input>
+              <b-field
+                  :type="errors.has('firstName') ? 'is-danger' : ''"
+                  :message="errors.has('firstName') ? errors.first('firstName') : ''"
+                  expanded label="First Name"
+                >
+                    <b-input
+                      v-validate="'alpha_spaces'"
+                      v-model="user.first_name"
+                      name="firstName"
+                    />
               </b-field>
 
-              <b-field expanded label="Last Name">
-                <b-input v-model="user.last_name"></b-input>
+              <b-field
+                  :type="errors.has('lastName') ? 'is-danger' : ''"
+                  :message="errors.has('lastName') ? errors.first('lastName') : ''"
+                  expanded label="Last Name"
+                >
+                    <b-input
+                      v-validate="'alpha_spaces'"
+                      v-model="user.last_name"
+                      name="lastName"
+                    />
               </b-field>
 
-              <b-field label="Email">
-                  <b-input type="email" v-model="user.email"></b-input>
+              <b-field
+                  :type="errors.has('email') ? 'is-danger' : ''"
+                  :message="errors.has('email') ? errors.first('email') : ''"
+                  label="Email"
+                >
+                  <b-input
+                    v-validate="'email'"
+                    name="email"
+                    type="email"
+                    v-model="user.email"
+                  />
               </b-field>
 
-              <b-field expanded label="Phone Number">
-                <b-input v-model="user.phone"></b-input>
+              <b-field
+                  :type="errors.has('phone') ? 'is-danger' : ''"
+                  :message="errors.has('phone') ? errors.first('phone') : ''"
+                  label="Phone Number"
+                >
+                  <b-input
+                    v-validate="'alpha_dash|max:12'"
+                    name="phone"
+                    v-model="user.phone"
+                  />
               </b-field>
             </form>
           </div>
