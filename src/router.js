@@ -103,6 +103,7 @@ export const routes = [
 ]
 
 const publicPages = routes.filter(route => !route.meta || !route.meta.requiresAuth).map(r => r.path)
+publicPages.push('/activate')
 
 function authRequired (path) {
   let res = true
