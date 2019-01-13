@@ -27,24 +27,7 @@
           <div class="column"></div>
 
           <div class="column">
-            <div class="cre-inner-content ">
-              <label style="height: 12em;">
-                <div class="m-b-1">Profile Picture</div>
-                <img
-                  class="hidden"
-                  id="profile-preview"
-                >
-                <input
-                  type="file"
-                  class="save hidden"
-                  @input="loadProfilePic"
-                >
-                <i
-                  class="large material-icons clickable"
-                  id="profile-icon"
-                >add_a_photo</i>
-              </label>
-            </div>
+            <image-upload label="Profile Picture" :url="user.picture_url"/>
           </div>
         </div>
 
@@ -61,13 +44,17 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-// import { upload, getUrl } from '../store/tools/images'
+import ImageUpload from '@/components/ImageUpload'
 
 export default {
   data () {
     return {
       user: {}
     }
+  },
+
+  components: {
+    ImageUpload
   },
 
   computed: {
@@ -83,7 +70,7 @@ export default {
         }
         this.$toast.open({
           duration: 3500,
-          message: 'Changes were saved.',
+          message: 'Your changes have been saved.',
           position: 'is-bottom',
           type: 'is-success'
         })
@@ -105,34 +92,6 @@ export default {
         }
       }
       return false
-    },
-    //     loadNewImage (previewEl, button, imgName, evt) {
-    //       let file = evt.target.files[0]
-    //       let reader = new FileReader()
-    //       let fileName = `images/${imgName}`
-
-    //       reader.addEventListener('load', function (evt) {
-    //         previewEl.src = evt.target.result
-    //         previewEl.classList.remove('hidden')
-    //         previewEl.classList.add('clickable')
-    //         button.classList.remove('clickable')
-    //         button.classList.add('hidden')
-    //         upload(fileName, evt.target.result)
-    //       })
-    //       reader.readAsDataURL(file)
-    //     },
-    //     loadExistingImage (previewEl, button, url) {
-    //       previewEl.src = url
-    //       previewEl.classList.remove('hidden')
-    //       previewEl.classList.add('clickable')
-    //       button.classList.remove('clickable')
-    //       button.classList.add('hidden')
-    //     },
-    loadProfilePic (evt) {
-    //       const profilePreview = document.querySelector('#profile-preview')
-    //       const profileIcon = document.querySelector('#profile-icon')
-    //       let fileName = `${this.userId}/profile.png`
-    //       this.loadNewImage(profilePreview, profileIcon, fileName, evt)
     }
   },
 

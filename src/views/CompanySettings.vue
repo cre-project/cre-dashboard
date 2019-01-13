@@ -6,11 +6,11 @@
         <div class="column">
           <form>
             <b-field expanded label="Company Name">
-                <b-input v-model="company.companyName"></b-input>
+                <b-input v-model="company.name"></b-input>
             </b-field>
 
             <b-field expanded label="Website URL">
-              <b-input v-model="company.websiteURL"></b-input>
+              <b-input v-model="company.website_url"></b-input>
             </b-field>
           </form>
         </div>
@@ -18,24 +18,7 @@
         <div class="column"/>
 
         <div class="column">
-          <div class="cre-inner-content ">
-            <label style="height: 12em;">
-              <h2 class="has-text-weight-semibold m-b-1">Company Logo</h2>
-              <img
-                class="hidden"
-                id="logo-preview"
-              >
-              <input
-                type="file"
-                class="save hidden"
-                @input="loadLogo"
-              >
-              <i
-                class="large material-icons clickable"
-                id="logo-icon"
-              >add_a_photo</i>
-            </label>
-          </div>
+          <image-upload label="Company Logo" :url="company.logo_url"/>
         </div>
       </div>
 
@@ -51,69 +34,61 @@
 </template>
 
 <script>
-// import { mapActions, mapState } from 'vuex'
-// import { upload, getUrl } from '../store/tools/images'
-// import UserNav from '@/components/UserNav'
+import { mapState } from 'vuex'
+import ImageUpload from '@/components/ImageUpload'
 
 export default {
   data () {
     return {
       company: {}
     }
-  }
-  // methods: {
-  //   ...mapActions('users', ['set']),
-  //   save () {
-  //     this.set(this.user)
-  //     this.$toast.open({
-  //       message: 'Your changes were saved.',
-  //       type: 'is-success',
-  //       position: 'is-bottom'
-  //     })
-  //   },
-  //   loadNewImage (previewEl, button, imgName, evt) {
-  //     let file = evt.target.files[0]
-  //     let reader = new FileReader()
-  //     // let fileName = `images/${imgName}`
+  },
 
-  //     reader.addEventListener('load', function (evt) {
-  //       previewEl.src = evt.target.result
-  //       previewEl.classList.remove('hidden')
-  //       previewEl.classList.add('clickable')
-  //       button.classList.remove('clickable')
-  //       button.classList.add('hidden')
-  //       // upload(fileName, evt.target.result)
-  //     })
-  //     reader.readAsDataURL(file)
-  //   },
-  //   loadExistingImage (previewEl, button, url) {
-  //     previewEl.src = url
-  //     previewEl.classList.remove('hidden')
-  //     previewEl.classList.add('clickable')
-  //     button.classList.remove('clickable')
-  //     button.classList.add('hidden')
-  //   },
-  //   loadLogo (evt) {
-  //     const logoPreview = document.querySelector('#logo-preview')
-  //     const logoIcon = document.querySelector('#logo-icon')
-  //     let fileName = `${this.userId}/logo.png`
-  //     this.loadNewImage(logoPreview, logoIcon, fileName, evt)
-  //   }
-  // },
-  // computed: {
-  //   ...mapState({
-  //     userId: state => state.users.currentId
-  //   })
-  // },
-  // created () {
-  //   // fill up the local user object
-  //   this.user = this.$store.state.users.currentUser
-  //   // load and preview if it exists
-  //   // getUrl(`images/${this.$store.state.users.currentId}/logo.png`).then(downloadUrl => {
-  //   //   if (downloadUrl) {
-  //   //     vm.loadExistingImage(document.querySelector('#logo-preview'), document.querySelector('#logo-icon'), downloadUrl)
-  //   //   }
-  //   // })
-  // }
+  components: {
+    ImageUpload
+  },
+
+  computed: {
+    ...mapState({ userCompany: state => state.user.company })
+
+  },
+
+  methods: {
+    async save () {
+      try {
+        if (this.hasUpdated) {
+          await this.$store.dispatch('user/updateCompany', this.company)
+        }
+        this.$toast.open({
+          duration: 3500,
+          message: 'Your changes have been saved.',
+          position: 'is-bottom',
+          type: 'is-success'
+        })
+      } catch (err) {
+        console.log(err)
+        this.$toast.open({
+          duration: 3500,
+          message: 'Could not save user settings',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
+    },
+    hasUpdated () {
+      for (let k in Object.keys(this.company)) {
+        if (this.userCompany[k] && this.userCompany[k] !== this.company[k]) {
+          return true
+        }
+      }
+      return false
+    }
+  },
+
+  async created () {
+    // fill up the local user object
+    await this.$store.dispatch('user/getCompany')
+    this.company = this.$store.state.user.company
+  }
 }
 </script>

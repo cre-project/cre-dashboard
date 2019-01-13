@@ -2,6 +2,7 @@ import api from './../api'
 
 const state = {
   authUser: {},
+  company: {},
 
   isLoggingIn: false,
   loginSuccess: false,
@@ -25,7 +26,15 @@ const state = {
 
   isGettingPabblyUrl: false,
   getPabblyUrlSuccess: false,
-  getPabblyUrlError: null
+  getPabblyUrlError: null,
+
+  isGettingCompany: false,
+  getCompanySuccess: false,
+  getCompanyError: null,
+
+  isUpdatingCompany: false,
+  updateCompanySuccess: false,
+  updateCompanyError: null
 }
 
 const mutations = {
@@ -140,6 +149,41 @@ const mutations = {
     state.getPabblyUrlError = err
   },
 
+  getCompanyStart (state) {
+    state.isGettingCompany = true
+  },
+
+  getCompanySuccessful (state, data) {
+    state.company = data
+    state.isGettingCompany = false
+    state.getCompanySuccess = true
+    state.getCompanyError = null
+  },
+
+  getCompanyFailed (state, err) {
+    state.company = {}
+    state.isGettingCompany = false
+    state.getCompanySuccess = false
+    state.getCompanyError = err
+  },
+
+  updateCompanyStart (state) {
+    state.isUpdatingCompany = true
+  },
+
+  updateCompanySuccessful (state, data) {
+    state.company = data
+    state.isUpdatingCompany = false
+    state.updateCompanySuccess = true
+    state.updateCompanyError = null
+  },
+
+  updateCompanyFailed (state, err) {
+    state.isUpdatingCompany = false
+    state.updateCompanySuccess = false
+    state.updateCompanyError = err
+  },
+
   init (state) {
     const localUser = window.localStorage.getItem('creUser')
 
@@ -227,6 +271,30 @@ const actions = {
       return Promise.resolve(res.data.customer_portal_url)
     } catch (err) {
       commit('getPabblyUrlFailed', err.message || err)
+      return Promise.reject(err.message || err)
+    }
+  },
+
+  async getCompany ({ commit, state }) {
+    try {
+      commit('getCompanyStart')
+      let res = await api.get(`/users/${state.authUser.id}/companies/${state.authUser.company_id}`)
+      commit('getCompanySuccessful', res.data)
+      return Promise.resolve(res.data)
+    } catch (err) {
+      commit('getCompanyFailed', err.message || err)
+      return Promise.reject(err.message || err)
+    }
+  },
+
+  async updateCompany ({ commit, state }, data) {
+    try {
+      commit('updateCompanyStart')
+      let res = await api.post(`/users/${state.authUser.id}/companies/${state.authUser.company_id}`, data)
+      commit('updateCompanySuccessful', res.data)
+      return Promise.resolve(res.data)
+    } catch (err) {
+      commit('updateCompanyFailed', err.message || err)
       return Promise.reject(err.message || err)
     }
   }
