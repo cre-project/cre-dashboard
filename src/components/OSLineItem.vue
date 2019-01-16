@@ -19,6 +19,7 @@
           currency="%"
           currency-symbol-position="suffix"
           v-model.number="item.percent"
+          :minus="false"
         />
 
         <div v-if="item.percentWithButton" class="setting">
@@ -41,7 +42,10 @@
         v-if="!item.percent"
         input
         class="inline-edit"
+        currency="$"
         separator=","
+        :precision="2"
+        :minus="false"
         v-model.number="item.current"
       />
       <p v-else>{{ item.current | money }}</p>
@@ -52,7 +56,10 @@
         v-if="!item.percent"
         input
         class="inline-edit"
+        currency="$"
         separator=","
+        :precision="2"
+        :minus="false"
         v-model.number="item.potential"/>
       <p v-else>{{ item.potential | money }}</p>
     </td>

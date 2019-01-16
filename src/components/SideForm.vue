@@ -8,6 +8,7 @@
         currency="$"
         separator=","
         :value="price"
+        :minus="false"
         @change.native="setPrice($event.target.value)"
       ></vue-numeric>
       <!-- price per unit/ sf - units & sf from unit mix -->

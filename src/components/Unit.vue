@@ -28,22 +28,26 @@
       </select>
     </td>
     <td>
-      $ <vue-numeric
+      <vue-numeric
+        currency="$"
+        separator=","
+        v-bind:minus="false"
         input
         class="inline-edit"
-        separator=","
         :value="current_rent"
         @input="$emit('update:current_rent', $event)"
-        />
+        ></vue-numeric>
     </td>
     <td>
-      $ <vue-numeric
+      <vue-numeric
+        currency="$"
+        separator=","
+        v-bind:minus="false"
         input
         class="inline-edit"
-        separator=","
         :value="potential_rent"
         @input="$emit('update:potential_rent', $event)"
-        />
+        ></vue-numeric>
     </td>
   </tr>
 </template>
