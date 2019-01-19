@@ -278,7 +278,7 @@ const actions = {
   async getPabblyUrl ({ commit, state }) {
     try {
       commit('getPabblyUrlStart')
-      let res = await api.post('/user/customer_portal_url', { 'customer_id': state.authUser.pabbly_customer_id })
+      let res = await api.get(`/user/customer_portal_url?customer_id=${state.authUser.pabbly_customer_id}`)
       commit('getPabblyUrlSuccessful', res.data)
       return Promise.resolve(res.data.customer_portal_url)
     } catch (err) {
