@@ -263,6 +263,18 @@ const actions = {
     }
   },
 
+  async updateImage ({ commit, state }, url) {
+    try {
+      commit('updateStart')
+      let res = await api.put(`/users/${state.authUser.id}`, { picture_url: url })
+      commit('updateSuccessful', res.data)
+      return Promise.resolve(res.data)
+    } catch (err) {
+      commit('updateFailed', err.message || err)
+      return Promise.reject(err.message || err)
+    }
+  },
+
   async getPabblyUrl ({ commit, state }) {
     try {
       commit('getPabblyUrlStart')

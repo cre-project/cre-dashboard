@@ -27,7 +27,7 @@
           <div class="column"></div>
 
           <div class="column">
-            <image-upload label="Profile Picture" :url="user.picture_url"/>
+            <image-upload label="Profile Picture" :url="user.picture_url" handler="user/updateImage"/>
           </div>
         </div>
 
