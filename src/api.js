@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'https://cre-backend-testing.herokuapp.com/api',
+  baseURL: process.env.VUE_APP_BASE_API_URL,
   timeout: 5000
 })
 

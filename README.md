@@ -12,6 +12,26 @@ Requirements:
 npm install
 ```
 
+## Environment variables
+List of required environment variables:
+```
+VUE_APP_PDF_APP_URL   -> URL for embedding the PDF preview
+VUE_APP_BASE_API_URL  -> backend URL 
+```
+
+Environment variables are set in `.env` files. Only environment variables that are not sensitive, eg. URLs are committed into repository.
+```
+.env              -> basic config for local development
+.env.test         -> config for testing environment
+.env.production   -> config for production
+```
+
+Sensitive env variables are stored in corresponding `.env.local` files and are not tracked by git:
+```
+.env.production.local
+.env.local
+```
+
 ### Compiles and hot-reloads for development
 ```
 npm run dev
