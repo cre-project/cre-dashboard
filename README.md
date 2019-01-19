@@ -15,8 +15,10 @@ npm install
 ## Environment variables
 List of required environment variables:
 ```
-VUE_APP_PDF_APP_URL   -> URL for embedding the PDF preview
-VUE_APP_BASE_API_URL  -> backend URL 
+VUE_APP_PDF_APP_URL           -> URL for embedding the PDF preview
+VUE_APP_BASE_API_URL          -> backend URL 
+VUE_APP_CLOUDINARY_UPLOAD_URL -> Cloudinary URL for image upload
+VUE_APP_CLOUDINARY_PRESET     -> Cloudinary preset required for image upload
 ```
 
 Environment variables are set in `.env` files. Only environment variables that are not sensitive, eg. URLs are committed into repository.
