@@ -1,6 +1,5 @@
 <template>
   <div>
-    <navigation-header selected="rent-comparables"></navigation-header>
     <div class="cre-content">
       <h1 class="subtitle is-size-4 has-text-weight-semibold m-l-0">{{ compType === 'sale' ? 'Sales' : 'Rent' }} Comparables</h1>
 
@@ -21,7 +20,7 @@
             sortable
             centered
           >
-            {{ props.row.address }}
+            {{ props.row.address.street || '' }}
           </b-table-column>
 
           <b-table-column
@@ -33,7 +32,7 @@
             centered
             numeric
           >
-            {{ props.row.yearBuilt }}
+            {{ props.row.year_built }}
           </b-table-column>
 
           <b-table-column
@@ -80,7 +79,7 @@
             centered
             numeric
           >
-            {{ props.row.salesPrice | money }}
+            {{ props.row.sales_price | money }}
           </b-table-column>
 
           <b-table-column
@@ -91,7 +90,7 @@
             centered
             numeric
           >
-            {{ props.row.capRate }}
+            {{ props.row.cap_rate }}
           </b-table-column>
 
           <b-table-column
@@ -113,7 +112,7 @@
             <!-- <i class="material-icons">edit</i> -->
             <i
               class="material-icons"
-              @click="deleteComparable({compId: props.row.id, compType: compType})"
+              @click="delete(props.row.id)"
             >delete_forever</i>
           </b-table-column>
         </template>
@@ -133,45 +132,29 @@
               <form id="form-1">
                 <label>
                   <div>Property Address</div>
-                  <input v-model="props.row.address">
+                  <input v-model="props.row.address.street">
                 </label>
                 <label>
                   <div>City</div>
-                  <input v-model="props.row.city">
+                  <input v-model="props.row.address.city">
                 </label>
                 <div>
                   <label class="side-by-side">
                     <div>State</div>
                     <input
                       class="side-by-side"
-                      v-model="props.row.state"
+                      v-model="props.row.address.state"
                     >
                   </label>
                   <label class="side-by-side">
                     <div>ZIP</div>
                     <input
                       class="side-by-side"
-                      v-model="props.row.zip"
+                      v-model="props.row.address.zip"
                     >
                   </label>
                 </div>
-                <label class="m-t-10">
-                  <div>Property Picture</div>
-                  <img
-                    :src="props.row.imageUrl && props.row.imageUrl !== '' ? props.row.imageUrl : ''"
-                    :class="props.row.imageUrl && props.row.imageUrl !== '' ? 'clickable' : 'hidden'"
-                    :id="`preview-${props.row.id}`"
-                  >
-                  <input
-                    type="file"
-                    class="save hidden"
-                    @input="loadComparablePic($event, props.row.id)"
-                  >
-                  <i
-                    :class="props.row.imageUrl && props.row.imageUrl !== '' ? 'hidden' : 'large material-icons clickable'"
-                    :id="`icon-${props.row.id}`"
-                  >add_a_photo</i>
-                </label>
+                <image-upload label="Property Picture" :url="props.row.image_url" handler="xxx"/>
               </form>
               <!-- part 2 of the form -->
               <form id="form-2">
@@ -179,7 +162,7 @@
                   <div class="narrow">Year built</div>
                   <input
                     class="narrow"
-                    v-model="props.row.yearBuilt"
+                    v-model="props.row.year_built"
                   >
                 </label>
                 <label
@@ -191,7 +174,7 @@
                     input
                     class="narrow"
                     separator=","
-                    v-model="props.row.sf"
+                    v-model="props.row.square_feet"
                   ></vue-numeric>
                 </label>
                 <label
@@ -201,7 +184,7 @@
                   <div class="narrow">Total Number of Units</div>
                   <input
                     class="narrow"
-                    v-model="props.row.numUnits"
+                    v-model="props.row.num_units"
                   >
                 </label>
               </form>
@@ -272,21 +255,21 @@
                     class="narrow"
                     currency="$"
                     separator=","
-                    v-model="props.row.salesPrice"
+                    v-model="props.row.sales_price"
                   ></vue-numeric>
                 </label>
                 <label class="narrow">
                   <div class="narrow">Close of Escrow</div>
                   <input
                     class="narrow"
-                    v-model="props.row.closeOfEscrow"
+                    v-model="props.row.close_of_escrow"
                   >
                 </label>
                 <label class="narrow">
                   <div class="narrow">Cap Rate</div>
                   <input
                     class="narrow"
-                    v-model="props.row.capRate"
+                    v-model="props.row.cap_rate"
                   >
                 </label>
                 <label class="narrow">
@@ -352,111 +335,163 @@
           v-show="detailed.length === 0"
           class="save"
           type="submit"
-          @click="save"
+          @click="next"
         >Save & Next</button>
       </div>
     </div>
   </div>
 </template>
 <script>
-// import router from '../router/index'
-// import accounting from 'accounting'
-// import { mapState, mapActions } from 'vuex'
-// import { emptyComparable } from '../store/tools/templates'
-// import { uuidv4 } from '../utils'
-// import { upload } from '../store/tools/images'
+import { router } from './../router'
+import formatMoney from 'accounting-js/lib/formatMoney.js'
+import { mapGetters } from 'vuex'
+import ImageUpload from '@/components/ImageUpload'
+
+/** sales comp: */
+//  id
+//  year_built
+//  sales_price
+//  num_units
+//  cap_rate
+//  grm
+//  close_of_escrow
+//  image_url
+//  square_feet
+//  created_at
+//  updated_at
+//  user_id
+const emptyComparable = {
+  address: {},
+  year_built: null,
+  rent: 0,
+  bedrooms: '',
+  bathrooms: '',
+  sales_price: 0,
+  num_units: 0,
+  close_of_escrow: null,
+  cap_rate: null,
+  grm: null,
+  square_feet: 0,
+  image_url: ''
+}
 
 export default {
   props: {
     compType: {
       type: String
     },
-    comparables: {
-      type: Array
+    propertyId: {
+      type: String
     }
   },
+
+  components: {
+    ImageUpload
+  },
+
   data () {
     return {
       showButton: true,
       detailed: [],
-      wipComp: {}
+      wipComp: {},
+      comparables: []
+    }
+  },
+
+  computed: {
+    ...mapGetters({
+      soldProperties: 'soldProperties/listByPackageID'
+    }),
+
+    packageID () {
+      return this.$route.params.id
+    }
+
+  },
+
+  methods: {
+    next () {
+      let next = this.compType === 'sale' ? 'rent-comparables' : 'preview'
+      router.push(`/package/${this.$route.params.id}/${next}`)
+    },
+
+    add () {
+      this.wipComp = Object.assign({}, emptyComparable)
+      this.detailed = []
+    },
+
+    async delete (id) {
+      this.$dialog.confirm({
+        title: 'Deleting Comparable',
+        message: 'You can\'t undo this action. Are you sure you want to proceed?',
+        type: 'is-danger',
+        hasIcon: true,
+        confirmText: 'Delete',
+        onConfirm: async () => {
+          try {
+            // TODO so far only sales comps are supported
+            await this.$store.dispatch('soldProperties/delete', id)
+          } catch (err) {
+            this.$toast.open({
+              duration: 3500,
+              message: `Item could not be deleted: ${err.message}`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
+          }
+        }
+      })
+    },
+
+    toggle () {
+      this.showButton = !this.showButton
+    },
+
+    pricePerUnit (comp) {
+      let avg = (comp.sales_price || 0) / (comp.num_units || 1)
+      return avg.toFixed(2)
+    },
+
+    pricePerSf (comp) {
+      let avg = (comp.sales_price || 0) / (comp.square_feet || 1)
+      return avg.toFixed(2)
+    },
+
+    format (number) {
+      return formatMoney(number)
+    },
+
+    addRow () {
+      let c = Object.assign({}, emptyComparable)
+      c.id = 'new'
+      this.detailed = ['new']
+      this.wipComp = c
+      this.comparables.push(c)
+    },
+
+    setWip (row) {
+      this.detailed = [row.id]
+      this.wipComp = this.comparables.filter(c => c.id === row.id)[0]
+    }
+  },
+
+  async created () {
+    const packageID = this.$route.params.id
+    if (!packageID || packageID === ':id') {
+      router.push('/')
+    } else {
+      try {
+        // load data
+        await this.$store.dispatch('packages/fetchList').then(() => {
+          // TODO only supports sales comps now
+          this.comparables = this.soldProperties(this.packageID)
+        })
+      } catch (e) {
+        console.log(e)
+        router.push('/')
+      }
     }
   }
-  //   computed: {
-  //     ...mapState({
-  //       savedRentComparables: state => state.valuations.selectedValuation.rentComps,
-  //       savedSalesComparables: state => state.valuations.selectedValuation.salesComps,
-  //       userId: state => state.users.currentId
-  //     }),
-  //     comparables () {
-  //       return this.compType === 'rent' ? this.savedRentComparables : this.savedSalesComparables
-  //     }
-  //   },
-  //   methods: {
-  //     ...mapActions('valuations', ['persist', 'deleteComparable']),
-  //     save () {
-  //       this.persist()
-  //       let next = this.compType === 'sale' ? './rent-comparables' : './preview'
-  //       router.push(next)
-  //     },
-  //     add () {
-  //       this.persist()
-  //       this.wipComp = Object.assign({}, emptyComparable)
-  //       this.detailed = []
-  //     },
-  //     toggle () {
-  //       this.showButton = !this.showButton
-  //     },
-  //     pricePerUnit (comp) {
-  //       let avg = (comp.salesPrice || 0) / (comp.numUnits || 1)
-  //       return this.format(avg.toFixed(2))
-  //     },
-  //     pricePerSf (comp) {
-  //       let avg = (comp.salesPrice || 0) / (comp.sf || 1)
-  //       return this.format(avg.toFixed(2))
-  //     },
-  //     format (number) {
-  //       return accounting.formatMoney(number)
-  //     },
-  //     addRow () {
-  //       let c = Object.assign({}, emptyComparable)
-  //       let id = uuidv4()
-  //       this.detailed = [id]
-  //       c.id = id
-  //       c.pricePerUnit = this.pricePerUnit
-  //       c.pricePerSf = this.pricePerSf
-  //       this.wipComp = c
-  //       this.$store.dispatch('valuations/addComparable', {comparable: c, compType: this.compType})
-  //     },
-  //     loadNewImage (previewEl, button, imgName, evt) {
-  //       let vm = this
-  //       let file = evt.target.files[0]
-  //       let reader = new FileReader()
-  //       let fileName = `images/${imgName}`
-
-  //       reader.addEventListener('load', function (evt) {
-  //         previewEl.src = evt.target.result
-  //         previewEl.classList.remove('hidden')
-  //         previewEl.classList.add('clickable')
-  //         button.classList.remove('clickable')
-  //         button.classList.add('hidden')
-  //         upload(fileName, evt.target.result).then(url => {
-  //           vm.wipComp.imageUrl = url
-  //         })
-  //       })
-  //       reader.readAsDataURL(file)
-  //     },
-  //     loadComparablePic (evt, compId) {
-  //       const comparablePreview = document.querySelector(`#preview-${compId}`)
-  //       const comparableIcon = document.querySelector(`#icon-${compId}`)
-  //       let fileName = `${this.userId}/${compId}.png`
-  //       this.loadNewImage(comparablePreview, comparableIcon, fileName, evt)
-  //     },
-  //     setWip (row) {
-  //       this.detailed = [row.id]
-  //       this.wipComp = this.comparables.filter(c => c.id === row.id)[0]
-  //     }
-  //   }
 }
 </script>
 <style scoped>

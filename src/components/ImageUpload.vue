@@ -8,8 +8,8 @@
     >
     <input
       type="file"
-      class="save"
-      :class="imageShown ? 'hidden' : 'clickable'"
+      class="save hidden"
+      :class="imageShown ? '' : 'clickable'"
       @input="loadNewImage"
     >
     <i
