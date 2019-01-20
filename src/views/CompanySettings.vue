@@ -86,8 +86,6 @@ export default {
   },
 
   async created () {
-    // fill up the local user object
-    await this.$store.dispatch('user/getCompany')
     this.company = this.$store.state.user.company
   }
 }

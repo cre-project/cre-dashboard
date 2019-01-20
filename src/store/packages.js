@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import api from './../api'
 
-const initialState = { 'abc': { id: 'abc' } }
-
 const state = {
-  packages: Object.assign({}, initialState),
+  packages: {},
 
   isFetching: false,
   fetchSuccess: false,
@@ -35,7 +33,7 @@ const mutations = {
   },
 
   fetchFailed (state, err) {
-    state.packages = Object.assign({}, initialState)
+    state.packages = {}
 
     state.isFetching = false
     state.fetchSuccess = false
@@ -81,6 +79,7 @@ const mutations = {
 const actions = {
   async fetchList ({ commit }) {
     try {
+      commit('fetchStart')
       let res = await api.get('/packages')
       commit('fetchSuccessful', res.data)
       return Promise.resolve(res.data)
@@ -117,7 +116,7 @@ const actions = {
 
 const getters = {
   byID: state => id => {
-    return state.packages[id] || { taxes: {}, mgmtFee: {} }
+    return state.packages[id]
   },
 
   ids: state => {
