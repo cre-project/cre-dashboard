@@ -2,6 +2,7 @@ import Vue from 'vue'
 import api from './../api'
 
 const state = {
+  // properties stored per package ( { packageID: property } )
   properties: {},
 
   isFetching: false,
@@ -24,7 +25,7 @@ const mutations = {
 
   fetchSuccessful (state, data) {
     data.forEach(prop => {
-      Vue.set(state.properties, prop.id, prop)
+      Vue.set(state.properties, prop.package_id, prop)
     })
 
     state.isFetching = false
@@ -62,6 +63,7 @@ const mutations = {
   },
 
   updateSuccessful (state, data) {
+    state.properties[data.package_id] = data
     state.isUpdating = false
     state.updateSuccess = true
     state.updateError = null
@@ -80,40 +82,41 @@ const actions = {
       commit('fetchStart')
       let res = await api.get('/properties')
       commit('fetchSuccessful', res.data)
-      console.log('Fetch successful')
       return Promise.resolve(res.data)
     } catch (err) {
-      commit('fetchFailed', err.message)
-      return Promise.reject(err)
+      commit('fetchFailed', err.message || err)
+      return Promise.reject(err.message || err)
     }
   },
 
-  create ({ commit }, data) {
+  async create ({ commit }, data) {
     try {
-      commit('createSuccessful', data)
-      console.log('Create successful')
-      return Promise.resolve(data)
+      commit('createStart')
+      let res = await api.post('/properties', data)
+      commit('createSuccessful', res.data)
+      return Promise.resolve(res.data)
     } catch (err) {
-      commit('createFailed', err)
-      return Promise.reject(err)
+      commit('createFailed', err.message || err)
+      return Promise.reject(err.message || err)
     }
   },
 
-  update ({ commit }, data) {
+  async update ({ commit }, data) {
     try {
-      commit('updateSuccessful', data)
-      console.log('Update successful: ', data)
-      return Promise.resolve(data)
+      commit('updateStart')
+      let res = await api.put(`/properties/${data.property.id}`, data)
+      commit('updateSuccessful', res.data)
+      return Promise.resolve(res.data)
     } catch (err) {
-      commit('updateFailed', err)
-      return Promise.reject(err)
+      commit('updateFailed', err.message || err)
+      return Promise.reject(err.message || err)
     }
   }
 }
 
 const getters = {
-  byID: state => id => {
-    return state.properties[id] || {}
+  byPackageID: state => packageID => {
+    return state.properties[packageID]
   }
 }
 

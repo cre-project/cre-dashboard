@@ -96,13 +96,13 @@ export default {
   computed: {
     ...mapGetters({
       packageByID: 'packages/byID',
-      propertyByID: 'properties/byID',
+      propertyByPackageID: 'properties/byPackageID',
       propertyUnits: 'propertyUnits/listByPropertyID'
     }),
 
     property () {
       let pkg = this.packageByID(this.$route.params.id)
-      return this.propertyByID(pkg.property_id) || {}
+      return this.propertyByPackageID(pkg.id)
     },
 
     units () {

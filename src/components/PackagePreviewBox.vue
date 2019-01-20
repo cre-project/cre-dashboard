@@ -9,10 +9,14 @@
     >
     <span
       class="overlay"
-      v-show="pkg.price"
-    >Price ${{ formatPrice (property.price) }}</span>
-    <div class="preview-title">{{ property.address || "New Valuation" }}, {{ property.city }}</div>
-    <div class="preview-content">APN {{ property.apn }}</div>
+      v-show="property.price">
+      Price ${{ formatPrice (property.price) }}
+    </span>
+    <div class="preview-title">{{ address }}</div>
+    <div class="preview-content">
+      <p>APN: {{ property.apn }}</p>
+      <p>Date created: {{ date }}</p>
+    </div>
   </div>
 </template>
 <script>
@@ -32,19 +36,7 @@ export default {
     }
   },
   methods: {
-    ...mapGetters({ propertyByID: 'properties/byID' }),
-
-    property () {
-      this.propertyByID(this.pkg.property_id)
-    },
-
     editPackage () {
-      this.$toast.open({
-        duration: 3500,
-        message: 'Edit Package',
-        position: 'is-bottom',
-        type: 'is-info'
-      })
       router.push(`/package/${this.pkg.id}/property-info`)
     },
 
@@ -54,18 +46,33 @@ export default {
     }
   },
   computed: {
-    date () {
-      let createdOn = this.pkg.createdOn;
-      if (createdOn instanceof Date) {
-        return createdOn.toUTCString()
+    ...mapGetters({ propertyByPackageID: 'properties/byPackageID' }),
+
+    property () {
+      return this.propertyByPackageID(this.pkg.id) || {}
+    },
+
+    address () {
+      if (this.property && this.property.address && this.property.address.street) {
+        let street = this.property.address.street
+        let city = this.property.address.city
+        return city ? `${street}, ${city}` : street
       } else {
-        return createdOn.toDate().toUTCString();
+        return 'New Valuation'
       }
+    },
+
+    date () {
+      let createdAt = this.pkg.created_at
+      let date = createdAt instanceof Date ? createdAt : new Date(createdAt)
+      return date.toUTCString()
     }
   },
 
-  created () {
-    this.$store.dispatch('properties/fetchList')
+  async created () {
+    try {
+      await this.$store.dispatch('properties/fetchList')
+    } catch (e) { }
   }
 }
 </script>

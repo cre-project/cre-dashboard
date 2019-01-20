@@ -54,10 +54,10 @@ export default {
   },
   computed: {
     ...mapState({ os: state => state.os.operatingStatement }),
-    ...mapGetters({ packageByID: 'packages/byID', propertyByID: 'properties/byID' }),
+    ...mapGetters({ packageByID: 'packages/byID', propertyByPackageID: 'properties/byPackageID' }),
     property () {
       let pkg = this.packageByID(this.$route.params.id)
-      return this.propertyByID(pkg.property_id)
+      return this.propertyByPackageID(pkg.id)
     },
 
     price () {

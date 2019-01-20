@@ -15,7 +15,7 @@
 }
 
 .preview-box {
-  height: 25em;
+  height: 30em;
   padding: 0.9em;
   background-color: var(--light-grey);
   align-content: center;
@@ -23,7 +23,7 @@
   margin: auto;
   transition: box-shadow .3s;
   box-shadow: 5px 10px 8px rgba(68, 69, 70, 0.3);
-  max-width: 20em;
+  max-width: 23em;
   margin: 2em;
 }
 
@@ -506,16 +506,14 @@ img {
 }
 
 .preview-title {
-  margin: 1em;
-  margin-bottom: 0.5em;
+  margin: 0 1em;
   font-weight: bold;
   font-size: 1.1em;
   color: #4C4C4C;
 }
 
 .preview-content {
-  margin: 1.5em;
-  margin-top: 0;
+  margin: 1em;
   font-size: 0.95em;
 }
 
@@ -536,8 +534,8 @@ img {
     transition: .5s ease;
     opacity:0;
     color: white;
-    font-size: 20px;
-    padding: 20px;
+    font-size: 1.3em;
+    padding: 1em;
     text-align: center;
 }
 

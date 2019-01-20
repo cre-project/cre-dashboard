@@ -4,24 +4,24 @@
       <h1 class="subtitle is-size-4 has-text-weight-bold auto-margin">Property Information</h1>
       <div class="cre-inner-content">
         <div class="columns is-variable is-8">
-          <div class="column">
+          <div class="column is-two-fifths">
             <h2 class="subtitle is-size-5 has-text-weight-bold">Property Address</h2>
             <form>
               <b-field label="Street">
-                  <b-input v-model="property.address"></b-input>
+                  <b-input v-model="property.address.street"></b-input>
               </b-field>
 
               <b-field label="State">
-                  <b-input v-model="property.state"></b-input>
+                  <b-input v-model="property.address.state"></b-input>
               </b-field>
 
               <b-field grouped>
                 <b-field expanded label="City">
-                    <b-input v-model="property.city"></b-input>
+                    <b-input v-model="property.address.city"></b-input>
                 </b-field>
 
                 <b-field expanded label="ZIP">
-                  <b-input v-model="property.zip"></b-input>
+                  <b-input v-model="property.address.zip"></b-input>
                 </b-field>
               </b-field>
             </form>
@@ -30,23 +30,36 @@
           <div class="column">
             <h2 class="subtitle is-size-5 has-text-weight-bold">Property Details</h2>
             <form>
-              <b-field label="Number of Stories">
-                  <b-input v-model="property.numberOfStories"></b-input>
-              </b-field>
+              <div class="columns">
+                <div class="column">
+                  <b-field label="Number of Stories">
+                      <b-input v-model="property.number_of_stories"></b-input>
+                  </b-field>
 
-              <b-field label="Year built">
-                  <b-input v-model="property.yearBuilt"></b-input>
-              </b-field>
+                  <b-field label="Year built">
+                      <b-input v-model="property.year_built"></b-input>
+                  </b-field>
 
-              <b-field grouped>
-                <b-field expanded label="Lot Size Acres">
-                  <b-input v-model="property.lotSize"></b-input>
-                </b-field>
+                  <b-field expanded label="Lot Size Acres">
+                    <b-input v-model="property.lot_size"></b-input>
+                  </b-field>
+                </div>
 
-                <b-field expanded label="APN">
-                  <b-input v-model="property.apn"></b-input>
-                </b-field>
-              </b-field>
+                <div class="column">
+                  <b-field label="Price*">
+                    <vue-numeric
+                      input
+                      currency="$"
+                      separator=","
+                      v-model="property.price"
+                    ></vue-numeric>
+                  </b-field>
+
+                  <b-field expanded label="APN">
+                    <b-input v-model="property.apn"></b-input>
+                  </b-field>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -70,10 +83,12 @@ export default {
   data () {
     return {
       property: {
-        address: null,
-        state: null,
-        city: null,
-        zip: null,
+        address: {
+          street: null,
+          city: null,
+          state: null,
+          zip: null
+        },
         numberOfStories: null,
         yearBuilt: null,
         lotSize: null,
@@ -82,7 +97,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters({ propertyByID: 'properties/byID', packageByID: 'packages/byID' }),
+    ...mapGetters({ propertyByPackageID: 'properties/byPackageID', packageByID: 'packages/byID' }),
     pkg () {
       return this.packageByID(this.packageID)
     },
@@ -93,12 +108,14 @@ export default {
   methods: {
     async save () {
       try {
-        if (!(this.pkg && this.pkg.property_id)) {
-          // create new property if package that's being updated has no property yet
-          await this.$store.dispatch('properties/create', { packageID: this.packageID, property: this.property })
+        if (!this.property.package_id) {
+          // create new property if it's not tied to a package yet
+          let data = this.property
+          data.package_id = this.packageID
+          await this.$store.dispatch('properties/create', { property: data })
         } else {
           // otherwise update the existing one
-          await this.$store.dispatch('properties/update', this.property)
+          await this.$store.dispatch('properties/update', { property: this.property })
         }
         router.push(`/package/${this.packageID}/unit-mix`)
       } catch (err) {
@@ -113,11 +130,40 @@ export default {
     }
   },
   async created () {
-    if (!this.pkg) {
-      router.push('/dashboard')
+    if (!this.packageID || this.packageID === ':id') {
+      router.push('/')
       return
+    } else if (!this.pkg) {
+      try {
+        await this.$store.dispatch('packages/fetchList')
+        await this.$store.dispatch('properties/fetchList')
+      } catch (e) {
+        console.log(e)
+        router.push('/')
+        return
+      }
     }
-    this.property = this.propertyByID(this.pkg.property_id) || {}
+    let prop = this.propertyByPackageID(this.packageID)
+    this.property = prop || {
+      address: {
+        street: null,
+        state: null,
+        city: null,
+        zip: null
+      },
+      numberOfStories: null,
+      yearBuilt: null,
+      lotSize: null,
+      apn: null
+    }
+    if (!prop.address) {
+      this.property.address = {
+        street: null,
+        state: null,
+        city: null,
+        zip: null
+      }
+    }
   }
 }
 </script>
