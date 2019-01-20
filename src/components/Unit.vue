@@ -52,10 +52,10 @@
 export default {
   props: {
     bedrooms: {
-      type: String
+      type: [String, Number]
     },
     bathrooms: {
-      type: String
+      type: [String, Number]
     },
     current_rent: {
       type: Number

@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="cre-content">
-      <h1 class="subtitle is-size-4 has-text-weight-semibold auto-margin">Unit Mix</h1>
       <div
-        class="float-right"
-        style="margin-right: 2em; margin-bottom: 0;"
+        class="spaced"
+        style="margin-right: 2em; margin-bottom: 3em;"
       >
+        <h1 class="subtitle is-size-4 has-text-weight-semibold">Unit Mix</h1>
         <b-field
           class="half-size"
           label="Total SqFt"
@@ -14,53 +14,107 @@
         </b-field>
       </div>
 
-      <table style="margin-left:5em;margin-top:2em;width:90%;margin-bottom:2em;">
-        <thead>
-          <tr>
-            <th/>
-            <th>Bedrooms</th>
-            <th>Bathrooms</th>
-            <th>Current Rent/Mo.</th>
-            <th>Potential Rent/Mo.</th>
-          </tr>
-        </thead>
+      <b-table
+        v-if="units.length > 0"
+        :data="units"
+        style="min-height: 20vh; width:95%; margin-left: 2em; margin-bottom: 4em;"
+        class="m-t-5"
+        hoverable
+      >
+        <template slot-scope="props">
 
-        <tbody>
-          <!-- existing units -->
-          <unit
-            v-for="unit in units"
-            :key="unit.id"
-            :bedrooms.sync="unit.bedrooms"
-            :bathrooms.sync="unit.bathrooms"
-            :current_rent.sync="unit.current_rent"
-            :potential_rent.sync="unit.potential_rent"
-          />
+          <b-table-column
+            label="Bedrooms"
+            class="p-t-1-3"
+            width="150"
+            sortable
+            centered
+            numeric
+          >
+            {{ props.row.bedrooms }}
+          </b-table-column>
 
-          <!-- new unit placeholder -->
-          <unit
-            :class="isCreating ? '' : 'hidden'"
-            :bedrooms.sync="bedrooms"
-            :bathrooms.sync="bathrooms"
-            :current_rent.sync="current_rent"
-            :potential_rent.sync="potential_rent"
-          />
+          <b-table-column
+            class="p-t-1-3"
+            label="Bathrooms"
+            width="150"
+            sortable
+            centered
+            numeric
+          >
+            {{ props.row.bathrooms }}
+          </b-table-column>
 
-          <!-- footer with summary -->
-          <tr class="is-grey">
-            <td>Total: {{ numUnits }} units</td>
-            <td/>
-            <td/>
-            <td>{{ totalRentCurrent | money }}</td>
-            <td>{{ totalRentPotential | money }}</td>
-          </tr>
-        </tbody>
-      </table>
+          <b-table-column
+            label="Current Rent"
+            class="p-t-1-3"
+            sortable
+            centered
+            numeric
+          >
+            {{ props.row.current_rent | money }}
+          </b-table-column>
+
+          <b-table-column
+            label="Potential Rent"
+            class="p-t-1-3"
+            sortable
+            centered
+            numeric
+          >
+            {{ props.row.potential_rent | money }}
+          </b-table-column>
+
+          <b-table-column
+            width="150"
+            label="Edit"
+            centered >
+            <i
+              class="material-icons"
+              @click="edit({id: props.row.id})"
+            >edit</i>
+          </b-table-column>
+
+          <b-table-column
+            width="150"
+            label="Delete"
+            centered>
+            <i
+              class="material-icons"
+              @click="remove(props.row.id)"
+            >delete_forever</i>
+          </b-table-column>
+        </template>
+
+        <template slot="footer">
+          <th width="150" class="is-grey">
+            <div class="is-centered th-wrap">Total: {{ numUnits }} units</div>
+          </th>
+          <th width="150" class="is-grey"/>
+          <th class="is-grey">
+            <div class="is-centered th-wrap"> {{ totalRentCurrent | money }} </div>
+          </th>
+          <th class="is-grey">
+            <div class="is-centered th-wrap" > {{ totalRentPotential | money }} </div>
+          </th>
+          <th class="is-grey"/>
+          <th class="is-grey"/>
+        </template>
+      </b-table>
+
+      <div v-else class="cre-content">
+          <p class="subtitle">You have not added any units to this property yet.</p>
+      </div>
+
+      <b-modal :active.sync="modalOpen" has-modal-card>
+          <unit-modal :property_id="property.id"/>
+      </b-modal>
 
       <div class="spaced">
         <button
           class="save green"
-          @click.prevent="addUnit"
-        >Add Another Unit</button>
+          @click.prevent="modalOpen = true"
+        >Add a unit</button>
         <button
           class="save"
           type="submit"
@@ -71,48 +125,39 @@
   </div>
 </template>
 <script>
-import Unit from '@/components/Unit';
-import { router } from './../router';
+// import Unit from '@/components/Unit';
+import UnitModal from '@/components/UnitModal'
+import { router } from './../router'
 import { mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
       totalSqFt: 0,
-      isUpdating: false,
-      isCreating: false,
-      // properties for new unit
-      bedrooms: null,
-      bathrooms: null,
-      current_rent: 0,
-      potential_rent: 0
+      modalOpen: false,
+      property: {}
     }
   },
 
   components: {
-    Unit: Unit
+    // Unit,
+    UnitModal
   },
 
   computed: {
     ...mapGetters({
       packageByID: 'packages/byID',
       propertyByPackageID: 'properties/byPackageID',
-      propertyUnits: 'propertyUnits/listByPropertyID'
+      propertyUnits: 'propertyUnits/listByPropertyID',
+      byID: 'propertyUnits/byID'
     }),
 
-    property () {
-      let pkg = this.packageByID(this.$route.params.id)
-      return this.propertyByPackageID(pkg.id)
+    packageID () {
+      return this.$route.params.id
     },
 
     units () {
-      return [
-        { bedrooms: this.bedrooms,
-          bathrooms: this.bathrooms,
-          current_rent: this.current_rent,
-          potential_rent: this.potential_rent,
-          property_id: this.property.id }]
-      // return this.propertyUnits(this.property.id) || []
+      return this.propertyUnits(this.property.id) || []
     },
 
     numUnits () {
@@ -121,34 +166,76 @@ export default {
 
     totalRentCurrent () {
       return this.units.reduce(
-        (acc, unit) => acc + (Number(unit.currentRent) || 0),
+        (acc, unit) => acc + (Number(unit.current_rent) || 0),
         0
       )
     },
 
     totalRentPotential () {
       return this.units.reduce(
-        (acc, unit) => acc + (Number(unit.potentialRent) || 0),
+        (acc, unit) => acc + (Number(unit.potential_rent) || 0),
         0
       )
     }
   },
+
   methods: {
+    async remove (unitID) {
+      this.$dialog.confirm({
+        title: 'Deleting Property Unit',
+        message: 'You can\'t undo this action. Are you sure you want to proceed?',
+        type: 'is-danger',
+        hasIcon: true,
+        confirmText: 'Delete',
+        onConfirm: async () => {
+          try {
+            await this.$store.dispatch('propertyUnits/delete', { propertyID: this.property.id, id: unitID })
+          } catch (err) {
+            this.$toast.open({
+              duration: 3500,
+              message: `Item could not be deleted: ${err.message}`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
+          }
+        }
+      })
+    },
+    edit (unitID) {
+      try {
+        // TODO no API endpoint exists yet
+        this.$toast.open({
+          duration: 3500,
+          message: 'Updating property units is not possible yet',
+          position: 'is-bottom',
+          type: 'is-success'
+        })
+        // this.$modal.open({
+        //   parent: this,
+        //   component: UnitModal,
+        //   props: {
+        //     isEditing: true,
+        //     unit: this.byID(unitID),
+        //     propertyID: this.propertyID
+        //   }
+        // })
+      } catch (err) {
+        this.$toast.open({
+          duration: 3500,
+          message: 'Something went wrong, try again later or contact our customer support',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
+    },
+
     // save potential unsaved unit and total sqft and proceed to next step
     async save () {
       try {
-        if (this.isCreating) {
-          this.saveUnit('create')
-          this.isCreating = false
-        } else if (this.isUpdating) {
-          this.saveUnit('update')
-          this.isUpdating = false
-        }
-
         let prop = this.property
-        if (prop.totalSqFt !== this.totalSqFt) {
-          prop.totalSqFt = this.totalSqFt
-          await this.$store.dispatch('properties/update', prop)
+        if (prop.total_square_feet !== this.totalSqFt) {
+          prop.total_square_feet = this.totalSqFt
+          await this.$store.dispatch('properties/update', { property: prop })
         }
         router.push(`/package/${this.$route.params.id}/sales-comparables`)
       } catch (err) {
@@ -160,43 +247,25 @@ export default {
           type: 'is-danger'
         })
       }
-    },
+    }
 
-    addUnit () {
-      if (this.isCreating) {
-        this.saveUnit('create')
-        this.isCreating = false
-      } else if (this.isUpdating) {
-        this.saveUnit('update')
-        this.isUpdating = false
-      } else {
-        this.isCreating = true
-      }
-    },
+  },
 
-    async saveUnit (method) {
+  async created () {
+    if (!this.packageID || this.packageID === ':id') {
+      router.push('/')
+    } else {
+      // load data
       try {
-        await this.$store.dispatch(`propertyUnits/${method}`, {
-          bedrooms: this.bedrooms,
-          bathrooms: this.bathrooms,
-          current_rent: this.current_rent,
-          potential_rent: this.potential_rent,
-          property_id: this.property.id
+        await this.$store.dispatch('packages/fetchList')
+        await this.$store.dispatch('properties/fetchList').then(() => {
+          this.property = this.propertyByPackageID(this.packageID)
+          this.$store.dispatch('propertyUnits/fetchList', this.property.id)
+          this.totalSqFt = this.property.total_square_feet || 0
         })
-
-        // reset local data
-        this.bedrooms = null
-        this.bathrooms = null
-        this.current_rent = null
-        this.potential_rent = null
-      } catch (err) {
-        console.log(err)
-        this.$toast.open({
-          duration: 3500,
-          message: 'Couldn\'t add a new comparable',
-          position: 'is-bottom',
-          type: 'is-danger'
-        })
+      } catch (e) {
+        console.log(e)
+        router.push('/')
       }
     }
   }
@@ -204,9 +273,6 @@ export default {
 </script>
 <style scoped>
 .spaced {
-  width: 90%;
-  margin-left: 5em;
-  margin-top: 4em;
   display: flex;
   justify-content: space-between;
 }

@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import user from './user'
 import packages from './packages'
 import properties from './properties'
-import propertyUnits from './property_units'
+import propertyUnits from './propertyUnits'
 import os from './os'
 
 Vue.use(Vuex)
