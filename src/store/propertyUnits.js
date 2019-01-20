@@ -79,20 +79,20 @@ const mutations = {
   },
 
   updatestart (state) {
-    state.isupdating = true
+    state.isUpdating = true
   },
 
   updatesuccessful (state, data) {
     state.property_units[data.id] = data
-    state.isupdating = false
-    state.updatesuccess = true
-    state.updateerror = null
+    state.isUpdating = false
+    state.updateSuccess = true
+    state.updateError = null
   },
 
   updatefailed (state, err) {
-    state.isupdating = false
-    state.updatesuccess = false
-    state.updateerror = err
+    state.isUpdating = false
+    state.updateSuccess = false
+    state.updateError = err
   }
 }
 

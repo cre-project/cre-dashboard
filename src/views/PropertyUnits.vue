@@ -125,7 +125,6 @@
   </div>
 </template>
 <script>
-// import Unit from '@/components/Unit';
 import UnitModal from '@/components/UnitModal'
 import { router } from './../router'
 import { mapGetters } from 'vuex'
@@ -140,7 +139,6 @@ export default {
   },
 
   components: {
-    // Unit,
     UnitModal
   },
 
@@ -180,6 +178,26 @@ export default {
   },
 
   methods: {
+    // save potential unsaved unit and total sqft and proceed to next step
+    async save () {
+      try {
+        let prop = this.property
+        if (prop.total_square_feet !== this.totalSqFt) {
+          prop.total_square_feet = this.totalSqFt
+          await this.$store.dispatch('properties/update', { property: prop })
+        }
+        router.push(`/package/${this.$route.params.id}/sales-comparables`)
+      } catch (err) {
+        console.log(err.message)
+        this.$toast.open({
+          duration: 3500,
+          message: 'Something went wrong, please try again or contact customer support',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
+    },
+
     async remove (unitID) {
       this.$dialog.confirm({
         title: 'Deleting Property Unit',
@@ -201,24 +219,25 @@ export default {
         }
       })
     },
+
     edit (unitID) {
       try {
-        // TODO no API endpoint exists yet
+      // TODO no API endpoint exists yet
         this.$toast.open({
           duration: 3500,
           message: 'Updating property units is not possible yet',
           position: 'is-bottom',
           type: 'is-success'
         })
-        // this.$modal.open({
-        //   parent: this,
-        //   component: UnitModal,
-        //   props: {
-        //     isEditing: true,
-        //     unit: this.byID(unitID),
-        //     propertyID: this.propertyID
-        //   }
-        // })
+      // this.$modal.open({
+      //   parent: this,
+      //   component: UnitModal,
+      //   props: {
+      //     isEditing: true,
+      //     unit: this.byID(unitID),
+      //     propertyID: this.propertyID
+      //   }
+      // })
       } catch (err) {
         this.$toast.open({
           duration: 3500,
@@ -227,28 +246,7 @@ export default {
           type: 'is-danger'
         })
       }
-    },
-
-    // save potential unsaved unit and total sqft and proceed to next step
-    async save () {
-      try {
-        let prop = this.property
-        if (prop.total_square_feet !== this.totalSqFt) {
-          prop.total_square_feet = this.totalSqFt
-          await this.$store.dispatch('properties/update', { property: prop })
-        }
-        router.push(`/package/${this.$route.params.id}/sales-comparables`)
-      } catch (err) {
-        console.log(err.message)
-        this.$toast.open({
-          duration: 3500,
-          message: 'Something went wrong, please try again or contact customer support',
-          position: 'is-bottom',
-          type: 'is-danger'
-        })
-      }
     }
-
   },
 
   async created () {

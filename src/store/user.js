@@ -40,7 +40,7 @@ const state = {
 const mutations = {
 
   loginStart (state) {
-    state.isupdating = true
+    state.isUpdating = true
   },
 
   loginSuccessful (state, data) {
