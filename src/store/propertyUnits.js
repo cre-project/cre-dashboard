@@ -78,18 +78,18 @@ const mutations = {
     state.deleteError = err
   },
 
-  updatestart (state) {
+  updateStart (state) {
     state.isUpdating = true
   },
 
-  updatesuccessful (state, data) {
+  updateSuccessful (state, data) {
     state.property_units[data.id] = data
     state.isUpdating = false
     state.updateSuccess = true
     state.updateError = null
   },
 
-  updatefailed (state, err) {
+  updateFailed (state, err) {
     state.isUpdating = false
     state.updateSuccess = false
     state.updateError = err
@@ -135,11 +135,11 @@ const actions = {
     }
   },
 
-  // TODO no API endpoint exists yet
   async update ({ commit }, data) {
     try {
       commit('updateStart')
-      let res = await api.put(`/properties/${data.propertyID}/property_units/${data.id}`, data)
+      console.log('Updating property unit: ', JSON.stringify(data))
+      let res = await api.put(`/properties/${data.propertyID}/property_units/${data.unit.id}`, { property_unit: data.unit })
       commit('updateSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {

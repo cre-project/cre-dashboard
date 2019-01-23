@@ -77,7 +77,7 @@
             centered >
             <i
               class="material-icons"
-              @click="edit({id: props.row.id})"
+              @click="edit(props.row.id)"
             >edit</i>
           </b-table-column>
 
@@ -228,22 +228,15 @@ export default {
 
     edit (unitID) {
       try {
-      // TODO no API endpoint exists yet
-        this.$toast.open({
-          duration: 3500,
-          message: 'Updating property units is not possible yet',
-          position: 'is-bottom',
-          type: 'is-success'
+        this.$modal.open({
+          parent: this,
+          component: UnitModal,
+          props: {
+            isEditing: true,
+            unit: this.byID(unitID),
+            propertyID: this.property.id
+          }
         })
-      // this.$modal.open({
-      //   parent: this,
-      //   component: UnitModal,
-      //   props: {
-      //     isEditing: true,
-      //     unit: this.byID(unitID),
-      //     propertyID: this.propertyID
-      //   }
-      // })
       } catch (err) {
         this.$toast.open({
           duration: 3500,

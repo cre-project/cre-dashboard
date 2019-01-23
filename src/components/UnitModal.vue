@@ -97,8 +97,7 @@ export default {
         }
         if (this.isEditing) {
           newUnit.id = this.unit.id
-          // TODO no endpoint exists yet
-          // await this.$store.dispatch('propertyUnits/update', { unit: newUnit, propertyID: this.propertyID })
+          await this.$store.dispatch('propertyUnits/update', { unit: newUnit, propertyID: this.propertyID })
         } else {
           await this.$store.dispatch('propertyUnits/create', { unit: newUnit, propertyID: this.propertyID })
         }
