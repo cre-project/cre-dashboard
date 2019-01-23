@@ -109,10 +109,9 @@
             label="Delete"
             centered
           >
-            <!-- <i class="material-icons">edit</i> -->
             <i
               class="material-icons"
-              @click="delete(props.row.id)"
+              @click="deleteComp(props.row.id)"
             >delete_forever</i>
           </b-table-column>
         </template>
@@ -379,9 +378,6 @@ export default {
   props: {
     compType: {
       type: String
-    },
-    propertyId: {
-      type: String
     }
   },
 
@@ -394,17 +390,25 @@ export default {
       showButton: true,
       detailed: [],
       wipComp: {},
-      comparables: []
+      rentedUnits: []
     }
   },
 
   computed: {
     ...mapGetters({
-      soldProperties: 'soldProperties/listByPackageID'
+      soldProperties: 'soldProperties/list'
     }),
 
     packageID () {
       return this.$route.params.id
+    },
+
+    comparables () {
+      return this.compType === 'sale' ? this.soldProperties : this.rentedUnits
+    },
+
+    comparableEndpoint () {
+      return this.compType === 'sale' ? 'soldProperties' : 'rentedUnits'
     }
 
   },
@@ -415,12 +419,32 @@ export default {
       router.push(`/package/${this.$route.params.id}/${next}`)
     },
 
-    add () {
-      this.wipComp = Object.assign({}, emptyComparable)
-      this.detailed = []
+    async add () {
+      try {
+        let prop = this.wipComp
+        if (this.wipComp.id && this.wipComp.id !== 'new') {
+          // update
+          await this.$store.dispatch(`${this.comparableEndpoint}/update`, prop)
+        } else {
+          // create
+          prop.package_id = this.packageID
+          await this.$store.dispatch(`${this.comparableEndpoint}/create`, prop)
+        }
+        this.wipComp = Object.assign({}, emptyComparable)
+        this.detailed = []
+      } catch (err) {
+        console.log(err)
+        this.$toast.open({
+          duration: 3500,
+          message: 'Something went wrong, please try again or contact customer support',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
     },
 
-    async delete (id) {
+    async deleteComp (id) {
+      const vm = this
       this.$dialog.confirm({
         title: 'Deleting Comparable',
         message: 'You can\'t undo this action. Are you sure you want to proceed?',
@@ -429,8 +453,7 @@ export default {
         confirmText: 'Delete',
         onConfirm: async () => {
           try {
-            // TODO so far only sales comps are supported
-            await this.$store.dispatch('soldProperties/delete', id)
+            await this.$store.dispatch(`${vm.comparableEndpoint}/delete`, id)
           } catch (err) {
             this.$toast.open({
               duration: 3500,
@@ -482,10 +505,11 @@ export default {
     } else {
       try {
         // load data
-        await this.$store.dispatch('packages/fetchList').then(() => {
-          // TODO only supports sales comps now
-          this.comparables = this.soldProperties(this.packageID)
-        })
+        if (this.compType === 'sale') {
+          await this.$store.dispatch('soldProperties/fetchList', this.packageID)
+        } else {
+          await this.$store.dispatch('rentedUnits/fetchList', this.packageID)
+        }
       } catch (e) {
         console.log(e)
         router.push('/')

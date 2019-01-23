@@ -93,10 +93,10 @@ const mutations = {
 }
 
 const actions = {
-  async fetchList ({ commit }, propertyID) {
+  async fetchList ({ commit }, packageID) {
     try {
       commit('fetchStart')
-      let res = await api.get('/sold_properties/')
+      let res = await api.get(`/packages/${packageID}/sold_properties`)
       commit('fetchSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
@@ -108,7 +108,8 @@ const actions = {
   async create ({ commit }, data) {
     try {
       commit('createStart')
-      let res = await api.post('/sold_properties', data)
+      let res = await api.post('sold_properties', { sold_property: data })
+      await api.post(`packages/${data.package_id}/package_sold_properties`, { sold_property_id: res.data.id })
       commit('createSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
@@ -129,10 +130,10 @@ const actions = {
     }
   },
 
-  async delete ({ commit }, data) {
+  async delete ({ commit }, id) {
     try {
       commit('deleteStart')
-      let res = await api.delete(`/sold_properties/${data.id}`)
+      let res = await api.delete(`/sold_properties/${id}`)
       commit('deleteSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
@@ -143,10 +144,9 @@ const actions = {
 }
 
 const getters = {
-  listByPackageID: state => packageID => {
-    return []
+  list: state => {
+    return Object.values(state.soldProperties)
   }
-
 }
 
 export default {
