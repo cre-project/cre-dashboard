@@ -34,6 +34,10 @@ export default {
     handler: {
       type: String,
       default: ''
+    },
+    entityID: {
+      type: String,
+      default: null
     }
   },
 
@@ -72,7 +76,8 @@ export default {
             let response = JSON.parse(xhr.responseText)
             let url = response.secure_url
             // store image URL in the database
-            vm.$store.dispatch(vm.handler, url)
+            let data = vm.entityID ? { id: vm.entityID, url: url } : url
+            vm.$store.dispatch(vm.handler, data)
           } catch (e) {
             vm.showError(`Cloudinary response could not be handled: ${e}`)
           }

@@ -57,6 +57,10 @@ const mutations = {
     state.createError = err
   },
 
+  addImage (state, data) {
+    state.soldProperties[data.id].image_url = data.url
+  },
+
   updateStart (state) {
     state.isUpdating = true
   },
@@ -128,6 +132,11 @@ const actions = {
       commit('updateFailed', err)
       return Promise.reject(err.message || err)
     }
+  },
+
+  // update image locally (save goes along with the rest of the comparable)
+  updateImage ({ commit }, data) {
+    commit('addImage', data)
   },
 
   async delete ({ commit }, id) {

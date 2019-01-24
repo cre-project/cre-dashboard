@@ -153,7 +153,7 @@
                     >
                   </label>
                 </div>
-                <image-upload label="Property Picture" :url="props.row.image_url" handler="xxx"/>
+                <image-upload label="Property Picture" :url="props.row.image_url" handler="soldProperties/updateImage" :entityID="props.row.id"/>
               </form>
               <!-- part 2 of the form -->
               <form id="form-2">
