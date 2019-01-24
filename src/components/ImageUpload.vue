@@ -49,13 +49,14 @@ export default {
 
   methods: {
     loadNewImage (evt) {
+      let vm = this
       let file = evt.target.files[0]
       let reader = new FileReader()
       let previewEl = this.$refs['preview']
 
       reader.addEventListener('load', function (evt) {
         previewEl.src = evt.target.result
-        this.imageShown = true
+        vm.imageShown = true
       })
       this.upload(file)
       reader.readAsDataURL(file)

@@ -5,6 +5,7 @@ import packages from './packages'
 import properties from './properties'
 import propertyUnits from './propertyUnits'
 import soldProperties from './soldProperties'
+import rentedUnits from './rentedUnits'
 import os from './os'
 
 Vue.use(Vuex)
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     packages,
     os,
     propertyUnits,
-    soldProperties
+    soldProperties,
+    rentedUnits
   }
 })

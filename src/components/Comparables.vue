@@ -68,7 +68,7 @@
             centered
             numeric
           >
-            {{ props.row.rent | money }}
+            {{ props.row.current_rent | money }}
           </b-table-column>
 
           <b-table-column
@@ -153,7 +153,7 @@
                     >
                   </label>
                 </div>
-                <image-upload label="Property Picture" :url="props.row.image_url" handler="soldProperties/updateImage" :entityID="props.row.id"/>
+                <image-upload label="Property Picture" :url="props.row.image_url" :handler="`${comparableEndpoint}/updateImage`" :entityID="props.row.id"/>
               </form>
               <!-- part 2 of the form -->
               <form id="form-2">
@@ -161,7 +161,7 @@
                   <div class="narrow">Year built</div>
                   <input
                     class="narrow"
-                    v-model="props.row.year_built"
+                    v-model.number="props.row.year_built"
                   >
                 </label>
                 <label
@@ -238,7 +238,7 @@
                     class="half-size"
                     currency="$"
                     separator=","
-                    v-model="props.row.rent"
+                    v-model="props.row.current_rent"
                   ></vue-numeric>
                 </label>
               </form>
@@ -346,23 +346,10 @@ import formatMoney from 'accounting-js/lib/formatMoney.js'
 import { mapGetters } from 'vuex'
 import ImageUpload from '@/components/ImageUpload'
 
-/** sales comp: */
-//  id
-//  year_built
-//  sales_price
-//  num_units
-//  cap_rate
-//  grm
-//  close_of_escrow
-//  image_url
-//  square_feet
-//  created_at
-//  updated_at
-//  user_id
 const emptyComparable = {
   address: {},
   year_built: null,
-  rent: 0,
+  current_rent: 0,
   bedrooms: '',
   bathrooms: '',
   sales_price: 0,
@@ -389,14 +376,14 @@ export default {
     return {
       showButton: true,
       detailed: [],
-      wipComp: {},
-      rentedUnits: []
+      wipComp: {}
     }
   },
 
   computed: {
     ...mapGetters({
-      soldProperties: 'soldProperties/list'
+      soldProperties: 'soldProperties/list',
+      rentedUnits: 'rentedUnits/list'
     }),
 
     packageID () {

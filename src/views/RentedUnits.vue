@@ -1,8 +1,5 @@
 <template>
-  <comparables
-    compType="rent"
-    :comparables="comparables"
-  />
+  <comparables compType="rent"/>
 </template>
 <script>
 import Comparables from '@/components/Comparables'
@@ -10,11 +7,6 @@ import Comparables from '@/components/Comparables'
 export default {
   components: {
     Comparables
-  },
-  data () {
-    return {
-      comparables: []
-    }
   }
 }
 </script>
