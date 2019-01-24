@@ -1,4 +1,6 @@
 import axios from 'axios'
+import { router } from './router'
+import store from './store'
 
 const instance = axios.create({
   baseURL: process.env.VUE_APP_BASE_API_URL,
@@ -20,5 +22,15 @@ instance.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+
+// redirect to login if auth token expired
+instance.interceptors.response.use(null,
+  (error) => {
+    if (error.response.status === 401) {
+      store.dispatch('user/logout')
+      router.replace('/login')
+    }
+    return Promise.reject(new Error('Your session has expired, please log in again'))
+  })
 
 export default instance
