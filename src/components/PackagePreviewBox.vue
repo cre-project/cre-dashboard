@@ -32,7 +32,7 @@ export default {
   },
   data () {
     return {
-      defaultImage: 'http://res.cloudinary.com/dxnzksg0a/image/upload/v1531933140/sample.jpg'
+      defaultImage: 'https://res.cloudinary.com/dxnzksg0a/image/upload/v1531933140/sample.jpg'
     }
   },
   methods: {
