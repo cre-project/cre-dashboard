@@ -29,8 +29,9 @@ instance.interceptors.response.use(null,
     if (error.response.status === 401) {
       store.dispatch('user/logout')
       router.replace('/login')
+      return Promise.reject(new Error('Your session has expired, please log in again'))
     }
-    return Promise.reject(new Error('Your session has expired, please log in again'))
+    return Promise.reject(error)
   })
 
 export default instance
