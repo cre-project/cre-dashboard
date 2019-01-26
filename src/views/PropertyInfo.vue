@@ -51,7 +51,7 @@
                 >
                   <b-input
                     v-validate="'required|numeric'"
-                    v-model="property.zip"
+                    v-model="property.address.zip"
                     name="ZIP"
                   />
                 </b-field>
@@ -220,7 +220,7 @@ export default {
       lotSize: null,
       apn: null
     }
-    if (!prop.address) {
+    if (!this.property.address) {
       this.property.address = {
         street: null,
         state: null,
