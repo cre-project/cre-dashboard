@@ -192,7 +192,7 @@ export default {
           prop.total_square_feet = this.totalSqFt
           await this.$store.dispatch('properties/update', { property: prop })
         }
-        router.push(`/package/${this.$route.params.id}/sales-comparables`)
+        router.push(`/package/${this.$route.params.id}/operating-statement`)
       } catch (err) {
         console.log(err.message)
         this.$toast.open({
