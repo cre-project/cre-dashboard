@@ -2,48 +2,9 @@ import Vue from 'vue'
 import api from './../api'
 
 const state = {
-  operatingStatement: {},
+  operatingStatements: {},
 
-  osFields: {
-    1: {
-      id: 1,
-      label: 'Real Estate Taxes',
-      current: 0,
-      potential: 0,
-      percent: 1.1212,
-      is_income: false
-    },
-    2: {
-      id: 2,
-      label: 'Insurance',
-      current: 0,
-      potential: 0,
-      is_income: false
-    },
-    3: {
-      id: 3,
-      label: 'Utilities',
-      current: 0,
-      potential: 0,
-      is_income: false
-    },
-    4: {
-      id: 4,
-      label: 'Management Fee',
-      current: 0,
-      percent: 5,
-      percentWithButton: true,
-      potential: 0,
-      isIncome: false
-    },
-    '1bcde': {
-      id: '1bcde',
-      label: 'Other Income',
-      current: 0,
-      potential: 0,
-      is_income: true
-    }
-  },
+  osFields: {},
 
   isFetching: false,
   fetchSuccess: false,
@@ -80,13 +41,16 @@ const mutations = {
   },
 
   fetchSuccessful (state, data) {
+    data.forEach(os => {
+      Vue.set(state.operatingStatements, os.id, os)
+    })
     state.isFetching = false
     state.fetchSuccess = true
     state.fetchError = null
   },
 
   fetchFailed (state, err) {
-    state.properties = {}
+    state.operatingStatements = {}
 
     state.isFetching = false
     state.fetchSuccess = false
@@ -98,6 +62,7 @@ const mutations = {
   },
 
   createSuccessful (state, data) {
+    Vue.set(state.operatingStatements, data.id, data)
     state.isCreating = false
     state.createSuccess = true
     state.createError = null
@@ -114,6 +79,7 @@ const mutations = {
   },
 
   updateSuccessful (state, data) {
+    Vue.set(state.operatingStatements, data.id, data)
     state.isUpdating = false
     state.updateSuccess = true
     state.updateError = null
@@ -130,6 +96,9 @@ const mutations = {
   },
 
   fetchFieldsSuccessful (state, data) {
+    data.forEach(field => {
+      Vue.set(state.osFields, field.id, field)
+    })
     state.isFetchingFields = false
     state.fetchFieldsSuccess = true
     state.fetchFieldsError = null
@@ -146,6 +115,7 @@ const mutations = {
   },
 
   addFieldSuccessful (state, data) {
+    Vue.set(state.osFields, data.id, data)
     state.isAddingField = false
     state.addFieldSuccess = true
     state.addFieldError = null
@@ -162,7 +132,7 @@ const mutations = {
   },
 
   updateFieldSuccessful (state, data) {
-    state[data.id] = data
+    Vue.set(state.osFields, data.id, data)
 
     state.isUpdatingField = false
     state.updateFieldSuccess = true
@@ -195,49 +165,46 @@ const mutations = {
 }
 
 const actions = {
-  fetch ({ commit }, packageID) {
+  async fetchList ({ commit }, packageID) {
     try {
       commit('fetchStart')
-      // TODO API CALL
-      commit('fetchSuccessful', {})
-      console.log('Fetch successful')
-      return Promise.resolve({})
+      let res = await api.get(`/packages/${packageID}/operating_statements`)
+      commit('fetchSuccessful', res.data)
+      return res.dat
     } catch (err) {
-      commit('fetchFailed', err)
-      return Promise.reject(err)
+      commit('fetchFailed', err.message || err)
+      return Promise.reject(err.message || err)
     }
   },
 
-  create ({ commit }, data) {
+  async create ({ commit }, packageID) {
     try {
       commit('createStart')
-      // TODO API CALL
-      commit('createSuccessful', data)
-      console.log('Create successful')
-      return Promise.resolve(data)
+      let res = await api.post(`/packages/${packageID}/operating_statements`)
+      commit('createSuccessful', res.data)
+      return res.data
     } catch (err) {
-      commit('createFailed', err)
-      return Promise.reject(err)
+      commit('createFailed', err.message || err)
+      return Promise.reject(err.message || err)
     }
   },
 
-  update ({ commit }, data) {
+  async update ({ commit }, data) {
     try {
       commit('updateStart')
-      // TODO API CALL
-      commit('updateSuccessful', data)
-      console.log('Update successful: ', data)
-      return Promise.resolve(data)
+      let res = await api.post(`/packages/${data.packageID}/operating_statements`, data.os)
+      commit('updateSuccessful', res.data)
+      return res.data
     } catch (err) {
-      commit('updateFailed', err)
-      return Promise.reject(err)
+      commit('updateFailed', err.message || err)
+      return Promise.reject(err.message || err)
     }
   },
 
   async fetchFields ({ commit }, packageID) {
     try {
       commit('fetchFieldsStart')
-      let res = await api.get('/operating_statement_fields', { package_id: packageID })
+      let res = await api.get(`/packages/${packageID}/operating_statements/${packageID}/operating_statement_fields`)
       commit('fetchFieldsSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
@@ -249,7 +216,7 @@ const actions = {
   async addField ({ commit }, data) {
     try {
       commit('addFieldStart')
-      let res = await api.post('/operating_statement_fields', data)
+      let res = await api.post(`packages/${data.packageID}/operating_statements/${data.osID}/operating_statement_fields`, { operating_statement_field: data.field })
       commit('addFieldSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
@@ -261,7 +228,7 @@ const actions = {
   async updateField ({ commit }, data) {
     try {
       commit('updateFieldStart')
-      let res = await api.put('/operating_statement_fields', data)
+      let res = await api.put(`packages/${data.packageID}/operating_statements/${data.osID}/operating_statement_fields/${data.field.id}`, { operating_statement_field: data.field })
       commit('updateFieldSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
@@ -270,12 +237,12 @@ const actions = {
     }
   },
 
-  async deleteField ({ commit }, id) {
+  async deleteField ({ commit }, data) {
     try {
       commit('deleteFieldStart')
-      await api.delete(`/operating_statement_fields/${id}`)
-      commit('deleteFieldSuccessful', id)
-      return Promise.resolve(id)
+      let res = await api.delete(`packages/${data.packageID}/operating_statements/${data.osID}/operating_statement_fields/${data.field.id}`, { operating_statement_field: data.field })
+      commit('deleteFieldSuccessful', data.id)
+      return res
     } catch (err) {
       commit('deleteFieldFailed', err)
       return Promise.reject(err)
@@ -284,6 +251,11 @@ const actions = {
 }
 
 const getters = {
+
+  byPackageID: state => packageID => {
+    return Object.values(state.operatingStatements).filter(os => os.package_id === packageID)[0]
+  },
+
   expenses: state => {
     return Object.values(state.osFields).filter(field => !field.is_income)
   },
@@ -293,12 +265,13 @@ const getters = {
   },
 
   /** Calculations for operating statement values */
-  calculatedValues: state => {
+  calculatedValues: state => id => {
+    let os = Object.values(state.operatingStatements).filter(os => os.id === id)[0]
     let otherIncome = Object.values(state.osFields).filter(field => field.is_income)[0] || 0
 
-    let currentRent = state.operatingStatement.grossRentCurrent || 0
-    let potentialRent = state.operatingStatement.grossRentPotential || 0
-    let vacancy = state.operatingStatement.vacancy || 0
+    let currentRent = os.grossRentCurrent || 0
+    let potentialRent = os.grossRentPotential || 0
+    let vacancy = os.vacancy || 0
 
     let currentVacancy = ((currentRent / 100) * vacancy)// .toFixed(0)
     let potentialVacancy = ((potentialRent / 100) * vacancy)// .toFixed(0)

@@ -50,6 +50,12 @@ export const routes = [
     component: () => import('@/views/PropertyUnits')
   },
   {
+    path: '/package/:id/expenses',
+    name: 'Expenses',
+    meta: { layout: 'default', requiresAuth: true, isNav: true },
+    component: () => import('@/views/Expenses')
+  },
+  {
     path: '/package/:id/operating-statement',
     name: 'Operating Statement',
     meta: { layout: 'default', requiresAuth: true, isNav: true },
@@ -119,7 +125,7 @@ export const router = new Router({ routes })
 
 router.beforeEach((to, from, next) => {
   const isPublicPage = publicPages.includes(to.path) || !authRequired(to.path)
-  const loggedIn = localStorage.creAuthToken
+  const loggedIn = localStorage.creAuthToken && localStorage.creUser
 
   if (loggedIn) {
     store.dispatch('user/init')

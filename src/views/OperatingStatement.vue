@@ -34,7 +34,7 @@
                   class="percent"
                   @click="decrease('vacancy')"
                 >-</button>
-                 {{ selectedValuation.vacancy || 0 }}%
+                 {{ os.vacancy || 0 }}%
                 <button
                   class="percent"
                   @click="increase('vacancy')"
@@ -96,17 +96,6 @@
               :key="index"
             />
 
-            <tr>
-              <td colspan="3" />
-              <td>Add Expense</td>
-              <td>
-                <i
-                  class="material-icons icon is-small clickable"
-                  @click="addItem(false)"
-                >add_circle</i>
-              </td>
-            </tr>
-
             <tr/>
 
             <tr class="is-grey">
@@ -153,6 +142,13 @@ import SideForm from '@/components/SideForm'
 import LineItem from '@/components/OSLineItem'
 
 export default {
+  data () {
+    return {
+      incomes: [],
+      expenses: []
+    }
+  },
+
   components: {
     SideForm: SideForm,
     LineItem: LineItem
@@ -162,13 +158,19 @@ export default {
     ...mapState({ os: state => state.os.operatingStatement }),
     ...mapGetters({
       packageByID: 'packages/byID',
-      expenses: 'os/expenses',
-      incomes: 'os/incomes',
       calculatedValues: 'os/calculatedValues'
     }),
 
-    selectedValuation () {
-      return this.packageByID(this.$route.params.id)
+    packageID () {
+      return this.$route.params.id
+    },
+
+    currentPackage () {
+      return this.packageByID(this.packageID)
+    },
+
+    mgmtFee () {
+      return this.expenses.filter(field => field.label === 'Management Fee')[0] || null
     },
 
     /** CALCULATED VALUES */
@@ -199,15 +201,21 @@ export default {
     /** CALCULATIONS BASED ON OS CALCULATED VALUES & PACKAGE DATA */
     // FIXME mgmtFee & taxes are separate OS fields - users shouldn't be able to change them?
     currentMgmtFee () {
-      return ((this.effectiveGrossIncome / 100) * (this.selectedValuation.mgmtFee.value || 0)).toFixed(0)
+      if (this.mgmtFee) {
+        return ((this.effectiveGrossIncome / 100) * (this.mgmtFee.current || 0)).toFixed(0)
+      }
+      return 0
     },
 
     potentialMgmtFee () {
-      return ((this.potentialGrossIncome / 100) * (this.selectedValuation.mgmtFee.value || 0)).toFixed(0)
+      if (this.mgmtFee) {
+        return ((this.potentialGrossIncome / 100) * (this.mgmtFee.potential || 0)).toFixed(0)
+      }
+      return 0
     },
 
     taxes () {
-      return ((this.selectedValuation.price / 100) * (this.selectedValuation.taxes.value || 0)).toFixed(0)
+      return ((this.currentPackage.price / 100) * (this.currentPackage.taxes.value || 0)).toFixed(0)
     },
 
     /* TOTAL expenses & incomes */
@@ -230,25 +238,24 @@ export default {
     // stats for side form
     stats () {
       let currentCapRate, potentialCapRate, currentGrm, potentialGrm
-
-      if (!this.selectedValuation.price) {
+      if (!this.currentPackage.price) {
         currentCapRate = 'n/a'
         potentialCapRate = 'n/a'
       } else {
-        currentCapRate = (this.currentNetOperatingIncome / this.selectedValuation.price * 100).toFixed(2) + '%'
-        potentialCapRate = (this.potentialNetOperatingIncome / this.selectedValuation.price * 100).toFixed(2) + '%'
+        currentCapRate = (this.currentNetOperatingIncome / this.currentPackage.price * 100).toFixed(2) + '%'
+        potentialCapRate = (this.potentialNetOperatingIncome / this.currentPackage.price * 100).toFixed(2) + '%'
       }
 
       if (!this.os.grossRentCurrent) {
         currentGrm = 'n/a'
       } else {
-        currentGrm = (this.selectedValuation.price / this.os.grossRentCurrent).toFixed(2)
+        currentGrm = (this.currentPackage.price / this.os.grossRentCurrent).toFixed(2)
       }
 
       if (!this.os.grossRentPotential) {
         potentialGrm = 'n/a'
       } else {
-        potentialGrm = (this.selectedValuation.price / this.os.grossRentPotential).toFixed(2)
+        potentialGrm = (this.currentPackage.price / this.os.grossRentPotential).toFixed(2)
       }
 
       return {
@@ -283,33 +290,12 @@ export default {
 
       //     // TODO set percentage values (vacancy, mgmtFee, taxes) in Wip (selectedVacancy)
       //     // this.setWip({
-      //     //   valuation: this.selectedValuation,
+      //     //   valuation: this.currentPackage,
       //     //   id: this.selectedValuationId
       //     // });
       //     // this.setWipOS({ current: this.current, potential: this.potential });
       //     // this.persist();
       router.push(`./packages/${this.$route.params.id}/sales-comparables`);
-    },
-    addItem () {
-      this.$dialog.prompt({
-        title: 'New Expense Line Item',
-        message: 'Please enter the expense name',
-        inputAttrs: {
-          placeholder: 'e.g. Property Tax'
-        },
-        onConfirm: async (value) => {
-          try {
-            await this.$store.dispatch('os/addField', { name: value, operating_statement_id: this.$route.params.id, is_income: false })
-          } catch (err) {
-            this.$toast.open({
-              duration: 3500,
-              message: `Item could not be added: ${err.message}`,
-              position: 'is-bottom',
-              type: 'is-danger'
-            })
-          }
-        }
-      })
     },
     //   formatPercentage (value) {
     //     let val = (value / 10).toFixed(1).replace(',', '.');
@@ -319,6 +305,28 @@ export default {
       return 10
       // return Object.keys(expenses).reduce((acc, key) => acc + expenses[key], 0) + this.taxes
     }
+  },
+
+  async created () {
+    if (!this.packageID || this.packageID === ':id') {
+      // router.push('/')
+    } else {
+      // load data
+      try {
+        await this.$store.dispatch('packages/fetchList')
+        await this.$store.dispatch('os/fetchList', this.packageID)// .then(() => {
+        //   // this.$store.dispatch('os/fetchFields', this.packageID).then(() => {
+        //   this.property = this.propertyByPackageID(this.packageID)
+        //   this.$store.dispatch('propertyUnits/fetchList', this.property.id)
+        //   this.totalSqFt = this.property.total_square_feet || 0
+        // })
+      } catch (e) {
+        console.log(e)
+        router.push('/')
+      }
+    }
+    // expenses: 'os/expenses',
+    // incomes: 'os/incomes',
   }
 }
 </script>
