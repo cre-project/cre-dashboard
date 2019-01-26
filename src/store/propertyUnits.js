@@ -123,11 +123,10 @@ const actions = {
   },
 
   async delete ({ commit }, data) {
-    console.log(data)
     try {
       commit('deleteStart')
       let res = await api.delete(`/properties/${data.propertyID}/property_units/${data.id}`)
-      commit('deleteSuccessful', res.data)
+      commit('deleteSuccessful', data)
       return Promise.resolve(res.data)
     } catch (err) {
       commit('deleteFailed', err)

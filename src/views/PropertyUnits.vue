@@ -113,7 +113,7 @@
       </div>
 
       <b-modal :active.sync="modalOpen" has-modal-card>
-          <unit-modal :property_id="property.id"/>
+          <unit-modal :propertyID="property.id"/>
       </b-modal>
 
       <div class="spaced">
@@ -192,7 +192,7 @@ export default {
           prop.total_square_feet = this.totalSqFt
           await this.$store.dispatch('properties/update', { property: prop })
         }
-        router.push(`/package/${this.$route.params.id}/operating-statement`)
+        router.push(`/package/${this.$route.params.id}/expenses`)
       } catch (err) {
         console.log(err.message)
         this.$toast.open({
