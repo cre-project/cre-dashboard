@@ -10,21 +10,12 @@
   </div>
 </template>
 <script>
-// import { mapState } from 'vuex';
 
 export default {
   computed: {
-    // ...mapState({
-    //   valuationId: state => state.valuations.selectedValuationId,
-    //   userId: state => state.users.currentId
-    // }),
     pdfURL () {
-      return (
-        process.env.PDF_APP +
-        // `{"valuationId": "${this.valuationId}","userId": "${this.userId}"}`
-        `{"valuationId": "","userId": ""}`
-      );
+      return `${process.env.VUE_APP_PDF_APP}/${this.$route.params.id}`
     }
   }
-};
+}
 </script>
