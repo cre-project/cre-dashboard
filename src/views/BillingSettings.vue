@@ -41,12 +41,7 @@ export default {
         if (redirectUrl) {
           window.location = redirectUrl
         } else {
-          this.$toast.open({
-            duration: 3500,
-            message: 'Something went wrong. Please contact our customer support.',
-            position: 'is-bottom',
-            type: 'is-danger'
-          })
+          window.location = 'https://offeringcre.com/free-trial'
         }
       } catch (e) {
         console.log(e)
