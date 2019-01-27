@@ -49,6 +49,7 @@ export default {
 <style scoped>
 .align-left {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
   padding: 0 4em;
 }

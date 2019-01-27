@@ -23,7 +23,7 @@
   margin: auto;
   transition: box-shadow .3s;
   box-shadow: 5px 10px 8px rgba(68, 69, 70, 0.3);
-  max-width: 23em;
+  width:20em;
   margin: 2em;
 }
 
