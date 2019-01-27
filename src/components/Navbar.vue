@@ -8,7 +8,7 @@
   </nav>
 </template>
 <script>
-import { routes, router } from '@/router'
+import { routes } from '@/router'
 
 export default {
   computed: {
@@ -20,9 +20,6 @@ export default {
     path (p) {
       if (this.$route.params.id) {
         return p.replace(':id', this.$route.params.id)
-      } else if (p.indexOf(':id') !== -1) {
-        // no id in params but id in path is required => redirect to dashboard
-        router.push('/')
       }
       return p
     }
