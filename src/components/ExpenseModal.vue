@@ -10,7 +10,7 @@
             <b-field label="Expense">
               <input
                 input
-                v-model="label"/>
+                v-model="name"/>
             </b-field>
 
             <b-field label="Current Value">
@@ -58,7 +58,7 @@ export default {
 
   data: function () {
     return {
-      label: '',
+      name: '',
       current_value: 0,
       potential_value: 0
     }
@@ -70,7 +70,7 @@ export default {
         const newExpense = {
           current_value: this.current_value,
           potential_value: this.potential_value,
-          name: this.label,
+          name: this.name,
           is_income: false
         }
         if (this.isEditing) {
@@ -94,7 +94,7 @@ export default {
 
   created () {
     if (this.expense) {
-      this.label = this.expense.label
+      this.name = this.expense.name
       this.current_value = this.expense.current_value
       this.potential_value = this.expense.potential_value
     }

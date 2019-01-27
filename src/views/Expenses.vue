@@ -5,7 +5,7 @@
         style="margin-right: 2em; margin-bottom: 3em;"
       >
         <h1 class="subtitle is-size-4 has-text-weight-semibold">List of Expenses</h1>
-        <p class="subtitle">Edit, add, or remove expenses associated with this property.</p>
+        <p class="subtitle">Edit, add, or remove expense line items associated with this property.</p>
       </div>
 
       <b-table
@@ -22,16 +22,7 @@
             class="p-t-1-3"
             sortable
           >
-            {{ props.row.label }}
-          </b-table-column>
-
-          <b-table-column
-            class="p-t-1-3"
-            label="Percentage"
-            sortable
-            centered
-          >
-            {{ props.row.percent ?  props.row.percent + '%' : '-' }}
+            {{ props.row.name }}
           </b-table-column>
 
           <b-table-column
@@ -101,15 +92,13 @@
 </template>
 <script>
 import ExpenseModal from '@/components/ExpenseModal'
-import { defaultExpenses } from '@/store/osFields'
 import { router } from './../router'
 import { mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
-      modalOpen: false,
-      expenses: defaultExpenses
+      modalOpen: false
     }
   },
 
@@ -119,7 +108,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      osByPackageID: 'os/byPackageID'
+      osByPackageID: 'os/byPackageID',
+      expenses: 'os/expenses'
     }),
 
     packageID () {
@@ -139,7 +129,7 @@ export default {
           if (!e.id) {
             // unsaved expense
             e.is_income = false
-            this.$store.dispatch('os/addField', { expense: e, osID: this.os().id, packageID: this.packageID })
+            this.$store.dispatch('os/addField', { expense: e, osID: this.os.id, packageID: this.packageID })
           }
         }))
         router.push(`/package/${this.$route.params.id}/operating-statement`)
@@ -164,9 +154,7 @@ export default {
         onConfirm: async () => {
           try {
             if (expense.id) {
-              // TODO call API & delete
-              // await this.$store.dispatch('propertyUnits/delete', { propertyID: this.property.id, id: unitID })
-              console.log('deleted expense')
+              await this.$store.dispatch('os/deleteField', { packageID: this.packageID, osID: this.os.id, field: expense })
             } else {
               this.expenses = this.expenses.filter(e => e !== expense)
             }
@@ -216,6 +204,7 @@ export default {
         if (!this.os) {
           await this.$store.dispatch('os/create', this.packageID)
         }
+        await this.$store.dispatch('os/fetchFields', { packageID: this.packageID, osID: this.os.id })
       } catch (e) {
         console.log(e)
         router.push('/')
