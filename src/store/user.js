@@ -202,9 +202,9 @@ const actions = {
   async activate ({ commit }, data) {
     try {
       commit('activateStart')
-      // let res = await api.post('/user/activate', data)
+      let res = await api.post('/user/activate', data)
       commit('activateSuccessful')
-      return Promise.resolve(data)
+      return Promise.resolve(res.data)
     } catch (err) {
       commit('activateFailed', err.message || err)
       return Promise.reject(err.message || err)
