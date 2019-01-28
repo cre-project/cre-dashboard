@@ -8,7 +8,7 @@
         <input
           :style="item.percent ? 'width: 45%; margin-right: 2em;' : ''"
           class="input is-small"
-          :value="item.label"
+          :value="item.name"
         >
         <vue-numeric
           v-if="item.percent && !item.percentWithButton"
@@ -46,9 +46,9 @@
         separator=","
         :precision="2"
         :minus="false"
-        v-model.number="item.current"
+        v-model.number="item.current_value"
       />
-      <p v-else>{{ item.current | money }}</p>
+      <p v-else>{{ item.current_value | money }}</p>
     </td>
 
     <td>
@@ -60,8 +60,8 @@
         separator=","
         :precision="2"
         :minus="false"
-        v-model.number="item.potential"/>
-      <p v-else>{{ item.potential | money }}</p>
+        v-model.number="item.potential_value"/>
+      <p v-else>{{ item.potential_value | money }}</p>
     </td>
 
     <td>
@@ -98,7 +98,8 @@ export default {
         confirmText: 'Delete',
         onConfirm: async () => {
           try {
-            await this.$store.dispatch('os/deleteField', this.item.id)
+            await this.$store.dispatch('os/deleteField', { packageID: this.$route.params.id, osID: this.item.operating_statement_id, field: this.item })
+            this.$emit('deleted', this.item)
           } catch (err) {
             this.$toast.open({
               duration: 3500,

@@ -47,6 +47,10 @@ export default {
     stats: {
       type: Object,
       required: true
+    },
+    property: {
+      type: Object,
+      required: true
     }
   },
   data () {
@@ -56,10 +60,6 @@ export default {
   computed: {
     ...mapState({ os: state => state.os.operatingStatement }),
     ...mapGetters({ packageByID: 'packages/byID', propertyByPackageID: 'properties/byPackageID' }),
-    property () {
-      let pkg = this.packageByID(this.$route.params.id)
-      return this.propertyByPackageID(pkg.id)
-    },
 
     price () {
       return this.property.price || 0

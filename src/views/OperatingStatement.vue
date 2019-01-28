@@ -23,8 +23,8 @@
                 class="l-align bold"
                 colspan="2"
               >GROSS POTENTIAL RENT</td>
-              <td>{{ os.grossRentCurrent || 0 | money }}</td>
-              <td>{{ os.grossRentPotential || 0 | money }}</td>
+              <td>{{ currentGrossRent | money }}</td>
+              <td>{{ potentialGrossRent | money }}</td>
               <td/>
             </tr>
             <tr>
@@ -42,11 +42,11 @@
               </td>
               <td>
                 -
-                <span id="vacancy-current">{{ (currentVacancy || 0) | money }}</span>
+                <span id="vacancy-current">{{ currentVacancy | money }}</span>
               </td>
               <td>
                 -
-                <span id="vacancy-future">{{ (potentialVacancy || 0) | money }}</span>
+                <span id="vacancy-future">{{ potentialVacancy | money }}</span>
               </td>
               <td/>
             </tr>
@@ -65,6 +65,7 @@
               v-for="(income, index) in incomes"
               :item="income"
               :key="'i' + index"
+              @deleted="deleted"
             />
 
             <tr>
@@ -94,6 +95,7 @@
               v-for="(expense, index) in expenses"
               :item="expense"
               :key="index"
+              @deleted="deleted"
             />
 
             <tr/>
@@ -131,12 +133,13 @@
       <side-form
         class="column"
         :stats="stats"
+        :property="property"
       ></side-form>
     </div>
   </div>
 </template>
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { router } from './../router'
 import SideForm from '@/components/SideForm'
 import LineItem from '@/components/OSLineItem'
@@ -145,7 +148,9 @@ export default {
   data () {
     return {
       incomes: [],
-      expenses: []
+      expenses: [],
+      os: {},
+      property: {}
     }
   },
 
@@ -155,76 +160,108 @@ export default {
   },
 
   computed: {
-    ...mapState({ os: state => state.os.operatingStatement }),
     ...mapGetters({
       packageByID: 'packages/byID',
-      calculatedValues: 'os/calculatedValues'
+      osByPackageID: 'os/byPackageID',
+      osExpenses: 'os/expenses',
+      osIncomes: 'os/incomes',
+      propertyByPackageID: 'properties/byPackageID'
     }),
 
     packageID () {
       return this.$route.params.id
     },
 
-    currentPackage () {
-      return this.packageByID(this.packageID)
-    },
-
-    mgmtFee () {
-      return this.expenses.filter(field => field.label === 'Management Fee')[0] || null
-    },
-
     /** CALCULATED VALUES */
+    calculated () {
+      let os = this.os || {}
+      let otherIncome = this.incomes[0] || { current: 0, potential: 0 }
+      let vacancy = os.vacancy || 0
+
+      // TODO the rent comes from property units
+      let currentRent = os && os.rent_current ? os.rent_current : 0
+      let potentialRent = os && os.rent_potential ? os.rent_potential : 0
+
+      let currentVacancy = ((currentRent / 100) * vacancy)
+      let potentialVacancy = ((potentialRent / 100) * vacancy)
+
+      // actual income coming from rent
+      let currentEffectiveRent = (currentRent - currentVacancy)
+      let potentialEffectiveRent = (potentialRent - potentialVacancy)
+
+      // effective rental income + other income
+      let effectiveGrossIncome = (currentEffectiveRent + otherIncome.current)
+      let potentialGrossIncome = (potentialEffectiveRent + otherIncome.potential)
+
+      return {
+        currentVacancy: currentVacancy,
+        potentialVacancy: potentialVacancy,
+        currentEffectiveRent: currentEffectiveRent,
+        potentialEffectiveRent: potentialEffectiveRent,
+        currentGrossRent: currentRent,
+        potentialGrossRent: potentialRent,
+        effectiveGrossIncome: effectiveGrossIncome,
+        potentialGrossIncome: potentialGrossIncome
+      }
+    },
     currentVacancy () {
-      return this.calculatedValues.currentVacancy
+      return this.calculated.currentVacancy
     },
 
     potentialVacancy () {
-      return this.calculatedValues.potentialVacancy
+      return this.calculated.potentialVacancy
     },
 
     currentEffectiveRent () {
-      return this.calculatedValues.currentEffectiveRent
+      return this.calculated.currentEffectiveRent
     },
 
     potentialEffectiveRent () {
-      return this.calculatedValues.potentialEffectiveRent
+      return this.calculated.potentialEffectiveRent
+    },
+
+    currentGrossRent () {
+      return this.calculated.currentGrossRent
+    },
+
+    potentialGrossRent () {
+      return this.calculated.potentialGrossRent
     },
 
     effectiveGrossIncome () {
-      return this.calculatedValues.effectiveGrossIncome
+      return this.calculated.effectiveGrossIncome
     },
 
     potentialGrossIncome () {
-      return this.calculatedValues.potentialGrossIncome
+      return this.calculated.potentialGrossIncome
     },
 
-    /** CALCULATIONS BASED ON OS CALCULATED VALUES & PACKAGE DATA */
-    // FIXME mgmtFee & taxes are separate OS fields - users shouldn't be able to change them?
+    /** CALCULATIONS BASED ON OS CALCULATED VALUES & OS DATA */
     currentMgmtFee () {
-      if (this.mgmtFee) {
-        return ((this.effectiveGrossIncome / 100) * (this.mgmtFee.current || 0)).toFixed(0)
+      if (this.os.mgmt_fee) {
+        return (this.effectiveGrossIncome || 0 / 100) * (this.os.mgmt_fee || 0)
       }
       return 0
     },
 
     potentialMgmtFee () {
-      if (this.mgmtFee) {
-        return ((this.potentialGrossIncome / 100) * (this.mgmtFee.potential || 0)).toFixed(0)
+      if (this.os.mgmt_fee) {
+        return (this.potentialGrossIncome || 0 / 100) * (this.os.mgmt_fee || 0)
       }
       return 0
     },
 
     taxes () {
-      return ((this.currentPackage.price / 100) * (this.currentPackage.taxes.value || 0)).toFixed(0)
+      return (this.property.price || 0 / 100) * (this.os.taxes || 0)
     },
 
     /* TOTAL expenses & incomes */
     totalExpensesCurrent () {
-      return this.sum(this.expenses, 'current') + this.currentMgmtFee
+      return this.sum('current_value') + this.currentMgmtFee
     },
 
     totalExpensesPotential () {
-      return this.sum(this.expenses, 'potential') + this.potentialMgmtFee
+      return this.sum('potential_value') + this.potentialMgmtFee
     },
 
     currentNetOperatingIncome () {
@@ -238,24 +275,25 @@ export default {
     // stats for side form
     stats () {
       let currentCapRate, potentialCapRate, currentGrm, potentialGrm
-      if (!this.currentPackage.price) {
+      if (!this.property.price) {
         currentCapRate = 'n/a'
         potentialCapRate = 'n/a'
       } else {
-        currentCapRate = (this.currentNetOperatingIncome / this.currentPackage.price * 100).toFixed(2) + '%'
-        potentialCapRate = (this.potentialNetOperatingIncome / this.currentPackage.price * 100).toFixed(2) + '%'
+        currentCapRate = ((this.currentNetOperatingIncome / this.property.price) * 100).toFixed(2) + '%'
+        potentialCapRate = ((this.potentialNetOperatingIncome / this.property.price) * 100).toFixed(2) + '%'
       }
 
-      if (!this.os.grossRentCurrent) {
+      // TODO rent should come from 'calculated' above - should if be gross or effective rent?
+      if (!this.os.rent_current) {
         currentGrm = 'n/a'
       } else {
-        currentGrm = (this.currentPackage.price / this.os.grossRentCurrent).toFixed(2)
+        currentGrm = (this.property.price / this.os.rent_current).toFixed(2)
       }
 
-      if (!this.os.grossRentPotential) {
+      if (!this.os.rent_potential) {
         potentialGrm = 'n/a'
       } else {
-        potentialGrm = (this.currentPackage.price / this.os.grossRentPotential).toFixed(2)
+        potentialGrm = (this.property.price / this.os.rent_potential).toFixed(2)
       }
 
       return {
@@ -268,6 +306,10 @@ export default {
   },
   methods: {
     save () {
+      // TODO update all OS fields
+
+      // TODO save OS changes (taxes, mgmt fee, vacancy)
+
       //     this.current.vacancy = this.currentVacancy;
       //     this.current.effectiveRent = this.currentEffectiveRent || 0;
       //     this.current.effectiveGrossIncome = this.effectiveGrossIncome;
@@ -276,7 +318,7 @@ export default {
       //     this.current.netOperatingIncome = this.currentNetOperatingIncome;
       //     this.current.capRate = this.currentCapRate;
       //     this.current.grm = this.currentGrm;
-      //     this.current.grossRent = this.grossRentCurrent;
+      //     this.current.grossRent = this.rent_current;
 
       //     this.potential.vacancy = this.potentialVacancy;
       //     this.potential.effectiveRent = this.potentialEffectiveRent || 0;
@@ -286,7 +328,7 @@ export default {
       //     this.potential.netOperatingIncome = this.potentialNetOperatingIncome;
       //     this.potential.capRate = this.potentialCapRate;
       //     this.potential.grm = this.potentialGrm;
-      //     this.potential.grossRent = this.grossRentPotential;
+      //     this.potential.grossRent = this.rent_potential;
 
       //     // TODO set percentage values (vacancy, mgmtFee, taxes) in Wip (selectedVacancy)
       //     // this.setWip({
@@ -297,36 +339,66 @@ export default {
       //     // this.persist();
       router.push(`./packages/${this.$route.params.id}/sales-comparables`);
     },
+
+    deleted (item) {
+      this.expenses = this.expenses.filter(e => e.id !== item.id)
+    },
+
+    increase (field) {
+      let oldValue = this.os[field]
+
+      if (oldValue) {
+        this.$set(this.os, field, oldValue + 1)
+      } else {
+        this.$set(this.os, field, 1)
+      }
+    },
+
+    decrease (field) {
+      let oldValue = this.os[field]
+
+      if (oldValue) {
+        this.$set(this.os, field, Math.max(oldValue - 1, 0))
+      } else {
+        this.$set(this.os, field, 0)
+      }
+    },
+
+    sum (t) {
+      return this.expenses.reduce((acc, expense) => acc + (expense[t] || 0), 0) + this.taxes
+    }
     //   formatPercentage (value) {
     //     let val = (value / 10).toFixed(1).replace(',', '.');
     //     return val.toString().replace(/\B(?=(\d{1})+(?!\d))/g, ',');
     //   },
-    sum (expenses) {
-      return 10
-      // return Object.keys(expenses).reduce((acc, key) => acc + expenses[key], 0) + this.taxes
-    }
   },
 
   async created () {
     if (!this.packageID || this.packageID === ':id') {
-      // router.push('/')
+      router.push('/')
     } else {
-      // load data
       try {
-        await this.$store.dispatch('packages/fetchList')
-        await this.$store.dispatch('os/fetchList', this.packageID)// .then(() => {
-        //   // this.$store.dispatch('os/fetchFields', this.packageID).then(() => {
-        //   this.property = this.propertyByPackageID(this.packageID)
-        //   this.$store.dispatch('propertyUnits/fetchList', this.property.id)
-        //   this.totalSqFt = this.property.total_square_feet || 0
-        // })
+        await this.$store.dispatch('os/fetchList', this.packageID)
+        let os = this.osByPackageID(this.packageID)
+
+        if (!os) {
+          os = await this.$store.dispatch('os/create', this.packageID)
+        }
+
+        await Promise.all([
+          this.$store.dispatch('os/fetchFields', { packageID: this.packageID, osID: os.id }),
+          this.$store.dispatch('properties/fetchList')
+        ])
+        // fill up local objects
+        this.os = os
+        this.property = this.propertyByPackageID(this.packageID)
+        this.expenses = this.osExpenses
+        this.incomes = this.osIncomes
       } catch (e) {
         console.log(e)
         router.push('/')
       }
     }
-    // expenses: 'os/expenses',
-    // incomes: 'os/incomes',
   }
 }
 </script>

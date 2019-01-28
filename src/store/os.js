@@ -1,6 +1,17 @@
 import Vue from 'vue'
 import api from './../api'
 
+const defaultFields = [
+  { name: 'Insurance', current_value: 0, potential_value: 0 },
+  { name: 'Utilities - Electric', current_value: 0, potential_value: 0 },
+  { name: 'Utilities - Water & Sewer', current_value: 0, potential_value: 0 },
+  { name: 'Garbage', current_value: 0, potential_value: 0 },
+  { name: 'Repairs & Maintenance', current_value: 0, potential_value: 0 },
+  { name: 'Landscaping', current_value: 0, potential_value: 0 },
+  { name: 'Other Expenses', current_value: 0, potential_value: 0 },
+  { name: 'Other Incomes', current_value: 0, potential_value: 0, is_income: true }
+]
+
 const state = {
   operatingStatements: {},
 
@@ -177,10 +188,16 @@ const actions = {
     }
   },
 
-  async create ({ commit }, packageID) {
+  async create ({ commit, dispatch }, packageID) {
     try {
       commit('createStart')
       let res = await api.post(`/packages/${packageID}/operating_statements`)
+      defaultFields.forEach(async (field) => {
+      // await Promise.all(defaultFields.forEach(field => {
+        // dispatch('os/addField', { packageID: packageID, osID: res.data.id, field: field })
+        let r = await api.post(`packages/${packageID}/operating_statements/${res.data.id}/operating_statement_fields`, { operating_statement_field: field })
+        commit('addFieldSuccessful', r.data)
+      })
       commit('createSuccessful', res.data)
       return res.data
     } catch (err) {
@@ -201,10 +218,10 @@ const actions = {
     }
   },
 
-  async fetchFields ({ commit }, packageID) {
+  async fetchFields ({ commit }, data) {
     try {
       commit('fetchFieldsStart')
-      let res = await api.get(`/packages/${packageID}/operating_statements/${packageID}/operating_statement_fields`)
+      let res = await api.get(`/packages/${data.packageID}/operating_statements/${data.osID}/operating_statement_fields`)
       commit('fetchFieldsSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
@@ -241,7 +258,7 @@ const actions = {
     try {
       commit('deleteFieldStart')
       let res = await api.delete(`packages/${data.packageID}/operating_statements/${data.osID}/operating_statement_fields/${data.field.id}`, { operating_statement_field: data.field })
-      commit('deleteFieldSuccessful', data.id)
+      commit('deleteFieldSuccessful', res.data.id)
       return res
     } catch (err) {
       commit('deleteFieldFailed', err)
@@ -262,36 +279,6 @@ const getters = {
 
   incomes: state => {
     return Object.values(state.osFields).filter(field => field.is_income)
-  },
-
-  /** Calculations for operating statement values */
-  calculatedValues: state => id => {
-    let os = Object.values(state.operatingStatements).filter(os => os.id === id)[0]
-    let otherIncome = Object.values(state.osFields).filter(field => field.is_income)[0] || 0
-
-    let currentRent = os.grossRentCurrent || 0
-    let potentialRent = os.grossRentPotential || 0
-    let vacancy = os.vacancy || 0
-
-    let currentVacancy = ((currentRent / 100) * vacancy)// .toFixed(0)
-    let potentialVacancy = ((potentialRent / 100) * vacancy)// .toFixed(0)
-
-    // actual income coming from rent
-    let currentEffectiveRent = (currentRent - currentVacancy)// .toFixed(0)
-    let potentialEffectiveRent = (potentialRent - potentialVacancy)// .toFixed(0)
-
-    // effective rental income + other income
-    let effectiveGrossIncome = (currentEffectiveRent + otherIncome.current)// .toFixed(0)
-    let potentialGrossIncome = (potentialEffectiveRent + otherIncome.potential)// .toFixed(0)
-
-    return {
-      currentVacancy: currentVacancy,
-      potentialVacancy: potentialVacancy,
-      currentEffectiveRent: currentEffectiveRent,
-      potentialEffectiveRent: potentialEffectiveRent,
-      effectiveGrossIncome: effectiveGrossIncome,
-      potentialGrossIncome: potentialGrossIncome
-    }
   }
 
 }
