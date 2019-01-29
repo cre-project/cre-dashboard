@@ -153,7 +153,13 @@
                     >
                   </label>
                 </div>
-                <image-upload label="Property Picture" :url="props.row.image_url" :handler="`${comparableEndpoint}/updateImage`" :entityID="props.row.id"/>
+                <image-upload
+                label="Property Picture"
+                :url="props.row.image_url"
+                :handler="`${comparableEndpoint}/updateImage`"
+                :entityID="props.row.id"
+                :isWip="props.row.id && props.row.id !== 'new' ? false : true"
+                @imageSaved="setImage"/>
               </form>
               <!-- part 2 of the form -->
               <form id="form-2">
@@ -404,6 +410,10 @@ export default {
     next () {
       let next = this.compType === 'sale' ? 'rent-comparables' : 'preview'
       router.push(`/package/${this.$route.params.id}/${next}`)
+    },
+
+    setImage (url) {
+      this.wipComp.image_url = url
     },
 
     async add () {

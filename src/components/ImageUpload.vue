@@ -38,6 +38,10 @@ export default {
     entityID: {
       type: String,
       default: null
+    },
+    isWip: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -76,9 +80,15 @@ export default {
             // file uploaded successfully
             let response = JSON.parse(xhr.responseText)
             let url = response.secure_url
-            // store image URL in the database
-            let data = vm.entityID ? { id: vm.entityID, url: url } : url
-            vm.$store.dispatch(vm.handler, data)
+
+            if (vm.isWip) {
+              // yet unsaved entity => emit event to the parent
+              vm.$emit('imageSaved', url)
+            } else {
+              // store image URL in the database
+              let data = vm.entityID ? { id: vm.entityID, url: url } : url
+              vm.$store.dispatch(vm.handler, data)
+            }
           } catch (e) {
             vm.showError(`Cloudinary response could not be handled: ${e}`)
           }
