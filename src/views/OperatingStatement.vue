@@ -165,11 +165,27 @@ export default {
       osByPackageID: 'os/byPackageID',
       osExpenses: 'os/expenses',
       osIncomes: 'os/incomes',
-      propertyByPackageID: 'properties/byPackageID'
+      propertyByPackageID: 'properties/byPackageID',
+      unitsByPropertyID: 'propertyUnits/listByPropertyID'
     }),
 
     packageID () {
       return this.$route.params.id
+    },
+
+    propertyUnits () {
+      if (this.property && this.property.id) {
+        return this.unitsByPropertyID(this.property.id) || []
+      }
+      return []
+    },
+
+    currentRent () {
+      return this.propertyUnits.reduce((acc, unit) => acc + (unit.current_rent || 0), 0)
+    },
+
+    potentialRent () {
+      return this.propertyUnits.reduce((acc, unit) => acc + (unit.potential_rent || 0), 0)
     },
 
     /** CALCULATED VALUES */
@@ -178,16 +194,12 @@ export default {
       let otherIncome = this.incomes[0] || { current: 0, potential: 0 }
       let vacancy = os.vacancy || 0
 
-      // TODO the rent comes from property units
-      let currentRent = os && os.rent_current ? os.rent_current : 0
-      let potentialRent = os && os.rent_potential ? os.rent_potential : 0
-
-      let currentVacancy = ((currentRent / 100) * vacancy)
-      let potentialVacancy = ((potentialRent / 100) * vacancy)
+      let currentVacancy = ((this.currentRent / 100) * vacancy)
+      let potentialVacancy = ((this.potentialRent / 100) * vacancy)
 
       // actual income coming from rent
-      let currentEffectiveRent = (currentRent - currentVacancy)
-      let potentialEffectiveRent = (potentialRent - potentialVacancy)
+      let currentEffectiveRent = (this.currentRent - currentVacancy)
+      let potentialEffectiveRent = (this.potentialRent - potentialVacancy)
 
       // effective rental income + other income
       let effectiveGrossIncome = (currentEffectiveRent + otherIncome.current)
@@ -198,8 +210,8 @@ export default {
         potentialVacancy: potentialVacancy,
         currentEffectiveRent: currentEffectiveRent,
         potentialEffectiveRent: potentialEffectiveRent,
-        currentGrossRent: currentRent,
-        potentialGrossRent: potentialRent,
+        currentGrossRent: this.currentRent,
+        potentialGrossRent: this.potentialRent,
         effectiveGrossIncome: effectiveGrossIncome,
         potentialGrossIncome: potentialGrossIncome
       }
@@ -283,17 +295,17 @@ export default {
         potentialCapRate = ((this.potentialNetOperatingIncome / this.property.price) * 100).toFixed(2) + '%'
       }
 
-      // TODO rent should come from 'calculated' above - should if be gross or effective rent?
-      if (!this.os.rent_current) {
+      // GRM = gross rent multiplier
+      if (!this.currentRent) {
         currentGrm = 'n/a'
       } else {
-        currentGrm = (this.property.price / this.os.rent_current).toFixed(2)
+        currentGrm = (this.property.price / this.currentRent).toFixed(2)
       }
 
-      if (!this.os.rent_potential) {
+      if (!this.potentialRent) {
         potentialGrm = 'n/a'
       } else {
-        potentialGrm = (this.property.price / this.os.rent_potential).toFixed(2)
+        potentialGrm = (this.property.price / this.potentialRent).toFixed(2)
       }
 
       return {
@@ -392,6 +404,7 @@ export default {
         // fill up local objects
         this.os = os
         this.property = this.propertyByPackageID(this.packageID)
+        this.$store.dispatch('propertyUnits/fetchList', this.property.id)
         this.expenses = this.osExpenses
         this.incomes = this.osIncomes
       } catch (e) {
