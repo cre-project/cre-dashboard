@@ -441,6 +441,12 @@ export default {
     },
 
     async deleteComp (id) {
+      if (!id || id === 'new') {
+        this.wipComp = JSON.parse(JSON.stringify(emptyComparable))
+        this.detailed = []
+        this.comparables.splice(-1, 1)
+        return
+      }
       const vm = this
       this.$dialog.confirm({
         title: 'Deleting Comparable',
@@ -454,7 +460,7 @@ export default {
           } catch (err) {
             this.$toast.open({
               duration: 3500,
-              message: `Item could not be deleted: ${err.message}`,
+              message: `Item could not be deleted: ${err}`,
               position: 'is-bottom',
               type: 'is-danger'
             })
