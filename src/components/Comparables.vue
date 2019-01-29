@@ -427,7 +427,7 @@ export default {
           prop.package_id = this.packageID
           await this.$store.dispatch(`${this.comparableEndpoint}/create`, prop)
         }
-        this.wipComp = Object.assign({}, emptyComparable)
+        this.wipComp = JSON.parse(JSON.stringify(emptyComparable))
         this.detailed = []
       } catch (err) {
         console.log(err)
@@ -482,7 +482,7 @@ export default {
     },
 
     addRow () {
-      let c = Object.assign({}, emptyComparable)
+      let c = JSON.parse(JSON.stringify(emptyComparable))
       c.id = 'new'
       this.detailed = ['new']
       this.wipComp = c
