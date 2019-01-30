@@ -50,12 +50,6 @@ export const routes = [
     component: () => import('@/views/PropertyUnits')
   },
   {
-    path: '/package/:id/expenses',
-    name: 'Expenses',
-    meta: { layout: 'default', requiresAuth: true, isNav: true },
-    component: () => import('@/views/Expenses')
-  },
-  {
     path: '/package/:id/operating-statement',
     name: 'Operating Statement',
     meta: { layout: 'default', requiresAuth: true, isNav: true },
