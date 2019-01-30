@@ -148,9 +148,7 @@ export default {
   data () {
     return {
       incomes: [],
-      expenses: [],
-      os: {},
-      property: {}
+      expenses: []
     }
   },
 
@@ -161,7 +159,6 @@ export default {
 
   computed: {
     ...mapGetters({
-      packageByID: 'packages/byID',
       osByPackageID: 'os/byPackageID',
       osExpenses: 'os/expenses',
       osIncomes: 'os/incomes',
@@ -173,6 +170,14 @@ export default {
       return this.$route.params.id
     },
 
+    os () {
+      return this.osByPackageID(this.packageID)
+    },
+
+    property () {
+      return this.propertyByPackageID(this.packageID)
+    },
+
     propertyUnits () {
       if (this.property && this.property.id) {
         return this.unitsByPropertyID(this.property.id) || []
@@ -180,85 +185,60 @@ export default {
       return []
     },
 
-    currentRent () {
-      return this.propertyUnits.reduce((acc, unit) => acc + (unit.current_rent || 0), 0)
+    vacancy () {
+      return this.os.vacancy || 0
     },
 
-    potentialRent () {
-      return this.propertyUnits.reduce((acc, unit) => acc + (unit.potential_rent || 0), 0)
+    otherIncome () {
+      return this.incomes[0] || { current: 0, potential: 0 }
     },
 
     /** CALCULATED VALUES */
-    calculated () {
-      let os = this.os || {}
-      let otherIncome = this.incomes[0] || { current: 0, potential: 0 }
-      let vacancy = os.vacancy || 0
-
-      let currentVacancy = ((this.currentRent / 100) * vacancy)
-      let potentialVacancy = ((this.potentialRent / 100) * vacancy)
-
-      // actual income coming from rent
-      let currentEffectiveRent = (this.currentRent - currentVacancy)
-      let potentialEffectiveRent = (this.potentialRent - potentialVacancy)
-
-      // effective rental income + other income
-      let effectiveGrossIncome = (currentEffectiveRent + otherIncome.current)
-      let potentialGrossIncome = (potentialEffectiveRent + otherIncome.potential)
-
-      return {
-        currentVacancy: currentVacancy,
-        potentialVacancy: potentialVacancy,
-        currentEffectiveRent: currentEffectiveRent,
-        potentialEffectiveRent: potentialEffectiveRent,
-        currentGrossRent: this.currentRent,
-        potentialGrossRent: this.potentialRent,
-        effectiveGrossIncome: effectiveGrossIncome,
-        potentialGrossIncome: potentialGrossIncome
-      }
-    },
-    currentVacancy () {
-      return this.calculated.currentVacancy
-    },
-
-    potentialVacancy () {
-      return this.calculated.potentialVacancy
-    },
-
-    currentEffectiveRent () {
-      return this.calculated.currentEffectiveRent
-    },
-
-    potentialEffectiveRent () {
-      return this.calculated.potentialEffectiveRent
-    },
-
     currentGrossRent () {
-      return this.calculated.currentGrossRent
+      return this.propertyUnits.reduce((acc, unit) => acc + (unit.current_rent || 0), 0)
     },
 
     potentialGrossRent () {
-      return this.calculated.potentialGrossRent
+      return this.propertyUnits.reduce((acc, unit) => acc + (unit.potential_rent || 0), 0)
     },
 
+    currentVacancy () {
+      return (this.currentGrossRent / 100) * this.vacancy
+    },
+
+    potentialVacancy () {
+      return (this.potentialGrossRent / 100) * this.vacancy
+    },
+
+    // actual income coming from rent
+    currentEffectiveRent () {
+      return this.currentGrossRent - this.currentVacancy
+    },
+
+    potentialEffectiveRent () {
+      return this.potentialGrossRent - this.potentialVacancy
+    },
+
+    // effective rental income + other income
     effectiveGrossIncome () {
-      return this.calculated.effectiveGrossIncome
+      return this.currentEffectiveRent + this.otherIncome.current
     },
 
     potentialGrossIncome () {
-      return this.calculated.potentialGrossIncome
+      return this.potentialEffectiveRent + this.otherIncome.potential
     },
 
     /** CALCULATIONS BASED ON OS CALCULATED VALUES & OS DATA */
     currentMgmtFee () {
-      if (this.os.mgmt_fee) {
-        return (this.effectiveGrossIncome || 0 / 100) * (this.os.mgmt_fee || 0)
+      if (this.os.mgmt_fee && this.os.mgmt_fee !== 0) {
+        return (this.effectiveGrossIncome || 0 / 100) * this.os.mgmt_fee
       }
       return 0
     },
 
     potentialMgmtFee () {
-      if (this.os.mgmt_fee) {
-        return (this.potentialGrossIncome || 0 / 100) * (this.os.mgmt_fee || 0)
+      if (this.os.mgmt_fee && this.os.mgmt_fee !== 0) {
+        return (this.potentialGrossIncome || 0 / 100) * this.os.mgmt_fee
       }
       return 0
     },
@@ -296,16 +276,16 @@ export default {
       }
 
       // GRM = gross rent multiplier
-      if (!this.currentRent) {
+      if (!this.currentGrossRent) {
         currentGrm = 'n/a'
       } else {
-        currentGrm = (this.property.price / this.currentRent).toFixed(2)
+        currentGrm = (this.property.price / this.currentGrossRent).toFixed(2)
       }
 
-      if (!this.potentialRent) {
+      if (!this.potentialGrossRent) {
         potentialGrm = 'n/a'
       } else {
-        potentialGrm = (this.property.price / this.potentialRent).toFixed(2)
+        potentialGrm = (this.property.price / this.potentialGrossRent).toFixed(2)
       }
 
       return {
@@ -391,20 +371,21 @@ export default {
     } else {
       try {
         await this.$store.dispatch('os/fetchList', this.packageID)
-        let os = this.osByPackageID(this.packageID)
 
-        if (!os) {
-          os = await this.$store.dispatch('os/create', this.packageID)
+        if (!this.os) {
+          await this.$store.dispatch('os/create', this.packageID)
+        }
+
+        if (!this.property.id) {
+          await this.$store.dispatch('properties/fetchList')
         }
 
         await Promise.all([
-          this.$store.dispatch('os/fetchFields', { packageID: this.packageID, osID: os.id }),
-          this.$store.dispatch('properties/fetchList')
+          this.$store.dispatch('os/fetchFields', { packageID: this.packageID, osID: this.os.id }),
+          this.$store.dispatch('propertyUnits/fetchList', this.property.id)
         ])
+
         // fill up local objects
-        this.os = os
-        this.property = this.propertyByPackageID(this.packageID)
-        this.$store.dispatch('propertyUnits/fetchList', this.property.id)
         this.expenses = this.osExpenses
         this.incomes = this.osIncomes
       } catch (e) {

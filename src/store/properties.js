@@ -116,7 +116,7 @@ const actions = {
 
 const getters = {
   byPackageID: state => packageID => {
-    return state.properties[packageID]
+    return state.properties[packageID] || {}
   }
 }
 

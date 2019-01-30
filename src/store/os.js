@@ -270,7 +270,7 @@ const actions = {
 const getters = {
 
   byPackageID: state => packageID => {
-    return Object.values(state.operatingStatements).filter(os => os.package_id === packageID)[0]
+    return Object.values(state.operatingStatements).filter(os => os.package_id === packageID)[0] || {}
   },
 
   expenses: state => {
