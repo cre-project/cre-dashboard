@@ -26,7 +26,7 @@ instance.interceptors.request.use(
 // redirect to login if auth token expired
 instance.interceptors.response.use(null,
   (error) => {
-    if (error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       store.dispatch('user/logout')
       router.replace('/login')
       return Promise.reject(new Error('Your session has expired, please log in again'))

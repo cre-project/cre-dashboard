@@ -181,7 +181,7 @@ const actions = {
       commit('fetchStart')
       let res = await api.get(`/packages/${packageID}/operating_statements`)
       commit('fetchSuccessful', res.data)
-      return res.dat
+      return res.data
     } catch (err) {
       commit('fetchFailed', err.message || err)
       return Promise.reject(err.message || err)

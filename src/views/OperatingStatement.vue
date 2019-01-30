@@ -261,7 +261,7 @@ export default {
     },
 
     otherIncome () {
-      return this.incomes[0] || { current: 0, potential: 0 }
+      return this.incomes[0] || { current_value: 0, potential_value: 0 }
     },
 
     /** CALCULATED VALUES */
@@ -292,11 +292,11 @@ export default {
 
     // effective rental income + other income
     effectiveGrossIncome () {
-      return this.currentEffectiveRent + this.otherIncome.current
+      return this.currentEffectiveRent + this.otherIncome.current_value
     },
 
     potentialGrossIncome () {
-      return this.potentialEffectiveRent + this.otherIncome.potential
+      return this.potentialEffectiveRent + this.otherIncome.potential_value
     },
 
     /** CALCULATIONS BASED ON OS CALCULATED VALUES & OS DATA */
@@ -438,7 +438,7 @@ export default {
       try {
         await this.$store.dispatch('os/fetchList', this.packageID)
 
-        if (!this.os) {
+        if (!this.os || !this.os.id || Object.keys(this.os).length === 0) {
           await this.$store.dispatch('os/create', this.packageID)
         }
 
@@ -448,7 +448,7 @@ export default {
 
         await Promise.all([
           this.$store.dispatch('os/fetchFields', { packageID: this.packageID, osID: this.os.id }),
-          this.$store.dispatch('propertyUnits/fetchList', this.property.id)
+          this.property && this.property.id ? this.$store.dispatch('propertyUnits/fetchList', this.property.id) : Promise.resolve()
         ])
 
         // fill up local objects
