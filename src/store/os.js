@@ -209,7 +209,7 @@ const actions = {
   async update ({ commit }, data) {
     try {
       commit('updateStart')
-      let res = await api.post(`/packages/${data.packageID}/operating_statements`, data.os)
+      let res = await api.put(`/packages/${data.packageID}/operating_statements/${data.os.id}`, data.os)
       commit('updateSuccessful', res.data)
       return res.data
     } catch (err) {

@@ -368,39 +368,34 @@ export default {
     }
   },
   methods: {
-    save () {
-      // TODO update all OS fields
+    async save () {
+      try {
+        // update all OS fields that have changed
+        await Promise.all(this.expenses.map(expense => {
+          if (expense !== this.osExpenses[expense.id]) {
+            return this.$store.dispatch('os/updateField', { packageID: this.packageID, osID: this.os.id, field: expense })
+          }
+        }))
 
-      // TODO save OS changes (taxes, mgmt fee, vacancy)
+        await Promise.all(this.incomes.map(income => {
+          if (income !== this.osIncomes[income.id]) {
+            return this.$store.dispatch('os/updateField', { packageID: this.packageID, osID: this.os.id, field: income })
+          }
+        }))
 
-      //     this.current.vacancy = this.currentVacancy;
-      //     this.current.effectiveRent = this.currentEffectiveRent || 0;
-      //     this.current.effectiveGrossIncome = this.effectiveGrossIncome;
-      //     this.current.mgmtFee = this.currentMgmtFee;
-      //     this.current.totalExpenses = this.totalExpensesCurrent;
-      //     this.current.netOperatingIncome = this.currentNetOperatingIncome;
-      //     this.current.capRate = this.currentCapRate;
-      //     this.current.grm = this.currentGrm;
-      //     this.current.grossRent = this.rent_current;
+        // save OS changes (taxes, mgmt fee, vacancy)
+        await this.$store.dispatch('os/update', { packageID: this.packageID, os: this.os })
 
-      //     this.potential.vacancy = this.potentialVacancy;
-      //     this.potential.effectiveRent = this.potentialEffectiveRent || 0;
-      //     this.potential.effectiveGrossIncome = this.potentialGrossIncome;
-      //     this.potential.mgmtFee = this.potentialMgmtFee;
-      //     this.potential.totalExpenses = this.totalExpensesPotential;
-      //     this.potential.netOperatingIncome = this.potentialNetOperatingIncome;
-      //     this.potential.capRate = this.potentialCapRate;
-      //     this.potential.grm = this.potentialGrm;
-      //     this.potential.grossRent = this.rent_potential;
-
-      //     // TODO set percentage values (vacancy, mgmtFee, taxes) in Wip (selectedVacancy)
-      //     // this.setWip({
-      //     //   valuation: this.currentPackage,
-      //     //   id: this.selectedValuationId
-      //     // });
-      //     // this.setWipOS({ current: this.current, potential: this.potential });
-      //     // this.persist();
-      router.push(`./packages/${this.$route.params.id}/sales-comparables`);
+        router.push(`/package/${this.$route.params.id}/sales-comparables`);
+      } catch (err) {
+        console.log(err)
+        this.$toast.open({
+          duration: 3500,
+          message: 'Something went wrong, please try again or contact customer support',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
     },
 
     newExpenseAdded (item) {
