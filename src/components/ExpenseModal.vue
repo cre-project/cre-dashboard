@@ -67,7 +67,7 @@ export default {
   methods: {
     async save () {
       try {
-        const newExpense = {
+        let newExpense = {
           current_value: this.current_value,
           potential_value: this.potential_value,
           name: this.name,
@@ -77,7 +77,8 @@ export default {
           newExpense.id = this.expense.id
           await this.$store.dispatch('os/updateField', { field: newExpense, packageID: this.packageID, osID: this.osID })
         } else {
-          await this.$store.dispatch('os/addField', { field: newExpense, packageID: this.packageID, osID: this.osID })
+          newExpense = await this.$store.dispatch('os/addField', { field: newExpense, packageID: this.packageID, osID: this.osID })
+          this.$emit('expenseAdded', newExpense)
         }
         this.$parent.close()
       } catch (err) {

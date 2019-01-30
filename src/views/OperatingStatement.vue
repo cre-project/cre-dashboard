@@ -90,6 +90,56 @@
               <th/>
             </tr>
 
+            <!-- OS expense fields - taxes & mgmt fee -->
+            <tr>
+              <td class="l-align" colspan="2">
+                <div class="double-input">
+                  <input
+                    style="width: 45%; margin-right: 2em;"
+                    class="input is-small"
+                    :value="os.taxes_label"
+                  >
+                  <vue-numeric
+                    input
+                    style="width: 30%;"
+                    class="input is-small "
+                    :precision="4"
+                    currency="%"
+                    currency-symbol-position="suffix"
+                    v-model.number="os.taxes"
+                    :minus="false"
+                  />
+                </div>
+              </td>
+              <td><p>{{ taxes | money }}</p></td>
+              <td><p>{{ taxes | money }}</p></td>
+              <td/>
+            </tr>
+
+            <tr>
+              <td>
+                <input
+                  style="width: 45%; margin-right: 2em;"
+                  class="input is-small"
+                  :value="os.mgmt_fee_label"
+                >
+              </td>
+              <td class="setting">
+                <button
+                  class="percent"
+                  @click="decrease('mgmt_fee')"
+                >-</button>
+                 {{ os.mgmt_fee || 0 }}%
+                <button
+                  class="percent"
+                  @click="increase('mgmt_fee')"
+                >+</button>
+              </td>
+              <td><p>{{ currentMgmtFee | money }}</p></td>
+              <td><p>{{ potentialMgmtFee | money }}</p></td>
+              <td/>
+            </tr>
+
             <!-- Expense line items -->
             <line-item
               v-for="(expense, index) in expenses"
@@ -97,6 +147,16 @@
               :key="index"
               @deleted="deleted"
             />
+
+            <tr>
+              <td colspan="3"/>
+              <td>Add Expense Item</td>
+              <td>
+                <i class="material-icons icon is-small clickable"
+                  @click.prevent="modalOpen = true"
+                >add_circle</i>
+              </td>
+            </tr>
 
             <tr/>
 
@@ -122,6 +182,14 @@
             </tr>
           </table>
 
+          <b-modal :active.sync="modalOpen" has-modal-card width="400">
+              <expense-modal
+                :packageID="packageID"
+                :osID="os.id"
+                @expenseAdded="newExpenseAdded"
+              />
+          </b-modal>
+
           <div class="centered m-t-3">
             <button
               class="save"
@@ -143,18 +211,21 @@ import { mapGetters } from 'vuex'
 import { router } from './../router'
 import SideForm from '@/components/SideForm'
 import LineItem from '@/components/OSLineItem'
+import ExpenseModal from '@/components/ExpenseModal'
 
 export default {
   data () {
     return {
       incomes: [],
-      expenses: []
+      expenses: [],
+      modalOpen: false
     }
   },
 
   components: {
-    SideForm: SideForm,
-    LineItem: LineItem
+    SideForm,
+    LineItem,
+    ExpenseModal
   },
 
   computed: {
@@ -332,6 +403,10 @@ export default {
       router.push(`./packages/${this.$route.params.id}/sales-comparables`);
     },
 
+    newExpenseAdded (item) {
+      this.expenses.push(item)
+    },
+
     deleted (item) {
       this.expenses = this.expenses.filter(e => e.id !== item.id)
     },
@@ -359,10 +434,6 @@ export default {
     sum (t) {
       return this.expenses.reduce((acc, expense) => acc + (expense[t] || 0), 0) + this.taxes
     }
-    //   formatPercentage (value) {
-    //     let val = (value / 10).toFixed(1).replace(',', '.');
-    //     return val.toString().replace(/\B(?=(\d{1})+(?!\d))/g, ',');
-    //   },
   },
 
   async created () {
