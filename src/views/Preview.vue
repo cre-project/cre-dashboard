@@ -14,7 +14,7 @@
 export default {
   computed: {
     pdfURL () {
-      return `${process.env.VUE_APP_PDF_APP}/${this.$route.params.id}`
+      return `${process.env.VUE_APP_PDF_APP_URL}/${this.$route.params.id}`
     }
   }
 }
