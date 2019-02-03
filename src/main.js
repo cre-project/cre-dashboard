@@ -24,7 +24,7 @@ Vue.component('settings-layout', Settings)
 Vue.config.productionTip = false
 
 Vue.filter('money', function (value) {
-  return accounting.formatMoney(value)
+  return accounting.formatMoney(value, { precision: 0 })
 })
 
 Vue.use(VueNumeric)

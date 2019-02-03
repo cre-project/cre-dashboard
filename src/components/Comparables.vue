@@ -101,7 +101,7 @@
             centered
             numeric
           >
-            {{ pricePerUnit(props.row) | money }}
+            {{ pricePerUnit(props.row) }}
           </b-table-column>
 
           <b-table-column
@@ -478,16 +478,16 @@ export default {
 
     pricePerUnit (comp) {
       let avg = (comp.sales_price || 0) / (comp.num_units || 1)
-      return avg.toFixed(2)
+      return this.format(avg)
     },
 
     pricePerSf (comp) {
       let avg = (comp.sales_price || 0) / (comp.square_feet || 1)
-      return avg.toFixed(2)
+      return this.format(avg)
     },
 
     format (number) {
-      return formatMoney(number)
+      return formatMoney(number, { precision: 0 })
     },
 
     addRow () {
