@@ -1,15 +1,17 @@
 <template>
   <div class="cre-content no-property">
     <div>
+      <i class="material-icons" style="font-size: 75px;">flash_on</i>
       <h1 class="subtitle is-size-4 has-text-weight-semibold">
-        Please tell us something more about your property first
+        We are all about lightning speed but first things first.<br>
+        Before getting to this step please tell us a bit more about the property.
       </h1>
     </div>
     <div>
       <button
         class="save back"
         @click="goBack"  >
-        Go to property information
+        Let's do it!
       </button>
     </div>
   </div>
@@ -33,6 +35,7 @@ export default {
     align-items: center;
     flex-direction: column;
     padding: 15em;
+    text-align: center;
 }
 
 .back {
