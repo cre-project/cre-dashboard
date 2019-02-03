@@ -107,6 +107,7 @@ const mutations = {
   },
 
   fetchFieldsSuccessful (state, data) {
+    state.osFields = []
     data.forEach(field => {
       Vue.set(state.osFields, field.id, field)
     })
