@@ -17,6 +17,7 @@
               $ <vue-numeric
                 input
                 separator=","
+                :minus="false"
                 v-model="current_value"/>
             </b-field>
 
@@ -24,6 +25,7 @@
               $ <vue-numeric
                 input
                 separator=","
+                :minus="false"
                 v-model="potential_value"/>
             </b-field>
           </div>

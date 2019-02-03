@@ -174,11 +174,12 @@
                   class="narrow"
                   v-if="compType !== 'rent'"
                 >
-                  <div class="narrow">Square Feet</div>
+                  <div class="narrow">Total Square Feet</div>
                   <vue-numeric
                     input
                     class="narrow"
                     separator=","
+                    :minus="false"
                     v-model="props.row.square_feet"
                   ></vue-numeric>
                 </label>
@@ -244,6 +245,7 @@
                     class="half-size"
                     currency="$"
                     separator=","
+                    :minus="false"
                     v-model="props.row.current_rent"
                   ></vue-numeric>
                 </label>
@@ -260,6 +262,7 @@
                     class="narrow"
                     currency="$"
                     separator=","
+                    :minus="false"
                     v-model="props.row.sales_price"
                   ></vue-numeric>
                 </label>

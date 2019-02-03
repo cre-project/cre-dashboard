@@ -39,6 +39,7 @@
                   input
                   class="inline-edit"
                   separator=","
+                  :minus="false"
                   v-model="current_rent"/>
               </b-field>
 
@@ -47,6 +48,7 @@
                   input
                   class="inline-edit"
                   separator=","
+                  :minus="false"
                   v-model="potential_rent"/>
               </b-field>
             </div>
