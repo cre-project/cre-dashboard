@@ -1,209 +1,213 @@
 <template>
-  <div class="cre-content">
-    <div class="columns">
+  <div>
+    <property-missing v-if="!property.id"/>
 
-      <div class="column is-two-thirds">
-        <h1 class="subtitle is-size-4 has-text-weight-bold auto-margin">Operating Statement</h1>
+    <div v-else class="cre-content">
+      <div class="columns">
 
-          <!-- INCOME TABLE -->
-          <table class="os">
-            <thead>
+        <div class="column is-two-thirds">
+          <h1 class="subtitle is-size-4 has-text-weight-bold auto-margin">Operating Statement</h1>
+
+            <!-- INCOME TABLE -->
+            <table class="os">
+              <thead>
+                <tr class="is-grey is-size-6">
+                  <th
+                    class="sub-section l-align bolder"
+                    colspan="2"
+                  >Income</th>
+                  <th class="sub-section">Current</th>
+                  <th class="sub-section">Pro Forma</th>
+                  <th/>
+                </tr>
+              </thead>
+              <tr>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >GROSS POTENTIAL RENT</td>
+                <td>{{ currentGrossRent | money }}</td>
+                <td>{{ potentialGrossRent | money }}</td>
+                <td/>
+              </tr>
+              <tr>
+                <td>Less: Vacancy/Deduction</td>
+                <td class="setting">
+                  <button
+                    class="percent"
+                    @click="decrease('vacancy')"
+                  >-</button>
+                  {{ os.vacancy || 0 }}%
+                  <button
+                    class="percent"
+                    @click="increase('vacancy')"
+                  >+</button>
+                </td>
+                <td>
+                  -
+                  <span id="vacancy-current">{{ currentVacancy | money }}</span>
+                </td>
+                <td>
+                  -
+                  <span id="vacancy-future">{{ potentialVacancy | money }}</span>
+                </td>
+                <td/>
+              </tr>
+              <tr>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >EFFECTIVE RENTAL INCOME</td>
+                <td>{{ currentEffectiveRent | money }}</td>
+                <td>{{ potentialEffectiveRent | money }}</td>
+                <td/>
+              </tr>
+
+              <!-- custom income line items -->
+              <line-item
+                v-for="(income, index) in incomes"
+                :item="income"
+                :key="'i' + index"
+                @deleted="deletedIncome"
+              />
+
+              <tr>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >EFFECTIVE GROSS INCOME</td>
+                <td>{{ effectiveGrossIncome | money }}</td>
+                <td>{{ potentialGrossIncome | money }}</td>
+                <td></td>
+              </tr>
+
+              <tr/>
+
               <tr class="is-grey is-size-6">
                 <th
                   class="sub-section l-align bolder"
                   colspan="2"
-                >Income</th>
+                >Expenses</th>
                 <th class="sub-section">Current</th>
                 <th class="sub-section">Pro Forma</th>
                 <th/>
               </tr>
-            </thead>
-            <tr>
-              <td
-                class="l-align bold"
-                colspan="2"
-              >GROSS POTENTIAL RENT</td>
-              <td>{{ currentGrossRent | money }}</td>
-              <td>{{ potentialGrossRent | money }}</td>
-              <td/>
-            </tr>
-            <tr>
-              <td>Less: Vacancy/Deduction</td>
-              <td class="setting">
-                <button
-                  class="percent"
-                  @click="decrease('vacancy')"
-                >-</button>
-                 {{ os.vacancy || 0 }}%
-                <button
-                  class="percent"
-                  @click="increase('vacancy')"
-                >+</button>
-              </td>
-              <td>
-                -
-                <span id="vacancy-current">{{ currentVacancy | money }}</span>
-              </td>
-              <td>
-                -
-                <span id="vacancy-future">{{ potentialVacancy | money }}</span>
-              </td>
-              <td/>
-            </tr>
-            <tr>
-              <td
-                class="l-align bold"
-                colspan="2"
-              >EFFECTIVE RENTAL INCOME</td>
-              <td>{{ currentEffectiveRent | money }}</td>
-              <td>{{ potentialEffectiveRent | money }}</td>
-              <td/>
-            </tr>
 
-            <!-- custom income line items -->
-            <line-item
-              v-for="(income, index) in incomes"
-              :item="income"
-              :key="'i' + index"
-              @deleted="deletedIncome"
-            />
+              <!-- OS expense fields - taxes & mgmt fee -->
+              <tr>
+                <td class="l-align" colspan="2">
+                  <div class="double-input">
+                    <input
+                      style="width: 45%; margin-right: 2em;"
+                      class="input is-small"
+                      :value="os.taxes_label"
+                    >
+                    <vue-numeric
+                      input
+                      style="width: 30%;"
+                      class="input is-small "
+                      :precision="4"
+                      currency="%"
+                      currency-symbol-position="suffix"
+                      v-model.number="os.taxes"
+                      :minus="false"
+                    />
+                  </div>
+                </td>
+                <td><p>{{ taxes | money }}</p></td>
+                <td><p>{{ taxes | money }}</p></td>
+                <td/>
+              </tr>
 
-            <tr>
-              <td
-                class="l-align bold"
-                colspan="2"
-              >EFFECTIVE GROSS INCOME</td>
-              <td>{{ effectiveGrossIncome | money }}</td>
-              <td>{{ potentialGrossIncome | money }}</td>
-              <td></td>
-            </tr>
-
-            <tr/>
-
-            <tr class="is-grey is-size-6">
-              <th
-                class="sub-section l-align bolder"
-                colspan="2"
-              >Expenses</th>
-              <th class="sub-section">Current</th>
-              <th class="sub-section">Pro Forma</th>
-              <th/>
-            </tr>
-
-            <!-- OS expense fields - taxes & mgmt fee -->
-            <tr>
-              <td class="l-align" colspan="2">
-                <div class="double-input">
+              <tr>
+                <td>
                   <input
                     style="width: 45%; margin-right: 2em;"
                     class="input is-small"
-                    :value="os.taxes_label"
+                    :value="os.mgmt_fee_label"
                   >
-                  <vue-numeric
-                    input
-                    style="width: 30%;"
-                    class="input is-small "
-                    :precision="4"
-                    currency="%"
-                    currency-symbol-position="suffix"
-                    v-model.number="os.taxes"
-                    :minus="false"
-                  />
-                </div>
-              </td>
-              <td><p>{{ taxes | money }}</p></td>
-              <td><p>{{ taxes | money }}</p></td>
-              <td/>
-            </tr>
+                </td>
+                <td class="setting">
+                  <button
+                    class="percent"
+                    @click="decrease('mgmt_fee')"
+                  >-</button>
+                  {{ os.mgmt_fee || 0 }}%
+                  <button
+                    class="percent"
+                    @click="increase('mgmt_fee')"
+                  >+</button>
+                </td>
+                <td><p>{{ currentMgmtFee | money }}</p></td>
+                <td><p>{{ potentialMgmtFee | money }}</p></td>
+                <td/>
+              </tr>
 
-            <tr>
-              <td>
-                <input
-                  style="width: 45%; margin-right: 2em;"
-                  class="input is-small"
-                  :value="os.mgmt_fee_label"
-                >
-              </td>
-              <td class="setting">
-                <button
-                  class="percent"
-                  @click="decrease('mgmt_fee')"
-                >-</button>
-                 {{ os.mgmt_fee || 0 }}%
-                <button
-                  class="percent"
-                  @click="increase('mgmt_fee')"
-                >+</button>
-              </td>
-              <td><p>{{ currentMgmtFee | money }}</p></td>
-              <td><p>{{ potentialMgmtFee | money }}</p></td>
-              <td/>
-            </tr>
-
-            <!-- Expense line items -->
-            <line-item
-              v-for="(expense, index) in expenses"
-              :item="expense"
-              :key="index"
-              @deleted="deleted"
-            />
-
-            <tr>
-              <td colspan="3"/>
-              <td>Add Expense Item</td>
-              <td>
-                <i class="material-icons icon is-small clickable"
-                  @click.prevent="modalOpen = true"
-                >add_circle</i>
-              </td>
-            </tr>
-
-            <tr/>
-
-            <tr class="is-grey">
-              <td
-                class="l-align bold"
-                colspan="2"
-              >TOTAL EXPENSES</td>
-              <td>{{ totalExpensesCurrent | money }}</td>
-              <td>{{ totalExpensesPotential | money }}</td>
-              <td></td>
-            </tr>
-
-            <!-- effective gross income minus total expenses -->
-            <tr>
-              <td
-                class="l-align bold"
-                colspan="2"
-              >Net Operating Income</td>
-              <td class="bold">{{ currentNetOperatingIncome | money }}</td>
-              <td class="bold">{{ potentialNetOperatingIncome | money }}</td>
-              <td></td>
-            </tr>
-          </table>
-
-          <b-modal :active.sync="modalOpen" has-modal-card width="400">
-              <expense-modal
-                :packageID="packageID"
-                :osID="os.id"
-                @expenseAdded="newExpenseAdded"
+              <!-- Expense line items -->
+              <line-item
+                v-for="(expense, index) in expenses"
+                :item="expense"
+                :key="index"
+                @deleted="deleted"
               />
-          </b-modal>
 
-          <div class="centered m-t-3">
-            <button
-              class="save"
-              type="submit"
-              @click="save"
-            >Save & Next</button>
-          </div>
+              <tr>
+                <td colspan="3"/>
+                <td>Add Expense Item</td>
+                <td>
+                  <i class="material-icons icon is-small clickable"
+                    @click.prevent="modalOpen = true"
+                  >add_circle</i>
+                </td>
+              </tr>
+
+              <tr/>
+
+              <tr class="is-grey">
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >TOTAL EXPENSES</td>
+                <td>{{ totalExpensesCurrent | money }}</td>
+                <td>{{ totalExpensesPotential | money }}</td>
+                <td></td>
+              </tr>
+
+              <!-- effective gross income minus total expenses -->
+              <tr>
+                <td
+                  class="l-align bold"
+                  colspan="2"
+                >Net Operating Income</td>
+                <td class="bold">{{ currentNetOperatingIncome | money }}</td>
+                <td class="bold">{{ potentialNetOperatingIncome | money }}</td>
+                <td></td>
+              </tr>
+            </table>
+
+            <b-modal :active.sync="modalOpen" has-modal-card width="400">
+                <expense-modal
+                  :packageID="packageID"
+                  :osID="os.id"
+                  @expenseAdded="newExpenseAdded"
+                />
+            </b-modal>
+
+            <div class="centered m-t-3">
+              <button
+                class="save"
+                type="submit"
+                @click="save"
+              >Save & Next</button>
+            </div>
+        </div>
+        <side-form
+          class="column"
+          :stats="stats"
+          :property="property"
+          :numUnits="propertyUnits.length"
+        ></side-form>
       </div>
-      <side-form
-        class="column"
-        :stats="stats"
-        :property="property"
-        :numUnits="propertyUnits.length"
-      ></side-form>
     </div>
   </div>
 </template>

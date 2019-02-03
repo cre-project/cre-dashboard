@@ -7,19 +7,24 @@ import 'buefy/dist/buefy.css'
 import { router } from './router'
 import store from './store'
 import accounting from 'accounting-js'
-
 // layouts
 import Default from './layouts/default'
 import Empty from './layouts/empty'
 import Dashboard from './layouts/dashboard'
 import FullPage from './layouts/full-page'
 import Settings from './layouts/settings'
+// components
+import PropertyMissing from './components/PropertyMissing'
 
+// layouts
 Vue.component('default-layout', Default)
 Vue.component('empty-layout', Empty)
 Vue.component('dashboard-layout', Dashboard)
 Vue.component('full-page-layout', FullPage)
 Vue.component('settings-layout', Settings)
+
+// components
+Vue.component('property-missing', PropertyMissing)
 
 Vue.config.productionTip = false
 
