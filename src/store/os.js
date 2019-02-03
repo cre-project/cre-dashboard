@@ -9,7 +9,7 @@ const defaultFields = [
   { name: 'Repairs & Maintenance', current_value: 0, potential_value: 0 },
   { name: 'Landscaping', current_value: 0, potential_value: 0 },
   { name: 'Other Expenses', current_value: 0, potential_value: 0 },
-  { name: 'Other Incomes', current_value: 0, potential_value: 0, is_income: true }
+  { name: 'Other Income', current_value: 0, potential_value: 0, is_income: true }
 ]
 
 const state = {

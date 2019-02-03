@@ -44,7 +44,7 @@
         class="inline-edit"
         currency="$"
         separator=","
-        :precision="2"
+        :precision="0"
         :minus="false"
         v-model.number="item.current_value"
       />
@@ -58,7 +58,7 @@
         class="inline-edit"
         currency="$"
         separator=","
-        :precision="2"
+        :precision="0"
         :minus="false"
         v-model.number="item.potential_value"/>
       <p v-else>{{ item.potential_value | money }}</p>
