@@ -51,6 +51,10 @@ export default {
     property: {
       type: Object,
       required: true
+    },
+    numUnits: {
+      type: Number,
+      required: true
     }
   },
   data () {
@@ -72,7 +76,7 @@ export default {
     },
 
     pricePerUnit () {
-      return this.property.pricePerUnit || 0
+      return (this.property.price || 0) / (this.numUnits || 1)
     }
   },
   methods: {

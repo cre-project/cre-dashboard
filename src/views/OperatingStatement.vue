@@ -202,6 +202,7 @@
         class="column"
         :stats="stats"
         :property="property"
+        :numUnits="propertyUnits.length"
       ></side-form>
     </div>
   </div>
@@ -266,11 +267,11 @@ export default {
 
     /** CALCULATED VALUES */
     currentGrossRent () {
-      return this.propertyUnits.reduce((acc, unit) => acc + (unit.current_rent || 0), 0)
+      return this.propertyUnits.reduce((acc, unit) => acc + (unit.current_rent || 0), 0) * 12
     },
 
     potentialGrossRent () {
-      return this.propertyUnits.reduce((acc, unit) => acc + (unit.potential_rent || 0), 0)
+      return this.propertyUnits.reduce((acc, unit) => acc + (unit.potential_rent || 0), 0) * 12
     },
 
     currentVacancy () {
@@ -315,7 +316,7 @@ export default {
     },
 
     taxes () {
-      return (this.property.price || 0 / 100) * (this.os.taxes || 0)
+      return ((this.property.price || 0) / 100) * (this.os.taxes || 0)
     },
 
     /* TOTAL expenses & incomes */
