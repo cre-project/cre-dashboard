@@ -9,8 +9,8 @@
     >
     <span
       class="overlay"
-      v-show="property.price">
-      Price ${{ formatPrice (property.price) }}
+      :style="property.price ? '' : 'color: transparent'">
+      <p>Price ${{ formatPrice (property.price) }}</p>
     </span>
     <div class="preview-title">{{ address }}</div>
     <div class="preview-content">
