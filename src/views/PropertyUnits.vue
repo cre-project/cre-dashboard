@@ -1,6 +1,18 @@
 <template>
   <div>
-    <div class="cre-content">
+    <div v-if="!property.id" class="cre-content">
+      <h1 class="subtitle is-size-4 has-text-weight-semibold">
+        Please tell us something more about your property first
+      </h1>
+      <button
+        class="save m-t-3"
+        style="height:4em; width:17em;"
+        @click="goBack"  >
+        Go to property information
+      </button>
+    </div>
+
+    <div v-if="property.id" class="cre-content">
       <div
         class="spaced"
         style="margin-right: 2em; margin-bottom: 3em;"
@@ -245,6 +257,10 @@ export default {
           type: 'is-danger'
         })
       }
+    },
+
+    goBack () {
+      router.push(`/package/${this.$route.params.id}/property-info`)
     }
   },
 
