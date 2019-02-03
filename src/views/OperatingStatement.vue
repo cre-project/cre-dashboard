@@ -65,7 +65,7 @@
               v-for="(income, index) in incomes"
               :item="income"
               :key="'i' + index"
-              @deleted="deleted"
+              @deleted="deletedIncome"
             />
 
             <tr>
@@ -405,6 +405,10 @@ export default {
 
     deleted (item) {
       this.expenses = this.expenses.filter(e => e.id !== item.id)
+    },
+
+    deletedIncome (item) {
+      this.incomes = this.incomes.filter(e => e.id !== item.id)
     },
 
     increase (field) {
