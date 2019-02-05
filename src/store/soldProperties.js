@@ -125,7 +125,7 @@ const actions = {
   async update ({ commit }, data) {
     try {
       commit('updateStart')
-      let res = await api.put(`/sold_properties/${data.id}`, data)
+      let res = await api.put(`/sold_properties/${data.id}`, { sold_property: data })
       commit('updateSuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {
