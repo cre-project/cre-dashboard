@@ -5,9 +5,9 @@
       <div class="cre-inner-content">
         <div class="columns is-variable is-8">
           <div class="column">
-            <h2 class="subtitle is-size-5 has-text-weight-bold">Subscription</h2>
+            <h2 class="subtitle is-size-5 has-text-weight-bold">Your Current Subscription</h2>
             <b-field>
-                <p>{{ user.subscription || 'You have no active subscription'}}</p>
+                <p>{{ subscriptionName }}</p>
             </b-field>
             <button
               class="save"
@@ -27,12 +27,25 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      address: {}
+      address: {},
+      subscriptions: {
+        '5c1bbc8a2abc0f049777ded6': 'Trial',
+        '5c57e7b5847b645ab8b8a99e': 'Great',
+        '5c57e7c8847b645ab8b8a99f': 'Better'
+      }
     }
   },
 
   computed: {
-    ...mapState({ user: state => state.user.authUser })
+    ...mapState({ user: state => state.user.authUser }),
+    subscriptionName () {
+      let subscription = this.user.subscription
+      let name = this.subscriptions[subscription]
+      if (!subscription || !name) {
+        return 'You have no active subscription'
+      }
+      return name
+    }
   },
   methods: {
     async redirect () {
