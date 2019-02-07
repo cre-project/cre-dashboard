@@ -468,6 +468,21 @@ export default {
         router.push('/')
       }
     }
+  },
+
+  beforeRouteLeave (to, from, next) {
+    if (this.property.id) {
+      this.$dialog.confirm({
+        title: 'Unsaved changes',
+        message: 'You have unsaved changes. Are you sure you want to leave the page?',
+        type: 'is-danger',
+        hasIcon: true,
+        confirmText: 'Leave',
+        onConfirm: () => {
+          next()
+        }
+      })
+    } else next()
   }
 }
 </script>
