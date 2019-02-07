@@ -52,9 +52,9 @@ export default {
       try {
         let redirectUrl = await this.$store.dispatch('user/getPabblyUrl')
         if (redirectUrl) {
-          window.location = redirectUrl
+          window.open(redirectUrl, '_blank')
         } else {
-          window.location = 'https://offeringcre.com/free-trial'
+          window.open('https://offeringcre.com/free-trial', '_blank')
         }
       } catch (e) {
         console.log(e)
