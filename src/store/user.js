@@ -45,9 +45,11 @@ const mutations = {
 
   loginSuccessful (state, data) {
     state.authUser = data.user
+    state.company = data.company
 
     window.localStorage.setItem('creAuthToken', data.auth_token)
     window.localStorage.setItem('creUser', JSON.stringify(data.user))
+    window.localStorage.setItem('creComp', JSON.stringify(data.company))
 
     state.isLoggingIn = false
     state.loginSuccess = true
@@ -172,6 +174,7 @@ const mutations = {
   },
 
   updateCompanySuccessful (state, data) {
+    // window.localStorage.setItem('creComp', JSON.stringify(data))
     state.company = data
     state.isUpdatingCompany = false
     state.updateCompanySuccess = true
@@ -186,9 +189,11 @@ const mutations = {
 
   init (state) {
     const localUser = window.localStorage.getItem('creUser')
+    const comp = window.localStorage.getItem('creComp')
 
     if (!state.authUser.id && localUser) {
       state.authUser = JSON.parse(localUser)
+      state.company = JSON.parse(comp)
     }
   }
 
@@ -302,7 +307,7 @@ const actions = {
   async updateCompany ({ commit, state }, data) {
     try {
       commit('updateCompanyStart')
-      let res = await api.post(`/users/${state.authUser.id}/companies/${state.authUser.company_id}`, data)
+      let res = await api.put(`/users/${state.authUser.id}`, { company_attributes: data })
       commit('updateCompanySuccessful', res.data)
       return Promise.resolve(res.data)
     } catch (err) {

@@ -34,7 +34,7 @@
         <div class="column"/>
 
         <div class="column">
-          <image-upload label="Company Logo" :url="company.logo_url"/>
+          <image-upload label="Company Logo" :url="company.logo_url" handler="user/updateCompany"/>
         </div>
       </div>
 
@@ -113,6 +113,10 @@ export default {
 
   async created () {
     this.company = this.$store.state.user.company
+    if (!this.company) {
+      await this.$store.dispatch('user/init')
+      this.company = this.$store.state.user.company
+    }
   }
 }
 </script>
