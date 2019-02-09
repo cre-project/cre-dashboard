@@ -5,7 +5,7 @@
   >
     <img
       class="preview-image"
-      :src="pkg.preview || defaultImage"
+      :src="pkg.cover_image_url || defaultImage"
     >
     <span
       class="overlay"
@@ -32,7 +32,7 @@ export default {
   },
   data () {
     return {
-      defaultImage: 'https://res.cloudinary.com/dxnzksg0a/image/upload/v1531933140/sample.jpg'
+      defaultImage: 'https://res.cloudinary.com/dxnzksg0a/image/upload/c_crop,h_276,w_296/v1549730082/enmu2ack1mgo7ojgsdfl.jpg'
     }
   },
   methods: {
