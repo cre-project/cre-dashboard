@@ -189,12 +189,15 @@ export default {
     // save potential unsaved unit and total sqft and proceed to next step
     async save () {
       try {
-        let prop = this.property
-        if (prop.total_square_feet !== this.totalSqFt) {
-          prop.total_square_feet = this.totalSqFt
-          await this.$store.dispatch('properties/update', { property: prop })
+        let valid = await this.$validator.validateAll()
+        if (valid) {
+          let prop = this.property
+          if (prop.total_square_feet !== this.totalSqFt) {
+            prop.total_square_feet = this.totalSqFt
+            await this.$store.dispatch('properties/update', { property: prop })
+          }
+          router.push(`/package/${this.$route.params.id}/operating-statement`)
         }
-        router.push(`/package/${this.$route.params.id}/operating-statement`)
       } catch (err) {
         console.log(err.message)
         this.$toast.open({

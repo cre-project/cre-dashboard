@@ -98,6 +98,16 @@ export default {
   methods: {
     async save () {
       try {
+        let valid = await this.$validator.validateAll()
+        if (!valid) {
+          this.$toast.open({
+            duration: 3500,
+            message: 'Please check your input',
+            position: 'is-bottom',
+            type: 'is-danger'
+          })
+          return
+        }
         if (this.hasUpdated) {
           await this.$store.dispatch('user/update', this.user)
         }
