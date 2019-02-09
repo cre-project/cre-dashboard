@@ -223,7 +223,8 @@ export default {
     return {
       incomes: [],
       expenses: [],
-      modalOpen: false
+      modalOpen: false,
+      hasSaved: false
     }
   },
 
@@ -390,7 +391,7 @@ export default {
 
         // save OS changes (taxes, mgmt fee, vacancy)
         await this.$store.dispatch('os/update', { packageID: this.packageID, os: this.os })
-
+        this.hasSaved = true
         router.push(`/package/${this.$route.params.id}/sales-comparables`);
       } catch (err) {
         console.log(err)
@@ -471,7 +472,7 @@ export default {
   },
 
   beforeRouteLeave (to, from, next) {
-    if (this.property.id) {
+    if (this.property.id && !this.hasSaved) {
       this.$dialog.confirm({
         title: 'Unsaved changes',
         message: 'You have unsaved changes. Are you sure you want to leave the page?',
