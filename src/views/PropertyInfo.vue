@@ -102,13 +102,18 @@
                 </div>
 
                 <div class="column">
-                  <b-field label="Price*">
+                  <b-field
+                    :type="errors.has('price') ? 'is-danger' : ''"
+                    :message="errors.has('price') ? errors.first('price') : ''"
+                    label="Price*"
+                  >
                     <vue-numeric
                       input
                       class="input"
+                      :minus="false"
                       currency="$"
                       separator=","
-                      v-model="property.price"
+                      v-model="price"
                     ></vue-numeric>
                   </b-field>
 
@@ -158,7 +163,8 @@ export default {
         yearBuilt: null,
         lotSize: null,
         apn: null
-      }
+      },
+      price: 0
     }
   },
   computed: {
@@ -170,21 +176,44 @@ export default {
       return this.$route.params.id
     }
   },
+  watch: {
+    // validate price field - whenever the price changes, this function will run
+    price: function (newValue, oldValue) {
+      if (!newValue || newValue === 0) {
+        this.errors.add({
+          field: 'price',
+          msg: 'The price field is required'
+        })
+      }
+    }
+  },
   methods: {
     async save () {
+      let valid = await this.$validator.validateAll()
+      if (!valid || this.errors.has('price')) {
+        this.$toast.open({
+          duration: 3500,
+          message: 'Please check your input',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+      }
       try {
         if (!this.property.package_id) {
           // create new property if it's not tied to a package yet
           let data = this.property
+          data.price = this.price
           data.package_id = this.packageID
           await this.$store.dispatch('properties/create', { property: data })
         } else {
           // otherwise update the existing one
-          await this.$store.dispatch('properties/update', { property: this.property })
+          let data = this.property
+          data.price = this.price
+          await this.$store.dispatch('properties/update', { property: data })
         }
         router.push(`/package/${this.packageID}/unit-mix`)
       } catch (err) {
-        console.log(err.message)
+        console.log(err)
         this.$toast.open({
           duration: 3500,
           message: 'Couldn\'t save property information',
@@ -209,6 +238,7 @@ export default {
       }
     }
     let prop = this.propertyByPackageID(this.packageID)
+    this.price = prop && prop.price ? prop.price : 0
     this.property = prop || {
       address: {
         street: null,
