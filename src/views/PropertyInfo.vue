@@ -105,6 +105,7 @@
                   <b-field label="Price*">
                     <vue-numeric
                       input
+                      class="input"
                       currency="$"
                       separator=","
                       v-model="property.price"
