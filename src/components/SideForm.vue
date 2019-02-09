@@ -85,11 +85,11 @@ export default {
       data.price = value
 
       try {
-        await this.$store.dispatch('properties/update', data)
+        await this.$store.dispatch('properties/update', { property: data })
       } catch (err) {
         this.$toast.open({
           duration: 3500,
-          message: `Price could not be updated: ${err.message}`,
+          message: `Price could not be updated: ${err}`,
           position: 'is-bottom',
           type: 'is-danger'
         })
