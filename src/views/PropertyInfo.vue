@@ -70,7 +70,7 @@
                     label="Number of Stories"
                   >
                     <b-input
-                      v-validate="'between:0,100'"
+                      v-validate="'between:0,200'"
                       v-model="property.numberOfStories"
                       name="number of stories"
                     />
