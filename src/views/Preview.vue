@@ -4,7 +4,7 @@
     <iframe v-else
       id="pdf"
       width="100%"
-      height="900"
+      height="940"
       frameborder="0"
       :src="pdfURL"
     ></iframe>
