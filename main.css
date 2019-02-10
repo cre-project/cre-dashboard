@@ -365,7 +365,14 @@ label:hover input {
 
 .cre-inner-content {
   margin: 3em;
-  width: 90%
+  width: 90%;
+  min-height: 30em;
+}
+
+.cre-inner-box {
+  padding: 3em;
+  width: 90%;
+  background-color: #f1f1f1;
 }
 
 #os-right {

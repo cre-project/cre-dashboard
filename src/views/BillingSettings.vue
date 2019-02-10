@@ -3,8 +3,8 @@
     <div class="cre-content">
       <h1 class="subtitle is-size-4 has-text-weight-semibold">Billing and Subscription</h1>
       <div class="cre-inner-content">
-        <div class="columns is-variable is-8">
-          <div class="column">
+        <div class="columns is-variable is-8 p-t-2">
+          <div class="column is-two-fifths">
             <h2 class="subtitle is-size-5 has-text-weight-bold">Your Current Subscription</h2>
             <b-field>
                 <p>{{ subscriptionName }}</p>
@@ -15,6 +15,22 @@
               type="submit"
               @click="redirect"
             >CHANGE</button>
+          </div>
+
+          <div class="column">
+            <div class="cre-inner-box">
+              <p>
+                As we want to make sure your payment information is safe we are using a third party service called Stripe as our trusted payment provider and aren’t storing any of your sensitive information ourselves. When you click "Change" on this page a new window will open which will give you the ability to change your billing and subscription information.
+                <br/>
+                <br/>
+                You can follow the following documentation on how to change things:
+                <br/>
+                <a href="https://drive.google.com/drive/u/1/folders/1uI0QIeKjjIOMQF259vZZHcPneItxiDeS">Documentation</a>
+                <br/>
+                <br/>
+                After you are done making your changes simply close the additional window and reload this page. After that you are good to go.
+              </p>
+            </div>
           </div>
         </div>
       </div>
