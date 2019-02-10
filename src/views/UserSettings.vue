@@ -51,7 +51,7 @@
                   <b-input
                     v-validate="'alpha_dash|max:12'"
                     name="phone"
-                    v-model="user.phone"
+                    v-model="user.phone_number"
                   />
               </b-field>
             </form>
