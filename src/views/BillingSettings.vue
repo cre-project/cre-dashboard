@@ -19,7 +19,7 @@
 
           <div class="column">
             <div class="cre-inner-box">
-              <p>
+              <p style="line-height: 1.5;">
                 As we want to make sure your payment information is safe we are using a third party service called Stripe as our trusted payment provider and aren’t storing any of your sensitive information ourselves. When you click "Change" on this page a new window will open which will give you the ability to change your billing and subscription information.
                 <br/>
                 <br/>
