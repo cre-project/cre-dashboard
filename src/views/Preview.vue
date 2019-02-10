@@ -1,7 +1,19 @@
 <template>
   <div>
     <property-missing v-if="!property.id"/>
-    <iframe v-else
+
+    <div class="save-button">
+      <button
+        class="save"
+        :class="loading ? 'disabled' : ''"
+        :disabled="loading"
+        @click="exportPdf()"
+      >
+        {{ loading ? 'Generating PDF ...' : 'Download PDF' }}
+      </button>
+    </div>
+
+    <iframe
       id="pdf"
       width="100%"
       height="940"
@@ -15,6 +27,11 @@ import { router } from './../router'
 import { mapGetters } from 'vuex'
 
 export default {
+  data () {
+    return {
+      loading: false
+    }
+  },
   computed: {
     ...mapGetters({
       propertyByPackageID: 'properties/byPackageID'
@@ -33,6 +50,34 @@ export default {
     }
   },
 
+  methods: {
+    async exportPdf () {
+      try {
+        this.loading = true
+        // const pdfEndpoint = `${process.env.VUE_APP_PDF_APP_URL}/export/pdf/${this.packageID}`
+
+        let response = await this.$store.dispatch('packages/fetchPDF', this.packageID)
+
+        // open file save dialog
+        var url = URL.createObjectURL(new Blob([response]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', 'package.pdf')
+        document.body.appendChild(link)
+        link.click()
+        this.loading = false
+      } catch (err) {
+        this.$toast.open({
+          duration: 3500,
+          message: 'Could not generate a PDF. Please contact our customer service if this behaviour persists.',
+          position: 'is-bottom',
+          type: 'is-danger'
+        })
+        this.loading = false
+      }
+    }
+  },
+
   async created () {
     if (!this.packageID || this.packageID === ':id') {
       router.push('/')
@@ -48,3 +93,16 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.save-button {
+  margin: 3em;
+  margin-left: 16em;
+}
+
+.disabled {
+  background-color: lightgray;
+  color: gray;
+  cursor: default;
+}
+</style>

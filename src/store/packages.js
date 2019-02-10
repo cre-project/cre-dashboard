@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import api from './../api'
+import axios from 'axios'
 
 const state = {
   packages: {},
@@ -14,7 +15,11 @@ const state = {
 
   isUpdating: false,
   updateSuccess: false,
-  updateError: null
+  updateError: null,
+
+  isFetchingPDF: false,
+  fetchPDFSuccess: false,
+  fetchPDFError: null
 }
 
 const mutations = {
@@ -38,6 +43,22 @@ const mutations = {
     state.isFetching = false
     state.fetchSuccess = false
     state.fetchError = err
+  },
+
+  fetchPDFStart (state) {
+    state.isFetchingPDF = true
+  },
+
+  fetchPDFSuccessful (state) {
+    state.isFetchingPDF = false
+    state.fetchPDFSuccess = true
+    state.fetchPDFError = null
+  },
+
+  fetchPDFFailed (state, err) {
+    state.isFetchingPDF = false
+    state.fetchPDFSuccess = false
+    state.fetchPDFError = err
   },
 
   createStart (state) {
@@ -109,6 +130,23 @@ const actions = {
       return Promise.resolve(res.data)
     } catch (err) {
       commit('updateFailed', err.message || err)
+      return Promise.reject(err)
+    }
+  },
+
+  async fetchPDF ({ commit }, id) {
+    try {
+      commit('fetchPDFStart')
+      const pdfEndpoint = `${process.env.VUE_APP_PDF_APP_URL}/export/pdf/${id}`
+      let res = await axios({
+        method: 'get',
+        url: pdfEndpoint,
+        responseType: 'arraybuffer'
+      })
+      commit('fetchPDFSuccessful')
+      return Promise.resolve(res.data)
+    } catch (err) {
+      commit('fetchPDFFailed', err.message || err)
       return Promise.reject(err)
     }
   }
