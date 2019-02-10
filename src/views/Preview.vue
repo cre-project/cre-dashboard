@@ -11,6 +11,7 @@
   </div>
 </template>
 <script>
+import { router } from './../router'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -19,12 +20,30 @@ export default {
       propertyByPackageID: 'properties/byPackageID'
     }),
 
+    packageID () {
+      return this.$route.params.id
+    },
+
     property () {
-      return this.propertyByPackageID(this.$route.params.id)
+      return this.propertyByPackageID(this.packageID)
     },
 
     pdfURL () {
-      return `${process.env.VUE_APP_PDF_APP_URL}/${this.$route.params.id}`
+      return `${process.env.VUE_APP_PDF_APP_URL}/${this.packageID}`
+    }
+  },
+
+  async created () {
+    if (!this.packageID || this.packageID === ':id') {
+      router.push('/')
+    } else {
+      try {
+        if (!this.property.id) {
+          await this.$store.dispatch('properties/fetchList')
+        }
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
