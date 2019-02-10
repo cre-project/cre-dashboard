@@ -124,7 +124,12 @@ const getters = {
   },
 
   list: state => {
-    return Object.values(state.packages)
+    let pkgs = Object.values(state.packages)
+    return pkgs.sort((a, b) => {
+      a = new Date(a.updated_at);
+      b = new Date(b.updated_at);
+      return a > b ? -1 : a < b ? 1 : 0
+    })
   }
 }
 
