@@ -219,7 +219,7 @@ td button {
 }
 
 .setting {
-    min-width: 3em;
+    width: 10em;
     padding: 0;
     vertical-align: middle;
 }

@@ -37,7 +37,7 @@
                     class="percent"
                     @click="decrease('vacancy')"
                   >-</button>
-                  {{ os.vacancy || 0 }}%
+                    <span class="percent-value">{{ os.vacancy || 0 }}%</span>
                   <button
                     class="percent"
                     @click="increase('vacancy')"
@@ -132,7 +132,7 @@
                     class="percent"
                     @click="decrease('mgmt_fee')"
                   >-</button>
-                  {{ os.mgmt_fee || 0 }}%
+                    <span class="percent-value">{{ os.mgmt_fee || 0 }}%</span>
                   <button
                     class="percent"
                     @click="increase('mgmt_fee')"
@@ -491,5 +491,9 @@ export default {
 <style scoped>
 .columns {
   margin: auto;
+}
+.percent-value {
+  width: 2.5em;
+  padding: 0.5em;
 }
 </style>
