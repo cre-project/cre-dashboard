@@ -197,9 +197,10 @@ export default {
           position: 'is-bottom',
           type: 'is-danger'
         })
+        return
       }
       try {
-        if (!this.property.package_id) {
+        if (!this.property.id) {
           // create new property if it's not tied to a package yet
           let data = this.property
           data.price = this.price
