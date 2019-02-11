@@ -420,9 +420,9 @@ export default {
       let oldValue = this.os[field]
 
       if (oldValue) {
-        this.$set(this.os, field, oldValue + 1)
+        this.$set(this.os, field, oldValue + 0.5)
       } else {
-        this.$set(this.os, field, 1)
+        this.$set(this.os, field, 0.5)
       }
     },
 
@@ -430,7 +430,7 @@ export default {
       let oldValue = this.os[field]
 
       if (oldValue) {
-        this.$set(this.os, field, Math.max(oldValue - 1, 0))
+        this.$set(this.os, field, Math.max(oldValue - 0.5, 0))
       } else {
         this.$set(this.os, field, 0)
       }

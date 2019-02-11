@@ -20,19 +20,6 @@
               </b-field>
 
                 <b-field
-                  :type="errors.has('state') ? 'is-danger' : ''"
-                  :message="errors.has('state') ? errors.first('state') : ''"
-                  label="State"
-                >
-                    <b-input
-                      v-validate="'required|alpha_spaces'"
-                      v-model="property.address.state"
-                      name="state"
-                    />
-              </b-field>
-
-              <b-field grouped>
-                <b-field
                   :type="errors.has('city') ? 'is-danger' : ''"
                   :message="errors.has('city') ? errors.first('city') : ''"
                   label="City"
@@ -41,6 +28,19 @@
                       v-validate="'required|alpha_spaces'"
                       v-model="property.address.city"
                       name="city"
+                    />
+              </b-field>
+
+              <b-field grouped>
+                <b-field
+                  :type="errors.has('state') ? 'is-danger' : ''"
+                  :message="errors.has('state') ? errors.first('state') : ''"
+                  label="State"
+                >
+                    <b-input
+                      v-validate="'required|alpha_spaces'"
+                      v-model="property.address.state"
+                      name="state"
                     />
                 </b-field>
 

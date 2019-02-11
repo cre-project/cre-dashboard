@@ -1,7 +1,8 @@
 <template>
   <div>
-    <div v-if="packages.length === 0" class="cre-content">
-        <p class="subtitle">There are no valuations to show.</p>
+    <div v-if="packages.length === 0" class="cre-content vertically-centered">
+        <i class="material-icons" style="font-size: 75px;">domain_disabled</i>
+        <p class="subtitle" align="center">You didn't create any packages yet.<br> After you create one it will magically appear here!</p>
     </div>
 
     <div class="align-left">

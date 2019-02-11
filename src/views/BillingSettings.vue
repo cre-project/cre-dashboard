@@ -25,7 +25,7 @@
                 <br/>
                 You can follow the following documentation on how to change things:
                 <br/>
-                <a href="https://drive.google.com/drive/u/1/folders/1uI0QIeKjjIOMQF259vZZHcPneItxiDeS">Documentation</a>
+                <a href="https://static1.squarespace.com/static/5b29179f8f5130feadb604b2/t/5c61b98a085229f4df2955d2/1549908378237/Subscription+%26+Billing+%28Offering+CRE%29.pdf">Documentation</a>
                 <br/>
                 <br/>
                 After you are done making your changes simply close the additional window and reload this page. After that you are good to go.
