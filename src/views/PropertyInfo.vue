@@ -143,6 +143,7 @@
         </div>
       </div>
     </div>
+    <b-loading is-full-page="true" :active.sync="isLoading" :can-cancel="true"/>
   </div>
 </template>
 <script>
@@ -164,7 +165,8 @@ export default {
         lotSize: null,
         apn: null
       },
-      price: 0
+      price: 0,
+      isLoading: true
     }
   },
   computed: {
@@ -260,6 +262,7 @@ export default {
         zip: null
       }
     }
+    this.isLoading = false
   }
 }
 </script>

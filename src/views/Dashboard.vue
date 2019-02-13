@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="packages.length === 0" class="cre-content vertically-centered">
+    <div v-if="packages.length === 0 && !isLoading" class="cre-content vertically-centered">
         <i class="material-icons" style="font-size: 75px;">domain_disabled</i>
         <p class="subtitle" align="center">You didn't create any packages yet.<br> After you create one it will magically appear here!</p>
     </div>
@@ -11,6 +11,7 @@
         :key="item.id"
         :pkg="item"/>
     </div>
+    <b-loading is-full-page="true" :active.sync="isLoading" :can-cancel="true"/>
   </div>
 </template>
 <script>
@@ -21,12 +22,17 @@ export default {
   components: {
     PackagePreviewBox
   },
+  data () {
+    return {
+      isLoading: true
+    }
+  },
   computed: {
     ...mapGetters({ packages: 'packages/list' })
   },
   async created () {
     try {
-      await this.$store.dispatch('packages/fetchList')
+      await this.$store.dispatch('packages/fetchList').then(() => { this.isLoading = false })
     } catch (err) {
       if (err.response) {
         // non-200 server response

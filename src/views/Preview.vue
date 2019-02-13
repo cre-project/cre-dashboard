@@ -1,25 +1,29 @@
 <template>
   <div>
-    <property-missing v-if="!property.id"/>
+    <property-missing v-if="!property.id && !loading"/>
 
-    <div class="save-button">
+    <div
+      v-show="property.id && !loading"
+      class="save-button">
       <button
         class="save"
         :class="loading ? 'disabled' : ''"
         :disabled="loading"
         @click="exportPdf()"
       >
-        {{ loading ? 'Generating PDF ...' : 'Download PDF' }}
+        Download PDF
       </button>
     </div>
 
     <iframe
+      v-show="property.id && !loading"
       id="pdf"
       width="100%"
       height="940"
       frameborder="0"
       :src="pdfURL"
     ></iframe>
+    <b-loading is-full-page="true" :active.sync="loading" :can-cancel="false"/>
   </div>
 </template>
 <script>
@@ -75,6 +79,12 @@ export default {
         })
         this.loading = false
       }
+    },
+    openLoading () {
+      this.loading = true
+      setTimeout(() => {
+        this.loading = false
+      }, 700)
     }
   },
 
@@ -82,6 +92,7 @@ export default {
     if (!this.packageID || this.packageID === ':id') {
       router.push('/')
     } else {
+      this.openLoading()
       try {
         if (!this.property.id) {
           await this.$store.dispatch('properties/fetchList')

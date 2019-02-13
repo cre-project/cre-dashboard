@@ -1,8 +1,8 @@
 <template>
   <div>
-    <property-missing v-if="!property.id"/>
+    <property-missing v-if="!property.id && !isLoading"/>
 
-    <div v-else class="cre-content">
+    <div v-if="property.id && !isLoading" class="cre-content">
       <div
         class="spaced"
         style="margin-right: 2em; margin-bottom: 3em;"
@@ -130,6 +130,7 @@
         >Save & Next</button>
       </div>
     </div>
+    <b-loading is-full-page="true" :active.sync="isLoading" :can-cancel="true"/>
   </div>
 </template>
 <script>
@@ -142,7 +143,8 @@ export default {
     return {
       totalSqFt: 0,
       modalOpen: false,
-      property: {}
+      property: {},
+      isLoading: true
     }
   },
 
@@ -266,6 +268,7 @@ export default {
             this.$store.dispatch('propertyUnits/fetchList', this.property.id)
           }
           this.totalSqFt = this.property.total_square_feet || 0
+          this.isLoading = false
         })
       } catch (e) {
         console.log(e)

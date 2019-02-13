@@ -347,6 +347,7 @@
         >Save & Next</button>
       </div>
     </div>
+    <b-loading is-full-page="true" :active.sync="isLoading" :can-cancel="true"/>
   </div>
 </template>
 <script>
@@ -385,7 +386,8 @@ export default {
     return {
       showButton: true,
       detailed: [],
-      wipComp: {}
+      wipComp: {},
+      isLoading: true
     }
   },
 
@@ -512,9 +514,9 @@ export default {
       try {
         // load data
         if (this.compType === 'sale') {
-          await this.$store.dispatch('soldProperties/fetchList', this.packageID)
+          await this.$store.dispatch('soldProperties/fetchList', this.packageID).then(() => { this.isLoading = false })
         } else {
-          await this.$store.dispatch('rentedUnits/fetchList', this.packageID)
+          await this.$store.dispatch('rentedUnits/fetchList', this.packageID).then(() => { this.isLoading = false })
         }
       } catch (e) {
         console.log(e)

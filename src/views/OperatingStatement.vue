@@ -209,6 +209,7 @@
         ></side-form>
       </div>
     </div>
+    <b-loading is-full-page="true" :active.sync="isLoading" :can-cancel="true"/>
   </div>
 </template>
 <script>
@@ -224,7 +225,8 @@ export default {
       incomes: [],
       expenses: [],
       modalOpen: false,
-      hasSaved: false
+      hasSaved: false,
+      isLoading: true
     }
   },
 
@@ -459,7 +461,7 @@ export default {
         await Promise.all([
           this.$store.dispatch('os/fetchFields', { packageID: this.packageID, osID: this.os.id }),
           this.property && this.property.id ? this.$store.dispatch('propertyUnits/fetchList', this.property.id) : Promise.resolve()
-        ])
+        ]).then(() => { this.isLoading = false })
 
         // fill up local objects
         this.expenses = this.osExpenses
