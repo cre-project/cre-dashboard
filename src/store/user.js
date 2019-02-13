@@ -174,7 +174,6 @@ const mutations = {
   },
 
   updateCompanySuccessful (state, data) {
-    // window.localStorage.setItem('creComp', JSON.stringify(data))
     state.company = data
     state.isUpdatingCompany = false
     state.updateCompanySuccess = true
@@ -189,11 +188,9 @@ const mutations = {
 
   init (state) {
     const localUser = window.localStorage.getItem('creUser')
-    const comp = window.localStorage.getItem('creComp')
 
     if (!state.authUser.id && localUser) {
       state.authUser = JSON.parse(localUser)
-      state.company = JSON.parse(comp)
     }
   }
 
