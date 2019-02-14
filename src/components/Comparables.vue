@@ -296,7 +296,7 @@
                   <div class="narrow">Price / SF</div>
                   <input
                     class="narrow"
-                    :value="pricePerSf(props.row.price_per_sf)"
+                    :value="pricePerSf(props.row)"
                     readonly
                   >
                 </label>
@@ -304,7 +304,7 @@
                   <div class="narrow">Price / Unit</div>
                   <input
                     class="narrow"
-                    :value="pricePerUnit(props.row.price_per_unit)"
+                    :value="pricePerUnit(props.row)"
                     readonly
                   >
                 </label>
