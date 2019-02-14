@@ -123,7 +123,7 @@
                     expanded label="APN"
                   >
                     <b-input
-                      v-validate="'numeric'"
+                      v-validate="'alpha_dash'"
                       v-model="property.apn"
                       name="APN"
                     />

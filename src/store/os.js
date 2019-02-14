@@ -3,11 +3,10 @@ import api from './../api'
 
 const defaultFields = [
   { name: 'Insurance', current_value: 0, potential_value: 0 },
-  { name: 'Utilities - Electric', current_value: 0, potential_value: 0 },
-  { name: 'Utilities - Water & Sewer', current_value: 0, potential_value: 0 },
-  { name: 'Garbage', current_value: 0, potential_value: 0 },
+  { name: 'PG&E', current_value: 0, potential_value: 0 },
+  { name: 'Water', current_value: 0, potential_value: 0 },
+  { name: 'Trash Removal', current_value: 0, potential_value: 0 },
   { name: 'Repairs & Maintenance', current_value: 0, potential_value: 0 },
-  { name: 'Landscaping', current_value: 0, potential_value: 0 },
   { name: 'Other Expenses', current_value: 0, potential_value: 0 },
   { name: 'Other Income', current_value: 0, potential_value: 0, is_income: true }
 ]

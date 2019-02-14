@@ -18,6 +18,7 @@
             input v-validate="'required|decimal:3'"
             v-model.number="totalSqFt"
             name="totalSqFt"
+            separator=","
           />
         </b-field>
       </div>

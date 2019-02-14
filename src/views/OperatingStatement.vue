@@ -310,7 +310,7 @@ export default {
     /** CALCULATIONS BASED ON OS CALCULATED VALUES & OS DATA */
     currentMgmtFee () {
       if (this.os.mgmt_fee && this.os.mgmt_fee !== 0) {
-        return (this.effectiveGrossIncome || 0 / 100) * this.os.mgmt_fee
+        return ((this.effectiveGrossIncome || 0) / 100) * this.os.mgmt_fee
       }
       return 0
     },
