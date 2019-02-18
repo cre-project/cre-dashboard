@@ -14,12 +14,14 @@
           :type="errors.has('totalSqFt') ? 'is-danger' : ''"
           :message="errors.has('totalSqFt') ? errors.first('totalSqFt') : ''"
         >
-          <b-input
-            input v-validate="'required|decimal:3'"
-            v-model.number="totalSqFt"
+          <vue-numeric
+            input
+            v-validate="'required|decimal:3|min_value:1'"
             name="totalSqFt"
+            class="input narrow"
             separator=","
-          />
+            v-model="totalSqFt"
+          ></vue-numeric>
         </b-field>
       </div>
 
