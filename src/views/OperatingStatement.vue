@@ -209,7 +209,7 @@
         ></side-form>
       </div>
     </div>
-    <b-loading is-full-page="true" :active.sync="isLoading" :can-cancel="true"/>
+    <b-loading :is-full-page="true" :active.sync="isLoading" :can-cancel="true"/>
   </div>
 </template>
 <script>

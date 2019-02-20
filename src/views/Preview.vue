@@ -23,7 +23,7 @@
       frameborder="0"
       :src="pdfURL"
     ></iframe>
-    <b-loading is-full-page="true" :active.sync="loading" :can-cancel="false"/>
+    <b-loading :is-full-page="true" :active.sync="loading" :can-cancel="false"/>
   </div>
 </template>
 <script>
