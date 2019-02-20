@@ -157,7 +157,6 @@ export default {
 
   computed: {
     ...mapGetters({
-      packageByID: 'packages/byID',
       propertyByPackageID: 'properties/byPackageID',
       propertyUnits: 'propertyUnits/listByPropertyID',
       byID: 'propertyUnits/byID'
@@ -264,15 +263,18 @@ export default {
     } else {
       // load data
       try {
-        await this.$store.dispatch('packages/fetchList')
-        await this.$store.dispatch('properties/fetchList').then(() => {
-          this.property = this.propertyByPackageID(this.packageID)
-          if (this.property.id) {
-            this.$store.dispatch('propertyUnits/fetchList', this.property.id)
-          }
-          this.totalSqFt = this.property.total_square_feet || 0
-          this.isLoading = false
-        })
+        let property = this.propertyByPackageID(this.packageID)
+        if (!property) {
+          await this.$store.dispatch('properties/fetchList')
+          property = this.propertyByPackageID(this.packageID)
+        }
+
+        this.property = property
+        if (property.id) {
+          this.$store.dispatch('propertyUnits/fetchList', this.property.id)
+        }
+        this.totalSqFt = this.property.total_square_feet || 0
+        this.isLoading = false
       } catch (e) {
         console.log(e)
         router.push('/')

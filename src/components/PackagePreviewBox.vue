@@ -67,12 +67,6 @@ export default {
       let date = createdAt instanceof Date ? createdAt : new Date(createdAt)
       return date.toUTCString()
     }
-  },
-
-  async created () {
-    try {
-      await this.$store.dispatch('properties/fetchList')
-    } catch (e) { }
   }
 }
 </script>

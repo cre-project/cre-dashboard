@@ -3,7 +3,7 @@
     <property-missing v-if="!property.id"/>
 
     <div v-else class="cre-content">
-      <div class="columns">
+      <div v-show="!isLoading" class="columns">
 
         <div class="column is-two-thirds">
           <h1 class="subtitle is-size-4 has-text-weight-bold auto-margin">Operating Statement</h1>

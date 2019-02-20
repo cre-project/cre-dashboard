@@ -7,6 +7,7 @@
 
     <div class="align-left">
       <package-preview-box
+        v-show="!isLoading"
         v-for="item in packages"
         :key="item.id"
         :pkg="item"/>
@@ -32,7 +33,9 @@ export default {
   },
   async created () {
     try {
-      await this.$store.dispatch('packages/fetchList').then(() => { this.isLoading = false })
+      await this.$store.dispatch('packages/fetchList')
+      await this.$store.dispatch('properties/fetchList')
+      this.isLoading = false
     } catch (err) {
       if (err.response) {
         // non-200 server response
