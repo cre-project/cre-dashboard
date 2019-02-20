@@ -46,7 +46,7 @@ const mutations = {
   },
 
   createSuccessful (state, data) {
-    Vue.set(state.properties, data.id, data)
+    Vue.set(state.properties, data.package_id, data)
     state.isCreating = false
     state.createSuccess = true
     state.createError = null

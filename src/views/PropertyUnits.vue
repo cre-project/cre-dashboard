@@ -263,14 +263,12 @@ export default {
     } else {
       // load data
       try {
-        let property = this.propertyByPackageID(this.packageID)
-        if (!property) {
+        this.property = this.propertyByPackageID(this.packageID)
+        if (!this.property.id) {
           await this.$store.dispatch('properties/fetchList')
-          property = this.propertyByPackageID(this.packageID)
         }
 
-        this.property = property
-        if (property.id) {
+        if (this.property.id) {
           this.$store.dispatch('propertyUnits/fetchList', this.property.id)
         }
         this.totalSqFt = this.property.total_square_feet || 0
