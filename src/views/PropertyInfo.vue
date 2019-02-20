@@ -71,7 +71,7 @@
                   >
                     <b-input
                       v-validate="'between:0,200'"
-                      v-model="property.numberOfStories"
+                      v-model="property.number_of_stories"
                       name="number of stories"
                     />
                   </b-field>
@@ -160,9 +160,9 @@ export default {
           state: null,
           zip: null
         },
-        numberOfStories: null,
-        yearBuilt: null,
-        lotSize: null,
+        number_of_stories: null,
+        year_built: null,
+        lot_size: null,
         apn: null
       },
       price: 0,
@@ -249,9 +249,9 @@ export default {
         city: null,
         zip: null
       },
-      numberOfStories: null,
-      yearBuilt: null,
-      lotSize: null,
+      number_of_stories: null,
+      year_built: null,
+      lot_size: null,
       apn: null
     }
     if (!this.property.address) {
