@@ -21,9 +21,16 @@
 import { router } from './../router'
 
 export default {
+  props: {
+    osMissing: {
+      type: Boolean,
+      default: false
+    }
+  },
   methods: {
     goBack () {
-      router.push(`/package/${this.$route.params.id}/property-info`)
+      let page = this.osMissing ? 'operating-statement' : 'property-info'
+      router.push(`/package/${this.$route.params.id}/${page}`)
     }
   }
 }

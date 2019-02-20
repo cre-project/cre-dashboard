@@ -1,9 +1,10 @@
 <template>
   <div>
     <property-missing v-if="!property.id && !loading"/>
+    <property-missing v-if="!show && !loading" :osMissing="true"/>
 
     <div
-      v-show="property.id && !loading"
+      v-show="property.id && !loading && show"
       class="save-button">
       <button
         class="save"
@@ -16,7 +17,7 @@
     </div>
 
     <iframe
-      v-show="property.id && !loading"
+      v-show="property.id && !loading && show"
       id="pdf"
       width="100%"
       height="940"
@@ -33,12 +34,14 @@ import { mapGetters } from 'vuex'
 export default {
   data () {
     return {
-      loading: false
+      loading: false,
+      show: true
     }
   },
   computed: {
     ...mapGetters({
-      propertyByPackageID: 'properties/byPackageID'
+      propertyByPackageID: 'properties/byPackageID',
+      osByPackageID: 'os/byPackageID'
     }),
 
     packageID () {
@@ -96,6 +99,12 @@ export default {
       try {
         if (!this.property.id) {
           await this.$store.dispatch('properties/fetchList')
+        }
+        await this.$store.dispatch('os/fetchList', this.packageID)
+
+        let os = this.osByPackageID(this.packageID)
+        if (!os || !os.id || Object.keys(os).length === 0) {
+          this.show = false
         }
       } catch (e) {
         console.log(e)
