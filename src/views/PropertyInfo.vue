@@ -102,20 +102,6 @@
                 </div>
 
                 <div class="column">
-                  <b-field
-                    :type="errors.has('price') ? 'is-danger' : ''"
-                    :message="errors.has('price') ? errors.first('price') : ''"
-                    label="Price*"
-                  >
-                    <vue-numeric
-                      input
-                      class="input"
-                      :minus="false"
-                      currency="$"
-                      separator=","
-                      v-model="price"
-                    ></vue-numeric>
-                  </b-field>
 
                   <b-field
                     :type="errors.has('APN') ? 'is-danger' : ''"
