@@ -291,4 +291,9 @@ export default {
   background-color: rgb(76, 175, 80); /* Green */
   color: white;
 }
+
+.narrow {
+  min-width: 8em;
+  width: 8em;
+}
 </style>

@@ -274,7 +274,7 @@
                   >
                 </label>
                 <label class="narrow">
-                  <div class="narrow">Cap Rate</div>
+                  <div class="narrow">Cap Rate %</div>
                   <input
                     class="narrow"
                     v-model="props.row.cap_rate"
