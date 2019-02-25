@@ -130,23 +130,23 @@
               <!-- part 1 of the form -->
               <form id="form-1">
                 <label>
-                  <div>Property Address</div>
+                  <div>Property Address *</div>
                   <input v-model="props.row.address.street">
                 </label>
                 <label>
-                  <div>City</div>
+                  <div>City *</div>
                   <input v-model="props.row.address.city">
                 </label>
                 <div>
                   <label class="side-by-side">
-                    <div>State</div>
+                    <div>State *</div>
                     <input
                       class="side-by-side"
                       v-model="props.row.address.state"
                     >
                   </label>
                   <label class="side-by-side">
-                    <div>ZIP</div>
+                    <div>ZIP *</div>
                     <input
                       class="side-by-side"
                       v-model="props.row.address.zip"
@@ -164,7 +164,7 @@
               <!-- part 2 of the form -->
               <form id="form-2">
                 <label class="narrow">
-                  <div class="narrow">Year built</div>
+                  <div class="narrow">Year built *</div>
                   <input
                     class="narrow"
                     v-model.number="props.row.year_built"
@@ -174,7 +174,7 @@
                   class="narrow"
                   v-if="compType !== 'rent'"
                 >
-                  <div class="narrow">Total Square Feet</div>
+                  <div class="narrow">Total Square Feet *</div>
                   <vue-numeric
                     input
                     class="narrow"
@@ -187,7 +187,7 @@
                   class="narrow"
                   v-if="compType !== 'rent'"
                 >
-                  <div class="narrow">Total Number of Units</div>
+                  <div class="narrow">Total Number of Units *</div>
                   <input
                     class="narrow"
                     v-model="props.row.num_units"
@@ -256,7 +256,7 @@
                 v-if="compType !== 'rent'"
               >
                 <label class="narrow">
-                  <div class="narrow">Sales Price</div>
+                  <div class="narrow">Sales Price */div>
                   <vue-numeric
                     input
                     class="narrow"
@@ -267,21 +267,21 @@
                   ></vue-numeric>
                 </label>
                 <label class="narrow">
-                  <div class="narrow">Close of Escrow</div>
+                  <div class="narrow">Close of Escrow *</div>
                   <input
                     class="narrow"
                     v-model="props.row.close_of_escrow"
                   >
                 </label>
                 <label class="narrow">
-                  <div class="narrow">Cap Rate %</div>
+                  <div class="narrow">Cap Rate % *</div>
                   <input
                     class="narrow"
                     v-model="props.row.cap_rate"
                   >
                 </label>
                 <label class="narrow">
-                  <div class="narrow">GRM</div>
+                  <div class="narrow">GRM *</div>
                   <input
                     class="narrow"
                     v-model="props.row.grm"
@@ -438,7 +438,7 @@ export default {
         console.log(err)
         this.$toast.open({
           duration: 3500,
-          message: 'Something went wrong, please try again or contact customer support',
+          message: 'You might have missed some required fields. Please double check that there are values in all fields with a *',
           position: 'is-bottom',
           type: 'is-danger'
         })
