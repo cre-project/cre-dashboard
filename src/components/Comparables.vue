@@ -256,7 +256,7 @@
                 v-if="compType !== 'rent'"
               >
                 <label class="narrow">
-                  <div class="narrow">Sales Price */div>
+                  <div class="narrow">Sales Price *</div>
                   <vue-numeric
                     input
                     class="narrow"
@@ -437,8 +437,8 @@ export default {
       } catch (err) {
         console.log(err)
         this.$toast.open({
-          duration: 3500,
-          message: 'You might have missed some required fields. Please double check that there are values in all fields with a *',
+          duration: 5000,
+          message: 'You might have missed some required fields. Please double check that you have filled out all fields with an asterisk (*)',
           position: 'is-bottom',
           type: 'is-danger'
         })
