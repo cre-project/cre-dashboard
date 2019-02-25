@@ -45,9 +45,9 @@ export default {
     return {
       address: {},
       subscriptions: {
-        '5c1bbc8a2abc0f049777ded6': 'Trial',
-        '5c57e7b5847b645ab8b8a99e': 'Great',
-        '5c57e7c8847b645ab8b8a99f': 'Better'
+        [process.env.VUE_APP_SUBSCRIPTION_TRIAL]: 'Free 7 Day Trial',
+        [process.env.VUE_APP_SUBSCRIPTION_GREAT]: 'Great',
+        [process.env.VUE_APP_SUBSCRIPTION_BETTER]: 'Better'
       }
     }
   },
