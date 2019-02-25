@@ -122,7 +122,11 @@ router.beforeEach((to, from, next) => {
   const loggedIn = localStorage.creAuthToken && localStorage.creUser
 
   if (loggedIn) {
-    store.dispatch('user/init')
+    if (isPublicPage) {
+      store.dispatch('user/logout')
+    } else {
+      store.dispatch('user/init')
+    }
   }
 
   if (!isPublicPage && !loggedIn) {
