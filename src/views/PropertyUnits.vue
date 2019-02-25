@@ -271,6 +271,7 @@ export default {
         if (this.property.id) {
           this.$store.dispatch('propertyUnits/fetchList', this.property.id)
         }
+        this.property = this.propertyByPackageID(this.packageID)
         this.totalSqFt = this.property.total_square_feet || 0
         this.isLoading = false
       } catch (e) {
